@@ -1,0 +1,85 @@
+{
+    "name": "Doctor",
+    "fields": [
+        {
+            "fieldName": "licenceNumber",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "firstName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "lastName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "phone",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "email",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "type",
+            "fieldType": "DoctorType",
+            "fieldValues": "PHYSICIAN,SURGEON"
+        },
+        {
+            "fieldName": "designation",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "description",
+            "fieldType": "byte[]",
+            "fieldTypeBlobContent": "text"
+        },
+        {
+            "fieldName": "image",
+            "fieldType": "byte[]",
+            "fieldTypeBlobContent": "image"
+        },
+        {
+            "fieldName": "activated",
+            "fieldType": "Boolean"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "medicalDepartment",
+            "otherEntityName": "medicalDepartment",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "doctor"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "chambers",
+            "otherEntityName": "chamber",
+            "otherEntityRelationshipName": "doctor"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "professionalDegrees",
+            "otherEntityName": "professionalDegree",
+            "otherEntityRelationshipName": "doctor"
+        }
+    ],
+    "changelogDate": "20181226102644",
+    "entityTableName": "doctor",
+    "dto": "mapstruct",
+    "pagination": "infinite-scroll",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": true,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": [
+        "search"
+    ],
+    "searchEngine": "elasticsearch"
+}

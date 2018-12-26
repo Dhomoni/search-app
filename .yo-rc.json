@@ -1,0 +1,48 @@
+{
+  "generator-jhipster": {
+    "databaseType": "sql",
+    "devDatabaseType": "h2Disk",
+    "enableHibernateCache": true,
+    "enableSwaggerCodegen": false,
+    "enableTranslation": true,
+    "jhiPrefix": "jhi",
+    "languages": [
+      "en",
+      "bn"
+    ],
+    "messageBroker": "kafka",
+    "nativeLanguage": "en",
+    "packageName": "com.dhomoni.search",
+    "packageFolder": "com/dhomoni/search",
+    "prodDatabaseType": "postgresql",
+    "searchEngine": "elasticsearch",
+    "serviceDiscoveryType": "eureka",
+    "skipClient": true,
+    "testFrameworks": [
+      "cucumber",
+      "gatling"
+    ],
+    "websocket": false,
+    "baseName": "search",
+    "applicationType": "microservice",
+    "authenticationType": "uaa",
+    "uaaBaseName": "../uaa-app",
+    "cacheProvider": "hazelcast",
+    "serverPort": "8081",
+    "buildTool": "maven",
+    "jhipsterVersion": "5.7.2",
+    "skipUserManagement": true,
+    "clientPackageManager": "npm",
+    "otherModules": []
+  },
+  "entities": [
+    "Doctor",
+    "MedicalDepartment",
+    "Disease",
+    "Chamber",
+    "WeeklyVisitingHours",
+    "ProfessionalDegree",
+    "Patient",
+    "Medicine"
+  ]
+}

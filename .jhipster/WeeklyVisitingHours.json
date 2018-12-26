@@ -1,0 +1,69 @@
+{
+    "name": "WeeklyVisitingHours",
+    "fields": [
+        {
+            "fieldName": "weekDay",
+            "fieldType": "WeekDay",
+            "fieldValues": "SUN,MON,TUES,WED,THURS,FRY,SAT"
+        },
+        {
+            "fieldName": "startHour",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "min",
+                "max"
+            ],
+            "fieldValidateRulesMin": 0,
+            "fieldValidateRulesMax": 23
+        },
+        {
+            "fieldName": "startMinute",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "min",
+                "max"
+            ],
+            "fieldValidateRulesMin": 0,
+            "fieldValidateRulesMax": 59
+        },
+        {
+            "fieldName": "endHour",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "min",
+                "max"
+            ],
+            "fieldValidateRulesMin": 0,
+            "fieldValidateRulesMax": 23
+        },
+        {
+            "fieldName": "endMinute",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "min",
+                "max"
+            ],
+            "fieldValidateRulesMin": 0,
+            "fieldValidateRulesMax": 59
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipName": "chamber",
+            "otherEntityName": "chamber",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20181226102648",
+    "entityTableName": "weekly_visiting_hours",
+    "dto": "mapstruct",
+    "pagination": "infinite-scroll",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": true,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": [
+        "search"
+    ]
+}

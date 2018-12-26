@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20181226102644_added_entity_Doctor.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20181226102645_added_entity_MedicalDepartment.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20181226102646_added_entity_Disease.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20181226102647_added_entity_Chamber.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20181226102648_added_entity_WeeklyVisitingHours.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20181226102649_added_entity_ProfessionalDegree.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20181226102650_added_entity_Patient.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20181226102651_added_entity_Medicine.xml" relativeToChangelogFile="false"/>
+    <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
+    <include file="config/liquibase/changelog/20181226102644_added_entity_constraints_Doctor.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20181226102646_added_entity_constraints_Disease.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20181226102647_added_entity_constraints_Chamber.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20181226102648_added_entity_constraints_WeeklyVisitingHours.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20181226102649_added_entity_constraints_ProfessionalDegree.xml" relativeToChangelogFile="false"/>
+    <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
+</databaseChangeLog>
