@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="load_data" author="pervez">
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/medical_departments.csv"
+                  separator=";"
+                  tableName="medical_department"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/doctors.csv"
+                  separator=";"
+                  tableName="DOCTOR">
+			<column name="activated" type="boolean"/>
+		</loadData>
+		<loadData encoding="UTF-8"
+                  file="config/liquibase/chambers.csv"
+                  separator=";"
+                  tableName="CHAMBER"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/professional_degrees.csv"
+                  separator=";"
+                  tableName="professional_degree"/>
+		<loadData encoding="UTF-8"
+                  file="config/liquibase/weekly_visiting_hours.csv"
+                  separator=";"
+                  tableName="weekly_visiting_hours"/>
+    </changeSet>
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
+</databaseChangeLog>
