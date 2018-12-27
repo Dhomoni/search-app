@@ -6,7 +6,7 @@ import com.dhomoni.search.config.SecurityBeanOverrideConfiguration;
 
 import com.dhomoni.search.domain.Chamber;
 import com.dhomoni.search.domain.Doctor;
-import com.dhomoni.search.domain.WeeklyVisitingHours;
+import com.dhomoni.search.domain.WeeklyVisitingHour;
 import com.dhomoni.search.repository.ChamberRepository;
 import com.dhomoni.search.repository.search.ChamberSearchRepository;
 import com.dhomoni.search.service.ChamberService;
@@ -353,7 +353,7 @@ public class ChamberResourceIntTest {
     @Transactional
     public void getAllChambersByWeeklyVisitingHoursIsEqualToSomething() throws Exception {
         // Initialize the database
-        WeeklyVisitingHours weeklyVisitingHours = WeeklyVisitingHoursResourceIntTest.createEntity(em);
+        WeeklyVisitingHour weeklyVisitingHours = WeeklyVisitingHourResourceIntTest.createEntity(em);
         em.persist(weeklyVisitingHours);
         em.flush();
         chamber.addWeeklyVisitingHours(weeklyVisitingHours);
@@ -382,8 +382,8 @@ public class ChamberResourceIntTest {
         // Check, that the count call also returns 1
         restChamberMockMvc.perform(get("/api/chambers/count?sort=id,desc&" + filter))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
-//            .andExpect(content().string("1")); // In case of preloaded data this test causing problem 
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
     }
 
     /**

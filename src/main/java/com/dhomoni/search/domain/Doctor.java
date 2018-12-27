@@ -31,9 +31,9 @@ public class Doctor implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @NotNull
-    @Column(name = "licence_number", nullable = false)
-    private String licenceNumber;
+    
+    @Column(name = "registration_id", unique = true)
+    private Long registrationId;
 
     @Column(name = "first_name")
     private String firstName;
@@ -41,11 +41,21 @@ public class Doctor implements Serializable {
     @Column(name = "last_name")
     private String lastName;
 
+    @Column(name = "email")
+    private String email;
+
     @Column(name = "phone")
     private String phone;
 
-    @Column(name = "email")
-    private String email;
+    @NotNull
+    @Column(name = "licence_number", nullable = false)
+    private String licenceNumber;
+
+    @Column(name = "national_id")
+    private String nationalId;
+
+    @Column(name = "passport_no")
+    private String passportNo;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "jhi_type")
@@ -57,6 +67,9 @@ public class Doctor implements Serializable {
     @Lob
     @Column(name = "description")
     private String description;
+
+    @Column(name = "address")
+    private String address;
 
     @Lob
     @Column(name = "image")
@@ -86,17 +99,17 @@ public class Doctor implements Serializable {
         this.id = id;
     }
 
-    public String getLicenceNumber() {
-        return licenceNumber;
+    public Long getRegistrationId() {
+        return registrationId;
     }
 
-    public Doctor licenceNumber(String licenceNumber) {
-        this.licenceNumber = licenceNumber;
+    public Doctor registrationId(Long registrationId) {
+        this.registrationId = registrationId;
         return this;
     }
 
-    public void setLicenceNumber(String licenceNumber) {
-        this.licenceNumber = licenceNumber;
+    public void setRegistrationId(Long registrationId) {
+        this.registrationId = registrationId;
     }
 
     public String getFirstName() {
@@ -125,6 +138,19 @@ public class Doctor implements Serializable {
         this.lastName = lastName;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public Doctor email(String email) {
+        this.email = email;
+        return this;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getPhone() {
         return phone;
     }
@@ -138,17 +164,43 @@ public class Doctor implements Serializable {
         this.phone = phone;
     }
 
-    public String getEmail() {
-        return email;
+    public String getLicenceNumber() {
+        return licenceNumber;
     }
 
-    public Doctor email(String email) {
-        this.email = email;
+    public Doctor licenceNumber(String licenceNumber) {
+        this.licenceNumber = licenceNumber;
         return this;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setLicenceNumber(String licenceNumber) {
+        this.licenceNumber = licenceNumber;
+    }
+
+    public String getNationalId() {
+        return nationalId;
+    }
+
+    public Doctor nationalId(String nationalId) {
+        this.nationalId = nationalId;
+        return this;
+    }
+
+    public void setNationalId(String nationalId) {
+        this.nationalId = nationalId;
+    }
+
+    public String getPassportNo() {
+        return passportNo;
+    }
+
+    public Doctor passportNo(String passportNo) {
+        this.passportNo = passportNo;
+        return this;
+    }
+
+    public void setPassportNo(String passportNo) {
+        this.passportNo = passportNo;
     }
 
     public DoctorType getType() {
@@ -188,6 +240,19 @@ public class Doctor implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public Doctor address(String address) {
+        this.address = address;
+        return this;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public byte[] getImage() {
@@ -317,14 +382,18 @@ public class Doctor implements Serializable {
     public String toString() {
         return "Doctor{" +
             "id=" + getId() +
-            ", licenceNumber='" + getLicenceNumber() + "'" +
+            ", registrationId=" + getRegistrationId() +
             ", firstName='" + getFirstName() + "'" +
             ", lastName='" + getLastName() + "'" +
-            ", phone='" + getPhone() + "'" +
             ", email='" + getEmail() + "'" +
+            ", phone='" + getPhone() + "'" +
+            ", licenceNumber='" + getLicenceNumber() + "'" +
+            ", nationalId='" + getNationalId() + "'" +
+            ", passportNo='" + getPassportNo() + "'" +
             ", type='" + getType() + "'" +
             ", designation='" + getDesignation() + "'" +
             ", description='" + getDescription() + "'" +
+            ", address='" + getAddress() + "'" +
             ", image='" + getImage() + "'" +
             ", imageContentType='" + getImageContentType() + "'" +
             ", activated='" + isActivated() + "'" +

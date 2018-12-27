@@ -6,9 +6,9 @@ import java.util.Objects;
 import com.dhomoni.search.domain.enumeration.WeekDay;
 
 /**
- * A DTO for the WeeklyVisitingHours entity.
+ * A DTO for the WeeklyVisitingHour entity.
  */
-public class WeeklyVisitingHoursDTO implements Serializable {
+public class WeeklyVisitingHourDTO implements Serializable {
 
     private Long id;
 
@@ -97,11 +97,11 @@ public class WeeklyVisitingHoursDTO implements Serializable {
             return false;
         }
 
-        WeeklyVisitingHoursDTO weeklyVisitingHoursDTO = (WeeklyVisitingHoursDTO) o;
-        if (weeklyVisitingHoursDTO.getId() == null || getId() == null) {
+        WeeklyVisitingHourDTO weeklyVisitingHourDTO = (WeeklyVisitingHourDTO) o;
+        if (weeklyVisitingHourDTO.getId() == null || getId() == null) {
             return false;
         }
-        return Objects.equals(getId(), weeklyVisitingHoursDTO.getId());
+        return Objects.equals(getId(), weeklyVisitingHourDTO.getId());
     }
 
     @Override
@@ -111,7 +111,7 @@ public class WeeklyVisitingHoursDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "WeeklyVisitingHoursDTO{" +
+        return "WeeklyVisitingHourDTO{" +
             "id=" + getId() +
             ", weekDay='" + getWeekDay() + "'" +
             ", startHour=" + getStartHour() +

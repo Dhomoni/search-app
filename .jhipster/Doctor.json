@@ -2,10 +2,10 @@
     "name": "Doctor",
     "fields": [
         {
-            "fieldName": "licenceNumber",
-            "fieldType": "String",
+            "fieldName": "registrationId",
+            "fieldType": "Long",
             "fieldValidateRules": [
-                "required"
+                "unique"
             ]
         },
         {
@@ -17,11 +17,26 @@
             "fieldType": "String"
         },
         {
+            "fieldName": "email",
+            "fieldType": "String"
+        },
+        {
             "fieldName": "phone",
             "fieldType": "String"
         },
         {
-            "fieldName": "email",
+            "fieldName": "licenceNumber",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "nationalId",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "passportNo",
             "fieldType": "String"
         },
         {
@@ -37,6 +52,10 @@
             "fieldName": "description",
             "fieldType": "byte[]",
             "fieldTypeBlobContent": "text"
+        },
+        {
+            "fieldName": "address",
+            "fieldType": "String"
         },
         {
             "fieldName": "image",
@@ -70,16 +89,17 @@
             "otherEntityRelationshipName": "doctor"
         }
     ],
-    "changelogDate": "20181226102644",
+    "changelogDate": "20181227124017",
     "entityTableName": "doctor",
     "dto": "mapstruct",
     "pagination": "infinite-scroll",
     "service": "serviceClass",
     "jpaMetamodelFiltering": true,
     "fluentMethods": true,
-    "clientRootFolder": "",
+    "clientRootFolder": "search",
     "applications": [
         "search"
     ],
-    "searchEngine": "elasticsearch"
+    "searchEngine": "elasticsearch",
+    "microserviceName": "search"
 }

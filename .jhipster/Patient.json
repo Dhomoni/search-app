@@ -2,6 +2,13 @@
     "name": "Patient",
     "fields": [
         {
+            "fieldName": "registrationId",
+            "fieldType": "Long",
+            "fieldValidateRules": [
+                "unique"
+            ]
+        },
+        {
             "fieldName": "firstName",
             "fieldType": "String"
         },
@@ -10,11 +17,11 @@
             "fieldType": "String"
         },
         {
-            "fieldName": "phone",
+            "fieldName": "email",
             "fieldType": "String"
         },
         {
-            "fieldName": "email",
+            "fieldName": "phone",
             "fieldType": "String"
         },
         {
@@ -23,8 +30,13 @@
             "fieldValues": "MALE,FEMALE"
         },
         {
-            "fieldName": "birthDate",
+            "fieldName": "birthTimestamp",
             "fieldType": "Instant"
+        },
+        {
+            "fieldName": "bloodGroup",
+            "fieldType": "BloodGroup",
+            "fieldValues": "A_POSITIVE,A_NEGATIVE,B_POSITIVE,B_NEGATIVE,O_POSITIVE,O_NEGATIVE,AB_POSITIVE,AB_NEGATIVE"
         },
         {
             "fieldName": "weightInKG",
@@ -44,11 +56,6 @@
             "fieldType": "String"
         },
         {
-            "fieldName": "bloodGroup",
-            "fieldType": "BloodGroup",
-            "fieldValues": "A_POSITIVE,A_NEGATIVE,B_POSITIVE,B_NEGATIVE,O_POSITIVE,O_NEGATIVE,AB_POSITIVE,AB_NEGATIVE"
-        },
-        {
             "fieldName": "activated",
             "fieldType": "Boolean"
         }
@@ -61,9 +68,10 @@
     "service": "serviceClass",
     "jpaMetamodelFiltering": true,
     "fluentMethods": true,
-    "clientRootFolder": "",
+    "clientRootFolder": "search",
     "applications": [
         "search"
     ],
-    "searchEngine": "elasticsearch"
+    "searchEngine": "elasticsearch",
+    "microserviceName": "search"
 }

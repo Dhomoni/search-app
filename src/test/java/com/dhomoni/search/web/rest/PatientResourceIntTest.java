@@ -58,23 +58,29 @@ import com.dhomoni.search.domain.enumeration.BloodGroup;
 @SpringBootTest(classes = {SecurityBeanOverrideConfiguration.class, SearchApp.class})
 public class PatientResourceIntTest {
 
+    private static final Long DEFAULT_REGISTRATION_ID = 1L;
+    private static final Long UPDATED_REGISTRATION_ID = 2L;
+
     private static final String DEFAULT_FIRST_NAME = "AAAAAAAAAA";
     private static final String UPDATED_FIRST_NAME = "BBBBBBBBBB";
 
     private static final String DEFAULT_LAST_NAME = "AAAAAAAAAA";
     private static final String UPDATED_LAST_NAME = "BBBBBBBBBB";
 
-    private static final String DEFAULT_PHONE = "AAAAAAAAAA";
-    private static final String UPDATED_PHONE = "BBBBBBBBBB";
-
     private static final String DEFAULT_EMAIL = "AAAAAAAAAA";
     private static final String UPDATED_EMAIL = "BBBBBBBBBB";
+
+    private static final String DEFAULT_PHONE = "AAAAAAAAAA";
+    private static final String UPDATED_PHONE = "BBBBBBBBBB";
 
     private static final Sex DEFAULT_SEX = Sex.MALE;
     private static final Sex UPDATED_SEX = Sex.FEMALE;
 
-    private static final Instant DEFAULT_BIRTH_DATE = Instant.ofEpochMilli(0L);
-    private static final Instant UPDATED_BIRTH_DATE = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+    private static final Instant DEFAULT_BIRTH_TIMESTAMP = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_BIRTH_TIMESTAMP = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
+    private static final BloodGroup DEFAULT_BLOOD_GROUP = BloodGroup.A_POSITIVE;
+    private static final BloodGroup UPDATED_BLOOD_GROUP = BloodGroup.A_NEGATIVE;
 
     private static final Double DEFAULT_WEIGHT_IN_KG = 1D;
     private static final Double UPDATED_WEIGHT_IN_KG = 2D;
@@ -89,9 +95,6 @@ public class PatientResourceIntTest {
 
     private static final String DEFAULT_ADDRESS = "AAAAAAAAAA";
     private static final String UPDATED_ADDRESS = "BBBBBBBBBB";
-
-    private static final BloodGroup DEFAULT_BLOOD_GROUP = BloodGroup.A_POSITIVE;
-    private static final BloodGroup UPDATED_BLOOD_GROUP = BloodGroup.A_NEGATIVE;
 
     private static final Boolean DEFAULT_ACTIVATED = false;
     private static final Boolean UPDATED_ACTIVATED = true;
@@ -155,18 +158,19 @@ public class PatientResourceIntTest {
      */
     public static Patient createEntity(EntityManager em) {
         Patient patient = new Patient()
+            .registrationId(DEFAULT_REGISTRATION_ID)
             .firstName(DEFAULT_FIRST_NAME)
             .lastName(DEFAULT_LAST_NAME)
-            .phone(DEFAULT_PHONE)
             .email(DEFAULT_EMAIL)
+            .phone(DEFAULT_PHONE)
             .sex(DEFAULT_SEX)
-            .birthDate(DEFAULT_BIRTH_DATE)
+            .birthTimestamp(DEFAULT_BIRTH_TIMESTAMP)
+            .bloodGroup(DEFAULT_BLOOD_GROUP)
             .weightInKG(DEFAULT_WEIGHT_IN_KG)
             .heightInInch(DEFAULT_HEIGHT_IN_INCH)
             .image(DEFAULT_IMAGE)
             .imageContentType(DEFAULT_IMAGE_CONTENT_TYPE)
             .address(DEFAULT_ADDRESS)
-            .bloodGroup(DEFAULT_BLOOD_GROUP)
             .activated(DEFAULT_ACTIVATED);
         return patient;
     }
@@ -192,18 +196,19 @@ public class PatientResourceIntTest {
         List<Patient> patientList = patientRepository.findAll();
         assertThat(patientList).hasSize(databaseSizeBeforeCreate + 1);
         Patient testPatient = patientList.get(patientList.size() - 1);
+        assertThat(testPatient.getRegistrationId()).isEqualTo(DEFAULT_REGISTRATION_ID);
         assertThat(testPatient.getFirstName()).isEqualTo(DEFAULT_FIRST_NAME);
         assertThat(testPatient.getLastName()).isEqualTo(DEFAULT_LAST_NAME);
-        assertThat(testPatient.getPhone()).isEqualTo(DEFAULT_PHONE);
         assertThat(testPatient.getEmail()).isEqualTo(DEFAULT_EMAIL);
+        assertThat(testPatient.getPhone()).isEqualTo(DEFAULT_PHONE);
         assertThat(testPatient.getSex()).isEqualTo(DEFAULT_SEX);
-        assertThat(testPatient.getBirthDate()).isEqualTo(DEFAULT_BIRTH_DATE);
+        assertThat(testPatient.getBirthTimestamp()).isEqualTo(DEFAULT_BIRTH_TIMESTAMP);
+        assertThat(testPatient.getBloodGroup()).isEqualTo(DEFAULT_BLOOD_GROUP);
         assertThat(testPatient.getWeightInKG()).isEqualTo(DEFAULT_WEIGHT_IN_KG);
         assertThat(testPatient.getHeightInInch()).isEqualTo(DEFAULT_HEIGHT_IN_INCH);
         assertThat(testPatient.getImage()).isEqualTo(DEFAULT_IMAGE);
         assertThat(testPatient.getImageContentType()).isEqualTo(DEFAULT_IMAGE_CONTENT_TYPE);
         assertThat(testPatient.getAddress()).isEqualTo(DEFAULT_ADDRESS);
-        assertThat(testPatient.getBloodGroup()).isEqualTo(DEFAULT_BLOOD_GROUP);
         assertThat(testPatient.isActivated()).isEqualTo(DEFAULT_ACTIVATED);
 
         // Validate the Patient in Elasticsearch
@@ -244,18 +249,19 @@ public class PatientResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(patient.getId().intValue())))
+            .andExpect(jsonPath("$.[*].registrationId").value(hasItem(DEFAULT_REGISTRATION_ID.intValue())))
             .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRST_NAME.toString())))
             .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME.toString())))
-            .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE.toString())))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL.toString())))
+            .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE.toString())))
             .andExpect(jsonPath("$.[*].sex").value(hasItem(DEFAULT_SEX.toString())))
-            .andExpect(jsonPath("$.[*].birthDate").value(hasItem(DEFAULT_BIRTH_DATE.toString())))
+            .andExpect(jsonPath("$.[*].birthTimestamp").value(hasItem(DEFAULT_BIRTH_TIMESTAMP.toString())))
+            .andExpect(jsonPath("$.[*].bloodGroup").value(hasItem(DEFAULT_BLOOD_GROUP.toString())))
             .andExpect(jsonPath("$.[*].weightInKG").value(hasItem(DEFAULT_WEIGHT_IN_KG.doubleValue())))
             .andExpect(jsonPath("$.[*].heightInInch").value(hasItem(DEFAULT_HEIGHT_IN_INCH.doubleValue())))
             .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
             .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))))
             .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS.toString())))
-            .andExpect(jsonPath("$.[*].bloodGroup").value(hasItem(DEFAULT_BLOOD_GROUP.toString())))
             .andExpect(jsonPath("$.[*].activated").value(hasItem(DEFAULT_ACTIVATED.booleanValue())));
     }
     
@@ -270,20 +276,87 @@ public class PatientResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(patient.getId().intValue()))
+            .andExpect(jsonPath("$.registrationId").value(DEFAULT_REGISTRATION_ID.intValue()))
             .andExpect(jsonPath("$.firstName").value(DEFAULT_FIRST_NAME.toString()))
             .andExpect(jsonPath("$.lastName").value(DEFAULT_LAST_NAME.toString()))
-            .andExpect(jsonPath("$.phone").value(DEFAULT_PHONE.toString()))
             .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL.toString()))
+            .andExpect(jsonPath("$.phone").value(DEFAULT_PHONE.toString()))
             .andExpect(jsonPath("$.sex").value(DEFAULT_SEX.toString()))
-            .andExpect(jsonPath("$.birthDate").value(DEFAULT_BIRTH_DATE.toString()))
+            .andExpect(jsonPath("$.birthTimestamp").value(DEFAULT_BIRTH_TIMESTAMP.toString()))
+            .andExpect(jsonPath("$.bloodGroup").value(DEFAULT_BLOOD_GROUP.toString()))
             .andExpect(jsonPath("$.weightInKG").value(DEFAULT_WEIGHT_IN_KG.doubleValue()))
             .andExpect(jsonPath("$.heightInInch").value(DEFAULT_HEIGHT_IN_INCH.doubleValue()))
             .andExpect(jsonPath("$.imageContentType").value(DEFAULT_IMAGE_CONTENT_TYPE))
             .andExpect(jsonPath("$.image").value(Base64Utils.encodeToString(DEFAULT_IMAGE)))
             .andExpect(jsonPath("$.address").value(DEFAULT_ADDRESS.toString()))
-            .andExpect(jsonPath("$.bloodGroup").value(DEFAULT_BLOOD_GROUP.toString()))
             .andExpect(jsonPath("$.activated").value(DEFAULT_ACTIVATED.booleanValue()));
     }
+
+    @Test
+    @Transactional
+    public void getAllPatientsByRegistrationIdIsEqualToSomething() throws Exception {
+        // Initialize the database
+        patientRepository.saveAndFlush(patient);
+
+        // Get all the patientList where registrationId equals to DEFAULT_REGISTRATION_ID
+        defaultPatientShouldBeFound("registrationId.equals=" + DEFAULT_REGISTRATION_ID);
+
+        // Get all the patientList where registrationId equals to UPDATED_REGISTRATION_ID
+        defaultPatientShouldNotBeFound("registrationId.equals=" + UPDATED_REGISTRATION_ID);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPatientsByRegistrationIdIsInShouldWork() throws Exception {
+        // Initialize the database
+        patientRepository.saveAndFlush(patient);
+
+        // Get all the patientList where registrationId in DEFAULT_REGISTRATION_ID or UPDATED_REGISTRATION_ID
+        defaultPatientShouldBeFound("registrationId.in=" + DEFAULT_REGISTRATION_ID + "," + UPDATED_REGISTRATION_ID);
+
+        // Get all the patientList where registrationId equals to UPDATED_REGISTRATION_ID
+        defaultPatientShouldNotBeFound("registrationId.in=" + UPDATED_REGISTRATION_ID);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPatientsByRegistrationIdIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        patientRepository.saveAndFlush(patient);
+
+        // Get all the patientList where registrationId is not null
+        defaultPatientShouldBeFound("registrationId.specified=true");
+
+        // Get all the patientList where registrationId is null
+        defaultPatientShouldNotBeFound("registrationId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllPatientsByRegistrationIdIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        patientRepository.saveAndFlush(patient);
+
+        // Get all the patientList where registrationId greater than or equals to DEFAULT_REGISTRATION_ID
+        defaultPatientShouldBeFound("registrationId.greaterOrEqualThan=" + DEFAULT_REGISTRATION_ID);
+
+        // Get all the patientList where registrationId greater than or equals to UPDATED_REGISTRATION_ID
+        defaultPatientShouldNotBeFound("registrationId.greaterOrEqualThan=" + UPDATED_REGISTRATION_ID);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPatientsByRegistrationIdIsLessThanSomething() throws Exception {
+        // Initialize the database
+        patientRepository.saveAndFlush(patient);
+
+        // Get all the patientList where registrationId less than or equals to DEFAULT_REGISTRATION_ID
+        defaultPatientShouldNotBeFound("registrationId.lessThan=" + DEFAULT_REGISTRATION_ID);
+
+        // Get all the patientList where registrationId less than or equals to UPDATED_REGISTRATION_ID
+        defaultPatientShouldBeFound("registrationId.lessThan=" + UPDATED_REGISTRATION_ID);
+    }
+
 
     @Test
     @Transactional
@@ -365,45 +438,6 @@ public class PatientResourceIntTest {
 
     @Test
     @Transactional
-    public void getAllPatientsByPhoneIsEqualToSomething() throws Exception {
-        // Initialize the database
-        patientRepository.saveAndFlush(patient);
-
-        // Get all the patientList where phone equals to DEFAULT_PHONE
-        defaultPatientShouldBeFound("phone.equals=" + DEFAULT_PHONE);
-
-        // Get all the patientList where phone equals to UPDATED_PHONE
-        defaultPatientShouldNotBeFound("phone.equals=" + UPDATED_PHONE);
-    }
-
-    @Test
-    @Transactional
-    public void getAllPatientsByPhoneIsInShouldWork() throws Exception {
-        // Initialize the database
-        patientRepository.saveAndFlush(patient);
-
-        // Get all the patientList where phone in DEFAULT_PHONE or UPDATED_PHONE
-        defaultPatientShouldBeFound("phone.in=" + DEFAULT_PHONE + "," + UPDATED_PHONE);
-
-        // Get all the patientList where phone equals to UPDATED_PHONE
-        defaultPatientShouldNotBeFound("phone.in=" + UPDATED_PHONE);
-    }
-
-    @Test
-    @Transactional
-    public void getAllPatientsByPhoneIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        patientRepository.saveAndFlush(patient);
-
-        // Get all the patientList where phone is not null
-        defaultPatientShouldBeFound("phone.specified=true");
-
-        // Get all the patientList where phone is null
-        defaultPatientShouldNotBeFound("phone.specified=false");
-    }
-
-    @Test
-    @Transactional
     public void getAllPatientsByEmailIsEqualToSomething() throws Exception {
         // Initialize the database
         patientRepository.saveAndFlush(patient);
@@ -439,6 +473,45 @@ public class PatientResourceIntTest {
 
         // Get all the patientList where email is null
         defaultPatientShouldNotBeFound("email.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllPatientsByPhoneIsEqualToSomething() throws Exception {
+        // Initialize the database
+        patientRepository.saveAndFlush(patient);
+
+        // Get all the patientList where phone equals to DEFAULT_PHONE
+        defaultPatientShouldBeFound("phone.equals=" + DEFAULT_PHONE);
+
+        // Get all the patientList where phone equals to UPDATED_PHONE
+        defaultPatientShouldNotBeFound("phone.equals=" + UPDATED_PHONE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPatientsByPhoneIsInShouldWork() throws Exception {
+        // Initialize the database
+        patientRepository.saveAndFlush(patient);
+
+        // Get all the patientList where phone in DEFAULT_PHONE or UPDATED_PHONE
+        defaultPatientShouldBeFound("phone.in=" + DEFAULT_PHONE + "," + UPDATED_PHONE);
+
+        // Get all the patientList where phone equals to UPDATED_PHONE
+        defaultPatientShouldNotBeFound("phone.in=" + UPDATED_PHONE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPatientsByPhoneIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        patientRepository.saveAndFlush(patient);
+
+        // Get all the patientList where phone is not null
+        defaultPatientShouldBeFound("phone.specified=true");
+
+        // Get all the patientList where phone is null
+        defaultPatientShouldNotBeFound("phone.specified=false");
     }
 
     @Test
@@ -482,41 +555,80 @@ public class PatientResourceIntTest {
 
     @Test
     @Transactional
-    public void getAllPatientsByBirthDateIsEqualToSomething() throws Exception {
+    public void getAllPatientsByBirthTimestampIsEqualToSomething() throws Exception {
         // Initialize the database
         patientRepository.saveAndFlush(patient);
 
-        // Get all the patientList where birthDate equals to DEFAULT_BIRTH_DATE
-        defaultPatientShouldBeFound("birthDate.equals=" + DEFAULT_BIRTH_DATE);
+        // Get all the patientList where birthTimestamp equals to DEFAULT_BIRTH_TIMESTAMP
+        defaultPatientShouldBeFound("birthTimestamp.equals=" + DEFAULT_BIRTH_TIMESTAMP);
 
-        // Get all the patientList where birthDate equals to UPDATED_BIRTH_DATE
-        defaultPatientShouldNotBeFound("birthDate.equals=" + UPDATED_BIRTH_DATE);
+        // Get all the patientList where birthTimestamp equals to UPDATED_BIRTH_TIMESTAMP
+        defaultPatientShouldNotBeFound("birthTimestamp.equals=" + UPDATED_BIRTH_TIMESTAMP);
     }
 
     @Test
     @Transactional
-    public void getAllPatientsByBirthDateIsInShouldWork() throws Exception {
+    public void getAllPatientsByBirthTimestampIsInShouldWork() throws Exception {
         // Initialize the database
         patientRepository.saveAndFlush(patient);
 
-        // Get all the patientList where birthDate in DEFAULT_BIRTH_DATE or UPDATED_BIRTH_DATE
-        defaultPatientShouldBeFound("birthDate.in=" + DEFAULT_BIRTH_DATE + "," + UPDATED_BIRTH_DATE);
+        // Get all the patientList where birthTimestamp in DEFAULT_BIRTH_TIMESTAMP or UPDATED_BIRTH_TIMESTAMP
+        defaultPatientShouldBeFound("birthTimestamp.in=" + DEFAULT_BIRTH_TIMESTAMP + "," + UPDATED_BIRTH_TIMESTAMP);
 
-        // Get all the patientList where birthDate equals to UPDATED_BIRTH_DATE
-        defaultPatientShouldNotBeFound("birthDate.in=" + UPDATED_BIRTH_DATE);
+        // Get all the patientList where birthTimestamp equals to UPDATED_BIRTH_TIMESTAMP
+        defaultPatientShouldNotBeFound("birthTimestamp.in=" + UPDATED_BIRTH_TIMESTAMP);
     }
 
     @Test
     @Transactional
-    public void getAllPatientsByBirthDateIsNullOrNotNull() throws Exception {
+    public void getAllPatientsByBirthTimestampIsNullOrNotNull() throws Exception {
         // Initialize the database
         patientRepository.saveAndFlush(patient);
 
-        // Get all the patientList where birthDate is not null
-        defaultPatientShouldBeFound("birthDate.specified=true");
+        // Get all the patientList where birthTimestamp is not null
+        defaultPatientShouldBeFound("birthTimestamp.specified=true");
 
-        // Get all the patientList where birthDate is null
-        defaultPatientShouldNotBeFound("birthDate.specified=false");
+        // Get all the patientList where birthTimestamp is null
+        defaultPatientShouldNotBeFound("birthTimestamp.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllPatientsByBloodGroupIsEqualToSomething() throws Exception {
+        // Initialize the database
+        patientRepository.saveAndFlush(patient);
+
+        // Get all the patientList where bloodGroup equals to DEFAULT_BLOOD_GROUP
+        defaultPatientShouldBeFound("bloodGroup.equals=" + DEFAULT_BLOOD_GROUP);
+
+        // Get all the patientList where bloodGroup equals to UPDATED_BLOOD_GROUP
+        defaultPatientShouldNotBeFound("bloodGroup.equals=" + UPDATED_BLOOD_GROUP);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPatientsByBloodGroupIsInShouldWork() throws Exception {
+        // Initialize the database
+        patientRepository.saveAndFlush(patient);
+
+        // Get all the patientList where bloodGroup in DEFAULT_BLOOD_GROUP or UPDATED_BLOOD_GROUP
+        defaultPatientShouldBeFound("bloodGroup.in=" + DEFAULT_BLOOD_GROUP + "," + UPDATED_BLOOD_GROUP);
+
+        // Get all the patientList where bloodGroup equals to UPDATED_BLOOD_GROUP
+        defaultPatientShouldNotBeFound("bloodGroup.in=" + UPDATED_BLOOD_GROUP);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPatientsByBloodGroupIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        patientRepository.saveAndFlush(patient);
+
+        // Get all the patientList where bloodGroup is not null
+        defaultPatientShouldBeFound("bloodGroup.specified=true");
+
+        // Get all the patientList where bloodGroup is null
+        defaultPatientShouldNotBeFound("bloodGroup.specified=false");
     }
 
     @Test
@@ -638,45 +750,6 @@ public class PatientResourceIntTest {
 
     @Test
     @Transactional
-    public void getAllPatientsByBloodGroupIsEqualToSomething() throws Exception {
-        // Initialize the database
-        patientRepository.saveAndFlush(patient);
-
-        // Get all the patientList where bloodGroup equals to DEFAULT_BLOOD_GROUP
-        defaultPatientShouldBeFound("bloodGroup.equals=" + DEFAULT_BLOOD_GROUP);
-
-        // Get all the patientList where bloodGroup equals to UPDATED_BLOOD_GROUP
-        defaultPatientShouldNotBeFound("bloodGroup.equals=" + UPDATED_BLOOD_GROUP);
-    }
-
-    @Test
-    @Transactional
-    public void getAllPatientsByBloodGroupIsInShouldWork() throws Exception {
-        // Initialize the database
-        patientRepository.saveAndFlush(patient);
-
-        // Get all the patientList where bloodGroup in DEFAULT_BLOOD_GROUP or UPDATED_BLOOD_GROUP
-        defaultPatientShouldBeFound("bloodGroup.in=" + DEFAULT_BLOOD_GROUP + "," + UPDATED_BLOOD_GROUP);
-
-        // Get all the patientList where bloodGroup equals to UPDATED_BLOOD_GROUP
-        defaultPatientShouldNotBeFound("bloodGroup.in=" + UPDATED_BLOOD_GROUP);
-    }
-
-    @Test
-    @Transactional
-    public void getAllPatientsByBloodGroupIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        patientRepository.saveAndFlush(patient);
-
-        // Get all the patientList where bloodGroup is not null
-        defaultPatientShouldBeFound("bloodGroup.specified=true");
-
-        // Get all the patientList where bloodGroup is null
-        defaultPatientShouldNotBeFound("bloodGroup.specified=false");
-    }
-
-    @Test
-    @Transactional
     public void getAllPatientsByActivatedIsEqualToSomething() throws Exception {
         // Initialize the database
         patientRepository.saveAndFlush(patient);
@@ -721,18 +794,19 @@ public class PatientResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(patient.getId().intValue())))
+            .andExpect(jsonPath("$.[*].registrationId").value(hasItem(DEFAULT_REGISTRATION_ID.intValue())))
             .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRST_NAME.toString())))
             .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME.toString())))
-            .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE.toString())))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL.toString())))
+            .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE.toString())))
             .andExpect(jsonPath("$.[*].sex").value(hasItem(DEFAULT_SEX.toString())))
-            .andExpect(jsonPath("$.[*].birthDate").value(hasItem(DEFAULT_BIRTH_DATE.toString())))
+            .andExpect(jsonPath("$.[*].birthTimestamp").value(hasItem(DEFAULT_BIRTH_TIMESTAMP.toString())))
+            .andExpect(jsonPath("$.[*].bloodGroup").value(hasItem(DEFAULT_BLOOD_GROUP.toString())))
             .andExpect(jsonPath("$.[*].weightInKG").value(hasItem(DEFAULT_WEIGHT_IN_KG.doubleValue())))
             .andExpect(jsonPath("$.[*].heightInInch").value(hasItem(DEFAULT_HEIGHT_IN_INCH.doubleValue())))
             .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
             .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))))
             .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS.toString())))
-            .andExpect(jsonPath("$.[*].bloodGroup").value(hasItem(DEFAULT_BLOOD_GROUP.toString())))
             .andExpect(jsonPath("$.[*].activated").value(hasItem(DEFAULT_ACTIVATED.booleanValue())));
 
         // Check, that the count call also returns 1
@@ -781,18 +855,19 @@ public class PatientResourceIntTest {
         // Disconnect from session so that the updates on updatedPatient are not directly saved in db
         em.detach(updatedPatient);
         updatedPatient
+            .registrationId(UPDATED_REGISTRATION_ID)
             .firstName(UPDATED_FIRST_NAME)
             .lastName(UPDATED_LAST_NAME)
-            .phone(UPDATED_PHONE)
             .email(UPDATED_EMAIL)
+            .phone(UPDATED_PHONE)
             .sex(UPDATED_SEX)
-            .birthDate(UPDATED_BIRTH_DATE)
+            .birthTimestamp(UPDATED_BIRTH_TIMESTAMP)
+            .bloodGroup(UPDATED_BLOOD_GROUP)
             .weightInKG(UPDATED_WEIGHT_IN_KG)
             .heightInInch(UPDATED_HEIGHT_IN_INCH)
             .image(UPDATED_IMAGE)
             .imageContentType(UPDATED_IMAGE_CONTENT_TYPE)
             .address(UPDATED_ADDRESS)
-            .bloodGroup(UPDATED_BLOOD_GROUP)
             .activated(UPDATED_ACTIVATED);
         PatientDTO patientDTO = patientMapper.toDto(updatedPatient);
 
@@ -805,18 +880,19 @@ public class PatientResourceIntTest {
         List<Patient> patientList = patientRepository.findAll();
         assertThat(patientList).hasSize(databaseSizeBeforeUpdate);
         Patient testPatient = patientList.get(patientList.size() - 1);
+        assertThat(testPatient.getRegistrationId()).isEqualTo(UPDATED_REGISTRATION_ID);
         assertThat(testPatient.getFirstName()).isEqualTo(UPDATED_FIRST_NAME);
         assertThat(testPatient.getLastName()).isEqualTo(UPDATED_LAST_NAME);
-        assertThat(testPatient.getPhone()).isEqualTo(UPDATED_PHONE);
         assertThat(testPatient.getEmail()).isEqualTo(UPDATED_EMAIL);
+        assertThat(testPatient.getPhone()).isEqualTo(UPDATED_PHONE);
         assertThat(testPatient.getSex()).isEqualTo(UPDATED_SEX);
-        assertThat(testPatient.getBirthDate()).isEqualTo(UPDATED_BIRTH_DATE);
+        assertThat(testPatient.getBirthTimestamp()).isEqualTo(UPDATED_BIRTH_TIMESTAMP);
+        assertThat(testPatient.getBloodGroup()).isEqualTo(UPDATED_BLOOD_GROUP);
         assertThat(testPatient.getWeightInKG()).isEqualTo(UPDATED_WEIGHT_IN_KG);
         assertThat(testPatient.getHeightInInch()).isEqualTo(UPDATED_HEIGHT_IN_INCH);
         assertThat(testPatient.getImage()).isEqualTo(UPDATED_IMAGE);
         assertThat(testPatient.getImageContentType()).isEqualTo(UPDATED_IMAGE_CONTENT_TYPE);
         assertThat(testPatient.getAddress()).isEqualTo(UPDATED_ADDRESS);
-        assertThat(testPatient.getBloodGroup()).isEqualTo(UPDATED_BLOOD_GROUP);
         assertThat(testPatient.isActivated()).isEqualTo(UPDATED_ACTIVATED);
 
         // Validate the Patient in Elasticsearch
@@ -878,18 +954,19 @@ public class PatientResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(patient.getId().intValue())))
+            .andExpect(jsonPath("$.[*].registrationId").value(hasItem(DEFAULT_REGISTRATION_ID.intValue())))
             .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRST_NAME)))
             .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME)))
-            .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE)))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
+            .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE)))
             .andExpect(jsonPath("$.[*].sex").value(hasItem(DEFAULT_SEX.toString())))
-            .andExpect(jsonPath("$.[*].birthDate").value(hasItem(DEFAULT_BIRTH_DATE.toString())))
+            .andExpect(jsonPath("$.[*].birthTimestamp").value(hasItem(DEFAULT_BIRTH_TIMESTAMP.toString())))
+            .andExpect(jsonPath("$.[*].bloodGroup").value(hasItem(DEFAULT_BLOOD_GROUP.toString())))
             .andExpect(jsonPath("$.[*].weightInKG").value(hasItem(DEFAULT_WEIGHT_IN_KG.doubleValue())))
             .andExpect(jsonPath("$.[*].heightInInch").value(hasItem(DEFAULT_HEIGHT_IN_INCH.doubleValue())))
             .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
             .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))))
             .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)))
-            .andExpect(jsonPath("$.[*].bloodGroup").value(hasItem(DEFAULT_BLOOD_GROUP.toString())))
             .andExpect(jsonPath("$.[*].activated").value(hasItem(DEFAULT_ACTIVATED.booleanValue())));
     }
 

@@ -60,8 +60,8 @@ public class ProfessionalDegreeResourceIntTest {
     private static final String DEFAULT_INSTITUTE = "AAAAAAAAAA";
     private static final String UPDATED_INSTITUTE = "BBBBBBBBBB";
 
-    private static final Integer DEFAULT_PASSING_YEAR = 2014;
-    private static final Integer UPDATED_PASSING_YEAR = 2018;
+    private static final Integer DEFAULT_PASSING_YEAR = 1;
+    private static final Integer UPDATED_PASSING_YEAR = 2;
 
     @Autowired
     private ProfessionalDegreeRepository professionalDegreeRepository;
@@ -389,8 +389,8 @@ public class ProfessionalDegreeResourceIntTest {
         // Check, that the count call also returns 1
         restProfessionalDegreeMockMvc.perform(get("/api/professional-degrees/count?sort=id,desc&" + filter))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
-//            .andExpect(content().string("1")); // In case of preloaded data this test causing problem
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
     }
 
     /**

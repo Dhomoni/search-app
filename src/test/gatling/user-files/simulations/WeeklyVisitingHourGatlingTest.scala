@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory
 import scala.concurrent.duration._
 
 /**
- * Performance test for the WeeklyVisitingHours entity.
+ * Performance test for the WeeklyVisitingHour entity.
  */
-class WeeklyVisitingHoursGatlingTest extends Simulation {
+class WeeklyVisitingHourGatlingTest extends Simulation {
 
     val context: LoggerContext = LoggerFactory.getILoggerFactory.asInstanceOf[LoggerContext]
     // Log all HTTP requests
@@ -49,7 +49,7 @@ class WeeklyVisitingHoursGatlingTest extends Simulation {
         "Authorization" -> "Bearer ${access_token}"
     )
 
-    val scn = scenario("Test the WeeklyVisitingHours entity")
+    val scn = scenario("Test the WeeklyVisitingHour entity")
         .exec(http("First unauthenticated request")
         .get("/api/account")
         .headers(headers_http)
@@ -79,7 +79,7 @@ class WeeklyVisitingHoursGatlingTest extends Simulation {
             .headers(headers_http_authenticated)
             .check(status.is(200)))
             .pause(10 seconds, 20 seconds)
-            .exec(http("Create new weeklyVisitingHours")
+            .exec(http("Create new weeklyVisitingHour")
             .post("/search/api/weekly-visiting-hours")
             .headers(headers_http_authenticated)
             .body(StringBody("""{
@@ -91,16 +91,16 @@ class WeeklyVisitingHoursGatlingTest extends Simulation {
                 , "endMinute":"0"
                 }""")).asJSON
             .check(status.is(201))
-            .check(headerRegex("Location", "(.*)").saveAs("new_weeklyVisitingHours_url"))).exitHereIfFailed
+            .check(headerRegex("Location", "(.*)").saveAs("new_weeklyVisitingHour_url"))).exitHereIfFailed
             .pause(10)
             .repeat(5) {
-                exec(http("Get created weeklyVisitingHours")
-                .get("/search${new_weeklyVisitingHours_url}")
+                exec(http("Get created weeklyVisitingHour")
+                .get("/search${new_weeklyVisitingHour_url}")
                 .headers(headers_http_authenticated))
                 .pause(10)
             }
-            .exec(http("Delete created weeklyVisitingHours")
-            .delete("/search${new_weeklyVisitingHours_url}")
+            .exec(http("Delete created weeklyVisitingHour")
+            .delete("/search${new_weeklyVisitingHour_url}")
             .headers(headers_http_authenticated))
             .pause(10)
         }

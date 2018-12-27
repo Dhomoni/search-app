@@ -6,7 +6,7 @@
     <!--
         Added the constraints for entity Doctor.
     -->
-    <changeSet id="20181226102644-2" author="jhipster">
+    <changeSet id="20181227124017-2" author="jhipster">
         
         <addForeignKeyConstraint baseColumnNames="medical_department_id"
                                  baseTableName="doctor"

@@ -93,23 +93,29 @@ public class PatientQueryService extends QueryService<Patient> {
             if (criteria.getId() != null) {
                 specification = specification.and(buildSpecification(criteria.getId(), Patient_.id));
             }
+            if (criteria.getRegistrationId() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getRegistrationId(), Patient_.registrationId));
+            }
             if (criteria.getFirstName() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getFirstName(), Patient_.firstName));
             }
             if (criteria.getLastName() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getLastName(), Patient_.lastName));
             }
-            if (criteria.getPhone() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getPhone(), Patient_.phone));
-            }
             if (criteria.getEmail() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getEmail(), Patient_.email));
+            }
+            if (criteria.getPhone() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getPhone(), Patient_.phone));
             }
             if (criteria.getSex() != null) {
                 specification = specification.and(buildSpecification(criteria.getSex(), Patient_.sex));
             }
-            if (criteria.getBirthDate() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getBirthDate(), Patient_.birthDate));
+            if (criteria.getBirthTimestamp() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getBirthTimestamp(), Patient_.birthTimestamp));
+            }
+            if (criteria.getBloodGroup() != null) {
+                specification = specification.and(buildSpecification(criteria.getBloodGroup(), Patient_.bloodGroup));
             }
             if (criteria.getWeightInKG() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getWeightInKG(), Patient_.weightInKG));
@@ -119,9 +125,6 @@ public class PatientQueryService extends QueryService<Patient> {
             }
             if (criteria.getAddress() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getAddress(), Patient_.address));
-            }
-            if (criteria.getBloodGroup() != null) {
-                specification = specification.and(buildSpecification(criteria.getBloodGroup(), Patient_.bloodGroup));
             }
             if (criteria.getActivated() != null) {
                 specification = specification.and(buildSpecification(criteria.getActivated(), Patient_.activated));

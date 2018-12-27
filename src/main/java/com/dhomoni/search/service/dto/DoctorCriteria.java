@@ -30,19 +30,27 @@ public class DoctorCriteria implements Serializable {
 
     private LongFilter id;
 
-    private StringFilter licenceNumber;
+    private LongFilter registrationId;
 
     private StringFilter firstName;
 
     private StringFilter lastName;
 
+    private StringFilter email;
+
     private StringFilter phone;
 
-    private StringFilter email;
+    private StringFilter licenceNumber;
+
+    private StringFilter nationalId;
+
+    private StringFilter passportNo;
 
     private DoctorTypeFilter type;
 
     private StringFilter designation;
+
+    private StringFilter address;
 
     private BooleanFilter activated;
 
@@ -60,12 +68,12 @@ public class DoctorCriteria implements Serializable {
         this.id = id;
     }
 
-    public StringFilter getLicenceNumber() {
-        return licenceNumber;
+    public LongFilter getRegistrationId() {
+        return registrationId;
     }
 
-    public void setLicenceNumber(StringFilter licenceNumber) {
-        this.licenceNumber = licenceNumber;
+    public void setRegistrationId(LongFilter registrationId) {
+        this.registrationId = registrationId;
     }
 
     public StringFilter getFirstName() {
@@ -84,6 +92,14 @@ public class DoctorCriteria implements Serializable {
         this.lastName = lastName;
     }
 
+    public StringFilter getEmail() {
+        return email;
+    }
+
+    public void setEmail(StringFilter email) {
+        this.email = email;
+    }
+
     public StringFilter getPhone() {
         return phone;
     }
@@ -92,12 +108,28 @@ public class DoctorCriteria implements Serializable {
         this.phone = phone;
     }
 
-    public StringFilter getEmail() {
-        return email;
+    public StringFilter getLicenceNumber() {
+        return licenceNumber;
     }
 
-    public void setEmail(StringFilter email) {
-        this.email = email;
+    public void setLicenceNumber(StringFilter licenceNumber) {
+        this.licenceNumber = licenceNumber;
+    }
+
+    public StringFilter getNationalId() {
+        return nationalId;
+    }
+
+    public void setNationalId(StringFilter nationalId) {
+        this.nationalId = nationalId;
+    }
+
+    public StringFilter getPassportNo() {
+        return passportNo;
+    }
+
+    public void setPassportNo(StringFilter passportNo) {
+        this.passportNo = passportNo;
     }
 
     public DoctorTypeFilter getType() {
@@ -114,6 +146,14 @@ public class DoctorCriteria implements Serializable {
 
     public void setDesignation(StringFilter designation) {
         this.designation = designation;
+    }
+
+    public StringFilter getAddress() {
+        return address;
+    }
+
+    public void setAddress(StringFilter address) {
+        this.address = address;
     }
 
     public BooleanFilter getActivated() {
@@ -160,13 +200,17 @@ public class DoctorCriteria implements Serializable {
         final DoctorCriteria that = (DoctorCriteria) o;
         return
             Objects.equals(id, that.id) &&
-            Objects.equals(licenceNumber, that.licenceNumber) &&
+            Objects.equals(registrationId, that.registrationId) &&
             Objects.equals(firstName, that.firstName) &&
             Objects.equals(lastName, that.lastName) &&
-            Objects.equals(phone, that.phone) &&
             Objects.equals(email, that.email) &&
+            Objects.equals(phone, that.phone) &&
+            Objects.equals(licenceNumber, that.licenceNumber) &&
+            Objects.equals(nationalId, that.nationalId) &&
+            Objects.equals(passportNo, that.passportNo) &&
             Objects.equals(type, that.type) &&
             Objects.equals(designation, that.designation) &&
+            Objects.equals(address, that.address) &&
             Objects.equals(activated, that.activated) &&
             Objects.equals(medicalDepartmentId, that.medicalDepartmentId) &&
             Objects.equals(chambersId, that.chambersId) &&
@@ -177,13 +221,17 @@ public class DoctorCriteria implements Serializable {
     public int hashCode() {
         return Objects.hash(
         id,
-        licenceNumber,
+        registrationId,
         firstName,
         lastName,
-        phone,
         email,
+        phone,
+        licenceNumber,
+        nationalId,
+        passportNo,
         type,
         designation,
+        address,
         activated,
         medicalDepartmentId,
         chambersId,
@@ -195,13 +243,17 @@ public class DoctorCriteria implements Serializable {
     public String toString() {
         return "DoctorCriteria{" +
                 (id != null ? "id=" + id + ", " : "") +
-                (licenceNumber != null ? "licenceNumber=" + licenceNumber + ", " : "") +
+                (registrationId != null ? "registrationId=" + registrationId + ", " : "") +
                 (firstName != null ? "firstName=" + firstName + ", " : "") +
                 (lastName != null ? "lastName=" + lastName + ", " : "") +
-                (phone != null ? "phone=" + phone + ", " : "") +
                 (email != null ? "email=" + email + ", " : "") +
+                (phone != null ? "phone=" + phone + ", " : "") +
+                (licenceNumber != null ? "licenceNumber=" + licenceNumber + ", " : "") +
+                (nationalId != null ? "nationalId=" + nationalId + ", " : "") +
+                (passportNo != null ? "passportNo=" + passportNo + ", " : "") +
                 (type != null ? "type=" + type + ", " : "") +
                 (designation != null ? "designation=" + designation + ", " : "") +
+                (address != null ? "address=" + address + ", " : "") +
                 (activated != null ? "activated=" + activated + ", " : "") +
                 (medicalDepartmentId != null ? "medicalDepartmentId=" + medicalDepartmentId + ", " : "") +
                 (chambersId != null ? "chambersId=" + chambersId + ", " : "") +

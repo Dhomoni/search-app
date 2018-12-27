@@ -1,6 +1,7 @@
 package com.dhomoni.search.service.dto;
 
 import java.time.Instant;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Lob;
@@ -14,17 +15,22 @@ public class PatientDTO implements Serializable {
 
     private Long id;
 
+    
+    private Long registrationId;
+
     private String firstName;
 
     private String lastName;
 
-    private String phone;
-
     private String email;
+
+    private String phone;
 
     private Sex sex;
 
-    private Instant birthDate;
+    private Instant birthTimestamp;
+
+    private BloodGroup bloodGroup;
 
     private Double weightInKG;
 
@@ -36,8 +42,6 @@ public class PatientDTO implements Serializable {
 
     private String address;
 
-    private BloodGroup bloodGroup;
-
     private Boolean activated;
 
     public Long getId() {
@@ -46,6 +50,14 @@ public class PatientDTO implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getRegistrationId() {
+        return registrationId;
+    }
+
+    public void setRegistrationId(Long registrationId) {
+        this.registrationId = registrationId;
     }
 
     public String getFirstName() {
@@ -64,20 +76,20 @@ public class PatientDTO implements Serializable {
         this.lastName = lastName;
     }
 
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public Sex getSex() {
@@ -88,12 +100,20 @@ public class PatientDTO implements Serializable {
         this.sex = sex;
     }
 
-    public Instant getBirthDate() {
-        return birthDate;
+    public Instant getBirthTimestamp() {
+        return birthTimestamp;
     }
 
-    public void setBirthDate(Instant birthDate) {
-        this.birthDate = birthDate;
+    public void setBirthTimestamp(Instant birthTimestamp) {
+        this.birthTimestamp = birthTimestamp;
+    }
+
+    public BloodGroup getBloodGroup() {
+        return bloodGroup;
+    }
+
+    public void setBloodGroup(BloodGroup bloodGroup) {
+        this.bloodGroup = bloodGroup;
     }
 
     public Double getWeightInKG() {
@@ -136,14 +156,6 @@ public class PatientDTO implements Serializable {
         this.address = address;
     }
 
-    public BloodGroup getBloodGroup() {
-        return bloodGroup;
-    }
-
-    public void setBloodGroup(BloodGroup bloodGroup) {
-        this.bloodGroup = bloodGroup;
-    }
-
     public Boolean isActivated() {
         return activated;
     }
@@ -177,17 +189,18 @@ public class PatientDTO implements Serializable {
     public String toString() {
         return "PatientDTO{" +
             "id=" + getId() +
+            ", registrationId=" + getRegistrationId() +
             ", firstName='" + getFirstName() + "'" +
             ", lastName='" + getLastName() + "'" +
-            ", phone='" + getPhone() + "'" +
             ", email='" + getEmail() + "'" +
+            ", phone='" + getPhone() + "'" +
             ", sex='" + getSex() + "'" +
-            ", birthDate='" + getBirthDate() + "'" +
+            ", birthTimestamp='" + getBirthTimestamp() + "'" +
+            ", bloodGroup='" + getBloodGroup() + "'" +
             ", weightInKG=" + getWeightInKG() +
             ", heightInInch=" + getHeightInInch() +
             ", image='" + getImage() + "'" +
             ", address='" + getAddress() + "'" +
-            ", bloodGroup='" + getBloodGroup() + "'" +
             ", activated='" + isActivated() + "'" +
             "}";
     }

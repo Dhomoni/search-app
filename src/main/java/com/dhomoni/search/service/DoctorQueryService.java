@@ -93,8 +93,8 @@ public class DoctorQueryService extends QueryService<Doctor> {
             if (criteria.getId() != null) {
                 specification = specification.and(buildSpecification(criteria.getId(), Doctor_.id));
             }
-            if (criteria.getLicenceNumber() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getLicenceNumber(), Doctor_.licenceNumber));
+            if (criteria.getRegistrationId() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getRegistrationId(), Doctor_.registrationId));
             }
             if (criteria.getFirstName() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getFirstName(), Doctor_.firstName));
@@ -102,17 +102,29 @@ public class DoctorQueryService extends QueryService<Doctor> {
             if (criteria.getLastName() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getLastName(), Doctor_.lastName));
             }
+            if (criteria.getEmail() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getEmail(), Doctor_.email));
+            }
             if (criteria.getPhone() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getPhone(), Doctor_.phone));
             }
-            if (criteria.getEmail() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getEmail(), Doctor_.email));
+            if (criteria.getLicenceNumber() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getLicenceNumber(), Doctor_.licenceNumber));
+            }
+            if (criteria.getNationalId() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getNationalId(), Doctor_.nationalId));
+            }
+            if (criteria.getPassportNo() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getPassportNo(), Doctor_.passportNo));
             }
             if (criteria.getType() != null) {
                 specification = specification.and(buildSpecification(criteria.getType(), Doctor_.type));
             }
             if (criteria.getDesignation() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getDesignation(), Doctor_.designation));
+            }
+            if (criteria.getAddress() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getAddress(), Doctor_.address));
             }
             if (criteria.getActivated() != null) {
                 specification = specification.and(buildSpecification(criteria.getActivated(), Doctor_.activated));

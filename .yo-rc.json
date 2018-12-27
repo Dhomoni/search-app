@@ -40,7 +40,7 @@
     "MedicalDepartment",
     "Disease",
     "Chamber",
-    "WeeklyVisitingHours",
+    "WeeklyVisitingHour",
     "ProfessionalDegree",
     "Patient",
     "Medicine"

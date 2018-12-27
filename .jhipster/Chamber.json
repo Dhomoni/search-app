@@ -24,19 +24,20 @@
         {
             "relationshipType": "one-to-many",
             "relationshipName": "weeklyVisitingHours",
-            "otherEntityName": "weeklyVisitingHours",
+            "otherEntityName": "weeklyVisitingHour",
             "otherEntityRelationshipName": "chamber"
         }
     ],
-    "changelogDate": "20181226102647",
+    "changelogDate": "20181227124020",
     "entityTableName": "chamber",
     "dto": "mapstruct",
     "pagination": "infinite-scroll",
     "service": "serviceClass",
     "jpaMetamodelFiltering": true,
     "fluentMethods": true,
-    "clientRootFolder": "",
+    "clientRootFolder": "search",
     "applications": [
         "search"
-    ]
+    ],
+    "microserviceName": "search"
 }

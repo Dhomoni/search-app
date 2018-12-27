@@ -4,15 +4,15 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
     <!--
-        Added the constraints for entity Chamber.
+        Added the constraints for entity WeeklyVisitingHour.
     -->
-    <changeSet id="20181226102647-2" author="jhipster">
+    <changeSet id="20181227124021-2" author="jhipster">
         
-        <addForeignKeyConstraint baseColumnNames="doctor_id"
-                                 baseTableName="chamber"
-                                 constraintName="fk_chamber_doctor_id"
+        <addForeignKeyConstraint baseColumnNames="chamber_id"
+                                 baseTableName="weekly_visiting_hour"
+                                 constraintName="fk_weekly_visiting_hour_chamber_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="doctor"/>
+                                 referencedTableName="chamber"/>
 
     </changeSet>
 </databaseChangeLog>

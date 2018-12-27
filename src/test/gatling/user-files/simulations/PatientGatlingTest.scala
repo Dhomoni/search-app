@@ -84,17 +84,18 @@ class PatientGatlingTest extends Simulation {
             .headers(headers_http_authenticated)
             .body(StringBody("""{
                 "id":null
+                , "registrationId":null
                 , "firstName":"SAMPLE_TEXT"
                 , "lastName":"SAMPLE_TEXT"
-                , "phone":"SAMPLE_TEXT"
                 , "email":"SAMPLE_TEXT"
+                , "phone":"SAMPLE_TEXT"
                 , "sex":"MALE"
-                , "birthDate":"2020-01-01T00:00:00.000Z"
+                , "birthTimestamp":"2020-01-01T00:00:00.000Z"
+                , "bloodGroup":"A_POSITIVE"
                 , "weightInKG":null
                 , "heightInInch":null
                 , "image":null
                 , "address":"SAMPLE_TEXT"
-                , "bloodGroup":"A_POSITIVE"
                 , "activated":null
                 }""")).asJSON
             .check(status.is(201))

@@ -84,14 +84,18 @@ class DoctorGatlingTest extends Simulation {
             .headers(headers_http_authenticated)
             .body(StringBody("""{
                 "id":null
-                , "licenceNumber":"SAMPLE_TEXT"
+                , "registrationId":null
                 , "firstName":"SAMPLE_TEXT"
                 , "lastName":"SAMPLE_TEXT"
-                , "phone":"SAMPLE_TEXT"
                 , "email":"SAMPLE_TEXT"
+                , "phone":"SAMPLE_TEXT"
+                , "licenceNumber":"SAMPLE_TEXT"
+                , "nationalId":"SAMPLE_TEXT"
+                , "passportNo":"SAMPLE_TEXT"
                 , "type":"PHYSICIAN"
                 , "designation":"SAMPLE_TEXT"
                 , "description":null
+                , "address":"SAMPLE_TEXT"
                 , "image":null
                 , "activated":null
                 }""")).asJSON

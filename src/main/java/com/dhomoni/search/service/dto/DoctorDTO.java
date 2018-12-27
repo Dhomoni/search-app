@@ -13,16 +13,23 @@ public class DoctorDTO implements Serializable {
 
     private Long id;
 
-    @NotNull
-    private String licenceNumber;
+    
+    private Long registrationId;
 
     private String firstName;
 
     private String lastName;
 
+    private String email;
+
     private String phone;
 
-    private String email;
+    @NotNull
+    private String licenceNumber;
+
+    private String nationalId;
+
+    private String passportNo;
 
     private DoctorType type;
 
@@ -30,6 +37,8 @@ public class DoctorDTO implements Serializable {
 
     @Lob
     private String description;
+
+    private String address;
 
     @Lob
     private byte[] image;
@@ -47,12 +56,12 @@ public class DoctorDTO implements Serializable {
         this.id = id;
     }
 
-    public String getLicenceNumber() {
-        return licenceNumber;
+    public Long getRegistrationId() {
+        return registrationId;
     }
 
-    public void setLicenceNumber(String licenceNumber) {
-        this.licenceNumber = licenceNumber;
+    public void setRegistrationId(Long registrationId) {
+        this.registrationId = registrationId;
     }
 
     public String getFirstName() {
@@ -71,6 +80,14 @@ public class DoctorDTO implements Serializable {
         this.lastName = lastName;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getPhone() {
         return phone;
     }
@@ -79,12 +96,28 @@ public class DoctorDTO implements Serializable {
         this.phone = phone;
     }
 
-    public String getEmail() {
-        return email;
+    public String getLicenceNumber() {
+        return licenceNumber;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setLicenceNumber(String licenceNumber) {
+        this.licenceNumber = licenceNumber;
+    }
+
+    public String getNationalId() {
+        return nationalId;
+    }
+
+    public void setNationalId(String nationalId) {
+        this.nationalId = nationalId;
+    }
+
+    public String getPassportNo() {
+        return passportNo;
+    }
+
+    public void setPassportNo(String passportNo) {
+        this.passportNo = passportNo;
     }
 
     public DoctorType getType() {
@@ -109,6 +142,14 @@ public class DoctorDTO implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public byte[] getImage() {
@@ -168,14 +209,18 @@ public class DoctorDTO implements Serializable {
     public String toString() {
         return "DoctorDTO{" +
             "id=" + getId() +
-            ", licenceNumber='" + getLicenceNumber() + "'" +
+            ", registrationId=" + getRegistrationId() +
             ", firstName='" + getFirstName() + "'" +
             ", lastName='" + getLastName() + "'" +
-            ", phone='" + getPhone() + "'" +
             ", email='" + getEmail() + "'" +
+            ", phone='" + getPhone() + "'" +
+            ", licenceNumber='" + getLicenceNumber() + "'" +
+            ", nationalId='" + getNationalId() + "'" +
+            ", passportNo='" + getPassportNo() + "'" +
             ", type='" + getType() + "'" +
             ", designation='" + getDesignation() + "'" +
             ", description='" + getDescription() + "'" +
+            ", address='" + getAddress() + "'" +
             ", image='" + getImage() + "'" +
             ", activated='" + isActivated() + "'" +
             ", medicalDepartment=" + getMedicalDepartmentId() +

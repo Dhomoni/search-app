@@ -6,7 +6,7 @@
     <!--
         Added the constraints for entity ProfessionalDegree.
     -->
-    <changeSet id="20181226102649-2" author="jhipster">
+    <changeSet id="20181227124022-2" author="jhipster">
         
         <addForeignKeyConstraint baseColumnNames="doctor_id"
                                  baseTableName="professional_degree"

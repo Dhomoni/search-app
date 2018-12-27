@@ -108,7 +108,7 @@ public class ChamberQueryService extends QueryService<Chamber> {
             }
             if (criteria.getWeeklyVisitingHoursId() != null) {
                 specification = specification.and(buildSpecification(criteria.getWeeklyVisitingHoursId(),
-                    root -> root.join(Chamber_.weeklyVisitingHours, JoinType.LEFT).get(WeeklyVisitingHours_.id)));
+                    root -> root.join(Chamber_.weeklyVisitingHours, JoinType.LEFT).get(WeeklyVisitingHour_.id)));
             }
         }
         return specification;

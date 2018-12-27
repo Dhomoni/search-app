@@ -37,25 +37,27 @@ public class PatientCriteria implements Serializable {
 
     private LongFilter id;
 
+    private LongFilter registrationId;
+
     private StringFilter firstName;
 
     private StringFilter lastName;
 
-    private StringFilter phone;
-
     private StringFilter email;
+
+    private StringFilter phone;
 
     private SexFilter sex;
 
-    private InstantFilter birthDate;
+    private InstantFilter birthTimestamp;
+
+    private BloodGroupFilter bloodGroup;
 
     private DoubleFilter weightInKG;
 
     private DoubleFilter heightInInch;
 
     private StringFilter address;
-
-    private BloodGroupFilter bloodGroup;
 
     private BooleanFilter activated;
 
@@ -65,6 +67,14 @@ public class PatientCriteria implements Serializable {
 
     public void setId(LongFilter id) {
         this.id = id;
+    }
+
+    public LongFilter getRegistrationId() {
+        return registrationId;
+    }
+
+    public void setRegistrationId(LongFilter registrationId) {
+        this.registrationId = registrationId;
     }
 
     public StringFilter getFirstName() {
@@ -83,20 +93,20 @@ public class PatientCriteria implements Serializable {
         this.lastName = lastName;
     }
 
-    public StringFilter getPhone() {
-        return phone;
-    }
-
-    public void setPhone(StringFilter phone) {
-        this.phone = phone;
-    }
-
     public StringFilter getEmail() {
         return email;
     }
 
     public void setEmail(StringFilter email) {
         this.email = email;
+    }
+
+    public StringFilter getPhone() {
+        return phone;
+    }
+
+    public void setPhone(StringFilter phone) {
+        this.phone = phone;
     }
 
     public SexFilter getSex() {
@@ -107,12 +117,20 @@ public class PatientCriteria implements Serializable {
         this.sex = sex;
     }
 
-    public InstantFilter getBirthDate() {
-        return birthDate;
+    public InstantFilter getBirthTimestamp() {
+        return birthTimestamp;
     }
 
-    public void setBirthDate(InstantFilter birthDate) {
-        this.birthDate = birthDate;
+    public void setBirthTimestamp(InstantFilter birthTimestamp) {
+        this.birthTimestamp = birthTimestamp;
+    }
+
+    public BloodGroupFilter getBloodGroup() {
+        return bloodGroup;
+    }
+
+    public void setBloodGroup(BloodGroupFilter bloodGroup) {
+        this.bloodGroup = bloodGroup;
     }
 
     public DoubleFilter getWeightInKG() {
@@ -139,14 +157,6 @@ public class PatientCriteria implements Serializable {
         this.address = address;
     }
 
-    public BloodGroupFilter getBloodGroup() {
-        return bloodGroup;
-    }
-
-    public void setBloodGroup(BloodGroupFilter bloodGroup) {
-        this.bloodGroup = bloodGroup;
-    }
-
     public BooleanFilter getActivated() {
         return activated;
     }
@@ -167,16 +177,17 @@ public class PatientCriteria implements Serializable {
         final PatientCriteria that = (PatientCriteria) o;
         return
             Objects.equals(id, that.id) &&
+            Objects.equals(registrationId, that.registrationId) &&
             Objects.equals(firstName, that.firstName) &&
             Objects.equals(lastName, that.lastName) &&
-            Objects.equals(phone, that.phone) &&
             Objects.equals(email, that.email) &&
+            Objects.equals(phone, that.phone) &&
             Objects.equals(sex, that.sex) &&
-            Objects.equals(birthDate, that.birthDate) &&
+            Objects.equals(birthTimestamp, that.birthTimestamp) &&
+            Objects.equals(bloodGroup, that.bloodGroup) &&
             Objects.equals(weightInKG, that.weightInKG) &&
             Objects.equals(heightInInch, that.heightInInch) &&
             Objects.equals(address, that.address) &&
-            Objects.equals(bloodGroup, that.bloodGroup) &&
             Objects.equals(activated, that.activated);
     }
 
@@ -184,16 +195,17 @@ public class PatientCriteria implements Serializable {
     public int hashCode() {
         return Objects.hash(
         id,
+        registrationId,
         firstName,
         lastName,
-        phone,
         email,
+        phone,
         sex,
-        birthDate,
+        birthTimestamp,
+        bloodGroup,
         weightInKG,
         heightInInch,
         address,
-        bloodGroup,
         activated
         );
     }
@@ -202,16 +214,17 @@ public class PatientCriteria implements Serializable {
     public String toString() {
         return "PatientCriteria{" +
                 (id != null ? "id=" + id + ", " : "") +
+                (registrationId != null ? "registrationId=" + registrationId + ", " : "") +
                 (firstName != null ? "firstName=" + firstName + ", " : "") +
                 (lastName != null ? "lastName=" + lastName + ", " : "") +
-                (phone != null ? "phone=" + phone + ", " : "") +
                 (email != null ? "email=" + email + ", " : "") +
+                (phone != null ? "phone=" + phone + ", " : "") +
                 (sex != null ? "sex=" + sex + ", " : "") +
-                (birthDate != null ? "birthDate=" + birthDate + ", " : "") +
+                (birthTimestamp != null ? "birthTimestamp=" + birthTimestamp + ", " : "") +
+                (bloodGroup != null ? "bloodGroup=" + bloodGroup + ", " : "") +
                 (weightInKG != null ? "weightInKG=" + weightInKG + ", " : "") +
                 (heightInInch != null ? "heightInInch=" + heightInInch + ", " : "") +
                 (address != null ? "address=" + address + ", " : "") +
-                (bloodGroup != null ? "bloodGroup=" + bloodGroup + ", " : "") +
                 (activated != null ? "activated=" + activated + ", " : "") +
             "}";
     }

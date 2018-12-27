@@ -14,13 +14,13 @@ import java.util.Objects;
 import com.dhomoni.search.domain.enumeration.WeekDay;
 
 /**
- * A WeeklyVisitingHours.
+ * A WeeklyVisitingHour.
  */
 @Entity
-@Table(name = "weekly_visiting_hours")
+@Table(name = "weekly_visiting_hour")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "weeklyvisitinghours")
-public class WeeklyVisitingHours implements Serializable {
+@Document(indexName = "weeklyvisitinghour")
+public class WeeklyVisitingHour implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -70,7 +70,7 @@ public class WeeklyVisitingHours implements Serializable {
         return weekDay;
     }
 
-    public WeeklyVisitingHours weekDay(WeekDay weekDay) {
+    public WeeklyVisitingHour weekDay(WeekDay weekDay) {
         this.weekDay = weekDay;
         return this;
     }
@@ -83,7 +83,7 @@ public class WeeklyVisitingHours implements Serializable {
         return startHour;
     }
 
-    public WeeklyVisitingHours startHour(Integer startHour) {
+    public WeeklyVisitingHour startHour(Integer startHour) {
         this.startHour = startHour;
         return this;
     }
@@ -96,7 +96,7 @@ public class WeeklyVisitingHours implements Serializable {
         return startMinute;
     }
 
-    public WeeklyVisitingHours startMinute(Integer startMinute) {
+    public WeeklyVisitingHour startMinute(Integer startMinute) {
         this.startMinute = startMinute;
         return this;
     }
@@ -109,7 +109,7 @@ public class WeeklyVisitingHours implements Serializable {
         return endHour;
     }
 
-    public WeeklyVisitingHours endHour(Integer endHour) {
+    public WeeklyVisitingHour endHour(Integer endHour) {
         this.endHour = endHour;
         return this;
     }
@@ -122,7 +122,7 @@ public class WeeklyVisitingHours implements Serializable {
         return endMinute;
     }
 
-    public WeeklyVisitingHours endMinute(Integer endMinute) {
+    public WeeklyVisitingHour endMinute(Integer endMinute) {
         this.endMinute = endMinute;
         return this;
     }
@@ -135,7 +135,7 @@ public class WeeklyVisitingHours implements Serializable {
         return chamber;
     }
 
-    public WeeklyVisitingHours chamber(Chamber chamber) {
+    public WeeklyVisitingHour chamber(Chamber chamber) {
         this.chamber = chamber;
         return this;
     }
@@ -153,11 +153,11 @@ public class WeeklyVisitingHours implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        WeeklyVisitingHours weeklyVisitingHours = (WeeklyVisitingHours) o;
-        if (weeklyVisitingHours.getId() == null || getId() == null) {
+        WeeklyVisitingHour weeklyVisitingHour = (WeeklyVisitingHour) o;
+        if (weeklyVisitingHour.getId() == null || getId() == null) {
             return false;
         }
-        return Objects.equals(getId(), weeklyVisitingHours.getId());
+        return Objects.equals(getId(), weeklyVisitingHour.getId());
     }
 
     @Override
@@ -167,7 +167,7 @@ public class WeeklyVisitingHours implements Serializable {
 
     @Override
     public String toString() {
-        return "WeeklyVisitingHours{" +
+        return "WeeklyVisitingHour{" +
             "id=" + getId() +
             ", weekDay='" + getWeekDay() + "'" +
             ", startHour=" + getStartHour() +

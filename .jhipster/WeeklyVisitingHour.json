@@ -1,5 +1,5 @@
 {
-    "name": "WeeklyVisitingHours",
+    "name": "WeeklyVisitingHour",
     "fields": [
         {
             "fieldName": "weekDay",
@@ -55,15 +55,16 @@
             "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20181226102648",
-    "entityTableName": "weekly_visiting_hours",
+    "changelogDate": "20181227124021",
+    "entityTableName": "weekly_visiting_hour",
     "dto": "mapstruct",
     "pagination": "infinite-scroll",
     "service": "serviceClass",
     "jpaMetamodelFiltering": true,
     "fluentMethods": true,
-    "clientRootFolder": "",
+    "clientRootFolder": "search",
     "applications": [
         "search"
-    ]
+    ],
+    "microserviceName": "search"
 }

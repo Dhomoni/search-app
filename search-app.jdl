@@ -4,37 +4,41 @@
  
 application {
 	config {
-  		baseName search
-  		packageName com.dhomoni.search
-    	applicationType microservice
-    	authenticationType uaa
-    	uaaBaseName "../uaa-app"
-    	databaseType sql
-    	devDatabaseType h2Disk
-    	prodDatabaseType postgresql
-    	cacheProvider hazelcast
-    	serviceDiscoveryType eureka
-    	messageBroker kafka
-    	searchEngine elasticsearch
-    	serverPort 8081
-    	testFrameworks [cucumber, gatling]
-    	clientFramework react
-    	buildTool maven
-    	languages [en, bn]
+		baseName search
+		packageName com.dhomoni.search
+		applicationType microservice
+		authenticationType uaa
+		uaaBaseName "../uaa-app"
+		databaseType sql
+		devDatabaseType h2Disk
+		prodDatabaseType postgresql
+		cacheProvider hazelcast
+		serviceDiscoveryType eureka
+		messageBroker kafka
+		searchEngine elasticsearch
+		serverPort 8081
+		testFrameworks [cucumber, gatling]
+		clientFramework react
+		buildTool maven
+		languages [en, bn]
   	}
-  	entities *
+	entities *
 }
 
 entity Doctor {
-  	id UUID required
-  	licenceNumber String required
-	firstName String
+  	registrationId Long unique
+  	firstName String
 	lastName String
-	phone String
 	email String
+  	phone String
+  	licenceNumber String required
+  	nationalId String
+  	passportNo String
 	type DoctorType
 	designation String
 	description TextBlob
+	address String
+//	location Point
 	image ImageBlob
 	activated Boolean
 }
@@ -115,18 +119,18 @@ relationship OneToMany {
 }
 
 entity Patient {
-	id UUID required
+	registrationId Long unique
 	firstName String
 	lastName String
-	phone String
 	email String
+	phone String
 	sex Sex
-    birthDate Instant
+    birthTimestamp Instant
+    bloodGroup BloodGroup
     weightInKG Double
     heightInInch Double
 	image ImageBlob
 	address String
-	bloodGroup BloodGroup
 //	location Point
 	activated Boolean
 }

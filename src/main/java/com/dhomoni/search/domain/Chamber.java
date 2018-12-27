@@ -1,26 +1,17 @@
 package com.dhomoni.search.domain;
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.vividsolutions.jts.geom.Point;
+import javax.persistence.*;
+
+import org.springframework.data.elasticsearch.annotations.Document;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Objects;
 
 /**
  * A Chamber.
@@ -47,16 +38,13 @@ public class Chamber implements Serializable {
     @Column(name = "fee")
     private Double fee;
 
-    @Column(name = "GEOM", columnDefinition = "GEOMETRY(Point, 4326)")
-    private Point location;
-    
     @ManyToOne
     @JsonIgnoreProperties("chambers")
     private Doctor doctor;
 
     @OneToMany(mappedBy = "chamber")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<WeeklyVisitingHours> weeklyVisitingHours = new HashSet<>();
+    private Set<WeeklyVisitingHour> weeklyVisitingHours = new HashSet<>();
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -118,28 +106,28 @@ public class Chamber implements Serializable {
         this.doctor = doctor;
     }
 
-    public Set<WeeklyVisitingHours> getWeeklyVisitingHours() {
+    public Set<WeeklyVisitingHour> getWeeklyVisitingHours() {
         return weeklyVisitingHours;
     }
 
-    public Chamber weeklyVisitingHours(Set<WeeklyVisitingHours> weeklyVisitingHours) {
+    public Chamber weeklyVisitingHours(Set<WeeklyVisitingHour> weeklyVisitingHours) {
         this.weeklyVisitingHours = weeklyVisitingHours;
         return this;
     }
 
-    public Chamber addWeeklyVisitingHours(WeeklyVisitingHours weeklyVisitingHours) {
-        this.weeklyVisitingHours.add(weeklyVisitingHours);
-        weeklyVisitingHours.setChamber(this);
+    public Chamber addWeeklyVisitingHours(WeeklyVisitingHour weeklyVisitingHour) {
+        this.weeklyVisitingHours.add(weeklyVisitingHour);
+        weeklyVisitingHour.setChamber(this);
         return this;
     }
 
-    public Chamber removeWeeklyVisitingHours(WeeklyVisitingHours weeklyVisitingHours) {
-        this.weeklyVisitingHours.remove(weeklyVisitingHours);
-        weeklyVisitingHours.setChamber(null);
+    public Chamber removeWeeklyVisitingHours(WeeklyVisitingHour weeklyVisitingHour) {
+        this.weeklyVisitingHours.remove(weeklyVisitingHour);
+        weeklyVisitingHour.setChamber(null);
         return this;
     }
 
-    public void setWeeklyVisitingHours(Set<WeeklyVisitingHours> weeklyVisitingHours) {
+    public void setWeeklyVisitingHours(Set<WeeklyVisitingHour> weeklyVisitingHours) {
         this.weeklyVisitingHours = weeklyVisitingHours;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove

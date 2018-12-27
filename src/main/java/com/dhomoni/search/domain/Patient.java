@@ -4,6 +4,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
 import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
@@ -30,24 +31,32 @@ public class Patient implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
+    
+    @Column(name = "registration_id", unique = true)
+    private Long registrationId;
+
     @Column(name = "first_name")
     private String firstName;
 
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "phone")
-    private String phone;
-
     @Column(name = "email")
     private String email;
+
+    @Column(name = "phone")
+    private String phone;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "sex")
     private Sex sex;
 
-    @Column(name = "birth_date")
-    private Instant birthDate;
+    @Column(name = "birth_timestamp")
+    private Instant birthTimestamp;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "blood_group")
+    private BloodGroup bloodGroup;
 
     @Column(name = "weight_in_kg")
     private Double weightInKG;
@@ -65,10 +74,6 @@ public class Patient implements Serializable {
     @Column(name = "address")
     private String address;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "blood_group")
-    private BloodGroup bloodGroup;
-
     @Column(name = "activated")
     private Boolean activated;
 
@@ -79,6 +84,19 @@ public class Patient implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getRegistrationId() {
+        return registrationId;
+    }
+
+    public Patient registrationId(Long registrationId) {
+        this.registrationId = registrationId;
+        return this;
+    }
+
+    public void setRegistrationId(Long registrationId) {
+        this.registrationId = registrationId;
     }
 
     public String getFirstName() {
@@ -107,19 +125,6 @@ public class Patient implements Serializable {
         this.lastName = lastName;
     }
 
-    public String getPhone() {
-        return phone;
-    }
-
-    public Patient phone(String phone) {
-        this.phone = phone;
-        return this;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -131,6 +136,19 @@ public class Patient implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public Patient phone(String phone) {
+        this.phone = phone;
+        return this;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public Sex getSex() {
@@ -146,17 +164,30 @@ public class Patient implements Serializable {
         this.sex = sex;
     }
 
-    public Instant getBirthDate() {
-        return birthDate;
+    public Instant getBirthTimestamp() {
+        return birthTimestamp;
     }
 
-    public Patient birthDate(Instant birthDate) {
-        this.birthDate = birthDate;
+    public Patient birthTimestamp(Instant birthTimestamp) {
+        this.birthTimestamp = birthTimestamp;
         return this;
     }
 
-    public void setBirthDate(Instant birthDate) {
-        this.birthDate = birthDate;
+    public void setBirthTimestamp(Instant birthTimestamp) {
+        this.birthTimestamp = birthTimestamp;
+    }
+
+    public BloodGroup getBloodGroup() {
+        return bloodGroup;
+    }
+
+    public Patient bloodGroup(BloodGroup bloodGroup) {
+        this.bloodGroup = bloodGroup;
+        return this;
+    }
+
+    public void setBloodGroup(BloodGroup bloodGroup) {
+        this.bloodGroup = bloodGroup;
     }
 
     public Double getWeightInKG() {
@@ -224,19 +255,6 @@ public class Patient implements Serializable {
         this.address = address;
     }
 
-    public BloodGroup getBloodGroup() {
-        return bloodGroup;
-    }
-
-    public Patient bloodGroup(BloodGroup bloodGroup) {
-        this.bloodGroup = bloodGroup;
-        return this;
-    }
-
-    public void setBloodGroup(BloodGroup bloodGroup) {
-        this.bloodGroup = bloodGroup;
-    }
-
     public Boolean isActivated() {
         return activated;
     }
@@ -275,18 +293,19 @@ public class Patient implements Serializable {
     public String toString() {
         return "Patient{" +
             "id=" + getId() +
+            ", registrationId=" + getRegistrationId() +
             ", firstName='" + getFirstName() + "'" +
             ", lastName='" + getLastName() + "'" +
-            ", phone='" + getPhone() + "'" +
             ", email='" + getEmail() + "'" +
+            ", phone='" + getPhone() + "'" +
             ", sex='" + getSex() + "'" +
-            ", birthDate='" + getBirthDate() + "'" +
+            ", birthTimestamp='" + getBirthTimestamp() + "'" +
+            ", bloodGroup='" + getBloodGroup() + "'" +
             ", weightInKG=" + getWeightInKG() +
             ", heightInInch=" + getHeightInInch() +
             ", image='" + getImage() + "'" +
             ", imageContentType='" + getImageContentType() + "'" +
             ", address='" + getAddress() + "'" +
-            ", bloodGroup='" + getBloodGroup() + "'" +
             ", activated='" + isActivated() + "'" +
             "}";
     }

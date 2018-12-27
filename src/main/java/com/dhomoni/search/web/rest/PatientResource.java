@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -56,7 +57,7 @@ public class PatientResource {
      */
     @PostMapping("/patients")
     @Timed
-    public ResponseEntity<PatientDTO> createPatient(@RequestBody PatientDTO patientDTO) throws URISyntaxException {
+    public ResponseEntity<PatientDTO> createPatient(@Valid @RequestBody PatientDTO patientDTO) throws URISyntaxException {
         log.debug("REST request to save Patient : {}", patientDTO);
         if (patientDTO.getId() != null) {
             throw new BadRequestAlertException("A new patient cannot already have an ID", ENTITY_NAME, "idexists");
@@ -78,7 +79,7 @@ public class PatientResource {
      */
     @PutMapping("/patients")
     @Timed
-    public ResponseEntity<PatientDTO> updatePatient(@RequestBody PatientDTO patientDTO) throws URISyntaxException {
+    public ResponseEntity<PatientDTO> updatePatient(@Valid @RequestBody PatientDTO patientDTO) throws URISyntaxException {
         log.debug("REST request to update Patient : {}", patientDTO);
         if (patientDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");

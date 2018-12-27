@@ -58,8 +58,8 @@ import com.dhomoni.search.domain.enumeration.DoctorType;
 @SpringBootTest(classes = {SecurityBeanOverrideConfiguration.class, SearchApp.class})
 public class DoctorResourceIntTest {
 
-    private static final String DEFAULT_LICENCE_NUMBER = "AAAAAAAAAA";
-    private static final String UPDATED_LICENCE_NUMBER = "BBBBBBBBBB";
+    private static final Long DEFAULT_REGISTRATION_ID = 1L;
+    private static final Long UPDATED_REGISTRATION_ID = 2L;
 
     private static final String DEFAULT_FIRST_NAME = "AAAAAAAAAA";
     private static final String UPDATED_FIRST_NAME = "BBBBBBBBBB";
@@ -67,11 +67,20 @@ public class DoctorResourceIntTest {
     private static final String DEFAULT_LAST_NAME = "AAAAAAAAAA";
     private static final String UPDATED_LAST_NAME = "BBBBBBBBBB";
 
+    private static final String DEFAULT_EMAIL = "AAAAAAAAAA";
+    private static final String UPDATED_EMAIL = "BBBBBBBBBB";
+
     private static final String DEFAULT_PHONE = "AAAAAAAAAA";
     private static final String UPDATED_PHONE = "BBBBBBBBBB";
 
-    private static final String DEFAULT_EMAIL = "AAAAAAAAAA";
-    private static final String UPDATED_EMAIL = "BBBBBBBBBB";
+    private static final String DEFAULT_LICENCE_NUMBER = "AAAAAAAAAA";
+    private static final String UPDATED_LICENCE_NUMBER = "BBBBBBBBBB";
+
+    private static final String DEFAULT_NATIONAL_ID = "AAAAAAAAAA";
+    private static final String UPDATED_NATIONAL_ID = "BBBBBBBBBB";
+
+    private static final String DEFAULT_PASSPORT_NO = "AAAAAAAAAA";
+    private static final String UPDATED_PASSPORT_NO = "BBBBBBBBBB";
 
     private static final DoctorType DEFAULT_TYPE = DoctorType.PHYSICIAN;
     private static final DoctorType UPDATED_TYPE = DoctorType.SURGEON;
@@ -81,6 +90,9 @@ public class DoctorResourceIntTest {
 
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
+
+    private static final String DEFAULT_ADDRESS = "AAAAAAAAAA";
+    private static final String UPDATED_ADDRESS = "BBBBBBBBBB";
 
     private static final byte[] DEFAULT_IMAGE = TestUtil.createByteArray(1, "0");
     private static final byte[] UPDATED_IMAGE = TestUtil.createByteArray(1, "1");
@@ -149,14 +161,18 @@ public class DoctorResourceIntTest {
      */
     public static Doctor createEntity(EntityManager em) {
         Doctor doctor = new Doctor()
-            .licenceNumber(DEFAULT_LICENCE_NUMBER)
+            .registrationId(DEFAULT_REGISTRATION_ID)
             .firstName(DEFAULT_FIRST_NAME)
             .lastName(DEFAULT_LAST_NAME)
-            .phone(DEFAULT_PHONE)
             .email(DEFAULT_EMAIL)
+            .phone(DEFAULT_PHONE)
+            .licenceNumber(DEFAULT_LICENCE_NUMBER)
+            .nationalId(DEFAULT_NATIONAL_ID)
+            .passportNo(DEFAULT_PASSPORT_NO)
             .type(DEFAULT_TYPE)
             .designation(DEFAULT_DESIGNATION)
             .description(DEFAULT_DESCRIPTION)
+            .address(DEFAULT_ADDRESS)
             .image(DEFAULT_IMAGE)
             .imageContentType(DEFAULT_IMAGE_CONTENT_TYPE)
             .activated(DEFAULT_ACTIVATED);
@@ -184,14 +200,18 @@ public class DoctorResourceIntTest {
         List<Doctor> doctorList = doctorRepository.findAll();
         assertThat(doctorList).hasSize(databaseSizeBeforeCreate + 1);
         Doctor testDoctor = doctorList.get(doctorList.size() - 1);
-        assertThat(testDoctor.getLicenceNumber()).isEqualTo(DEFAULT_LICENCE_NUMBER);
+        assertThat(testDoctor.getRegistrationId()).isEqualTo(DEFAULT_REGISTRATION_ID);
         assertThat(testDoctor.getFirstName()).isEqualTo(DEFAULT_FIRST_NAME);
         assertThat(testDoctor.getLastName()).isEqualTo(DEFAULT_LAST_NAME);
-        assertThat(testDoctor.getPhone()).isEqualTo(DEFAULT_PHONE);
         assertThat(testDoctor.getEmail()).isEqualTo(DEFAULT_EMAIL);
+        assertThat(testDoctor.getPhone()).isEqualTo(DEFAULT_PHONE);
+        assertThat(testDoctor.getLicenceNumber()).isEqualTo(DEFAULT_LICENCE_NUMBER);
+        assertThat(testDoctor.getNationalId()).isEqualTo(DEFAULT_NATIONAL_ID);
+        assertThat(testDoctor.getPassportNo()).isEqualTo(DEFAULT_PASSPORT_NO);
         assertThat(testDoctor.getType()).isEqualTo(DEFAULT_TYPE);
         assertThat(testDoctor.getDesignation()).isEqualTo(DEFAULT_DESIGNATION);
         assertThat(testDoctor.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+        assertThat(testDoctor.getAddress()).isEqualTo(DEFAULT_ADDRESS);
         assertThat(testDoctor.getImage()).isEqualTo(DEFAULT_IMAGE);
         assertThat(testDoctor.getImageContentType()).isEqualTo(DEFAULT_IMAGE_CONTENT_TYPE);
         assertThat(testDoctor.isActivated()).isEqualTo(DEFAULT_ACTIVATED);
@@ -253,14 +273,18 @@ public class DoctorResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(doctor.getId().intValue())))
-            .andExpect(jsonPath("$.[*].licenceNumber").value(hasItem(DEFAULT_LICENCE_NUMBER.toString())))
+            .andExpect(jsonPath("$.[*].registrationId").value(hasItem(DEFAULT_REGISTRATION_ID.intValue())))
             .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRST_NAME.toString())))
             .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME.toString())))
-            .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE.toString())))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL.toString())))
+            .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE.toString())))
+            .andExpect(jsonPath("$.[*].licenceNumber").value(hasItem(DEFAULT_LICENCE_NUMBER.toString())))
+            .andExpect(jsonPath("$.[*].nationalId").value(hasItem(DEFAULT_NATIONAL_ID.toString())))
+            .andExpect(jsonPath("$.[*].passportNo").value(hasItem(DEFAULT_PASSPORT_NO.toString())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
             .andExpect(jsonPath("$.[*].designation").value(hasItem(DEFAULT_DESIGNATION.toString())))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
+            .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS.toString())))
             .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
             .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))))
             .andExpect(jsonPath("$.[*].activated").value(hasItem(DEFAULT_ACTIVATED.booleanValue())));
@@ -277,14 +301,18 @@ public class DoctorResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(doctor.getId().intValue()))
-            .andExpect(jsonPath("$.licenceNumber").value(DEFAULT_LICENCE_NUMBER.toString()))
+            .andExpect(jsonPath("$.registrationId").value(DEFAULT_REGISTRATION_ID.intValue()))
             .andExpect(jsonPath("$.firstName").value(DEFAULT_FIRST_NAME.toString()))
             .andExpect(jsonPath("$.lastName").value(DEFAULT_LAST_NAME.toString()))
-            .andExpect(jsonPath("$.phone").value(DEFAULT_PHONE.toString()))
             .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL.toString()))
+            .andExpect(jsonPath("$.phone").value(DEFAULT_PHONE.toString()))
+            .andExpect(jsonPath("$.licenceNumber").value(DEFAULT_LICENCE_NUMBER.toString()))
+            .andExpect(jsonPath("$.nationalId").value(DEFAULT_NATIONAL_ID.toString()))
+            .andExpect(jsonPath("$.passportNo").value(DEFAULT_PASSPORT_NO.toString()))
             .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()))
             .andExpect(jsonPath("$.designation").value(DEFAULT_DESIGNATION.toString()))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
+            .andExpect(jsonPath("$.address").value(DEFAULT_ADDRESS.toString()))
             .andExpect(jsonPath("$.imageContentType").value(DEFAULT_IMAGE_CONTENT_TYPE))
             .andExpect(jsonPath("$.image").value(Base64Utils.encodeToString(DEFAULT_IMAGE)))
             .andExpect(jsonPath("$.activated").value(DEFAULT_ACTIVATED.booleanValue()));
@@ -292,42 +320,69 @@ public class DoctorResourceIntTest {
 
     @Test
     @Transactional
-    public void getAllDoctorsByLicenceNumberIsEqualToSomething() throws Exception {
+    public void getAllDoctorsByRegistrationIdIsEqualToSomething() throws Exception {
         // Initialize the database
         doctorRepository.saveAndFlush(doctor);
 
-        // Get all the doctorList where licenceNumber equals to DEFAULT_LICENCE_NUMBER
-        defaultDoctorShouldBeFound("licenceNumber.equals=" + DEFAULT_LICENCE_NUMBER);
+        // Get all the doctorList where registrationId equals to DEFAULT_REGISTRATION_ID
+        defaultDoctorShouldBeFound("registrationId.equals=" + DEFAULT_REGISTRATION_ID);
 
-        // Get all the doctorList where licenceNumber equals to UPDATED_LICENCE_NUMBER
-        defaultDoctorShouldNotBeFound("licenceNumber.equals=" + UPDATED_LICENCE_NUMBER);
+        // Get all the doctorList where registrationId equals to UPDATED_REGISTRATION_ID
+        defaultDoctorShouldNotBeFound("registrationId.equals=" + UPDATED_REGISTRATION_ID);
     }
 
     @Test
     @Transactional
-    public void getAllDoctorsByLicenceNumberIsInShouldWork() throws Exception {
+    public void getAllDoctorsByRegistrationIdIsInShouldWork() throws Exception {
         // Initialize the database
         doctorRepository.saveAndFlush(doctor);
 
-        // Get all the doctorList where licenceNumber in DEFAULT_LICENCE_NUMBER or UPDATED_LICENCE_NUMBER
-        defaultDoctorShouldBeFound("licenceNumber.in=" + DEFAULT_LICENCE_NUMBER + "," + UPDATED_LICENCE_NUMBER);
+        // Get all the doctorList where registrationId in DEFAULT_REGISTRATION_ID or UPDATED_REGISTRATION_ID
+        defaultDoctorShouldBeFound("registrationId.in=" + DEFAULT_REGISTRATION_ID + "," + UPDATED_REGISTRATION_ID);
 
-        // Get all the doctorList where licenceNumber equals to UPDATED_LICENCE_NUMBER
-        defaultDoctorShouldNotBeFound("licenceNumber.in=" + UPDATED_LICENCE_NUMBER);
+        // Get all the doctorList where registrationId equals to UPDATED_REGISTRATION_ID
+        defaultDoctorShouldNotBeFound("registrationId.in=" + UPDATED_REGISTRATION_ID);
     }
 
     @Test
     @Transactional
-    public void getAllDoctorsByLicenceNumberIsNullOrNotNull() throws Exception {
+    public void getAllDoctorsByRegistrationIdIsNullOrNotNull() throws Exception {
         // Initialize the database
         doctorRepository.saveAndFlush(doctor);
 
-        // Get all the doctorList where licenceNumber is not null
-        defaultDoctorShouldBeFound("licenceNumber.specified=true");
+        // Get all the doctorList where registrationId is not null
+        defaultDoctorShouldBeFound("registrationId.specified=true");
 
-        // Get all the doctorList where licenceNumber is null
-        defaultDoctorShouldNotBeFound("licenceNumber.specified=false");
+        // Get all the doctorList where registrationId is null
+        defaultDoctorShouldNotBeFound("registrationId.specified=false");
     }
+
+    @Test
+    @Transactional
+    public void getAllDoctorsByRegistrationIdIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        doctorRepository.saveAndFlush(doctor);
+
+        // Get all the doctorList where registrationId greater than or equals to DEFAULT_REGISTRATION_ID
+        defaultDoctorShouldBeFound("registrationId.greaterOrEqualThan=" + DEFAULT_REGISTRATION_ID);
+
+        // Get all the doctorList where registrationId greater than or equals to UPDATED_REGISTRATION_ID
+        defaultDoctorShouldNotBeFound("registrationId.greaterOrEqualThan=" + UPDATED_REGISTRATION_ID);
+    }
+
+    @Test
+    @Transactional
+    public void getAllDoctorsByRegistrationIdIsLessThanSomething() throws Exception {
+        // Initialize the database
+        doctorRepository.saveAndFlush(doctor);
+
+        // Get all the doctorList where registrationId less than or equals to DEFAULT_REGISTRATION_ID
+        defaultDoctorShouldNotBeFound("registrationId.lessThan=" + DEFAULT_REGISTRATION_ID);
+
+        // Get all the doctorList where registrationId less than or equals to UPDATED_REGISTRATION_ID
+        defaultDoctorShouldBeFound("registrationId.lessThan=" + UPDATED_REGISTRATION_ID);
+    }
+
 
     @Test
     @Transactional
@@ -409,6 +464,45 @@ public class DoctorResourceIntTest {
 
     @Test
     @Transactional
+    public void getAllDoctorsByEmailIsEqualToSomething() throws Exception {
+        // Initialize the database
+        doctorRepository.saveAndFlush(doctor);
+
+        // Get all the doctorList where email equals to DEFAULT_EMAIL
+        defaultDoctorShouldBeFound("email.equals=" + DEFAULT_EMAIL);
+
+        // Get all the doctorList where email equals to UPDATED_EMAIL
+        defaultDoctorShouldNotBeFound("email.equals=" + UPDATED_EMAIL);
+    }
+
+    @Test
+    @Transactional
+    public void getAllDoctorsByEmailIsInShouldWork() throws Exception {
+        // Initialize the database
+        doctorRepository.saveAndFlush(doctor);
+
+        // Get all the doctorList where email in DEFAULT_EMAIL or UPDATED_EMAIL
+        defaultDoctorShouldBeFound("email.in=" + DEFAULT_EMAIL + "," + UPDATED_EMAIL);
+
+        // Get all the doctorList where email equals to UPDATED_EMAIL
+        defaultDoctorShouldNotBeFound("email.in=" + UPDATED_EMAIL);
+    }
+
+    @Test
+    @Transactional
+    public void getAllDoctorsByEmailIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        doctorRepository.saveAndFlush(doctor);
+
+        // Get all the doctorList where email is not null
+        defaultDoctorShouldBeFound("email.specified=true");
+
+        // Get all the doctorList where email is null
+        defaultDoctorShouldNotBeFound("email.specified=false");
+    }
+
+    @Test
+    @Transactional
     public void getAllDoctorsByPhoneIsEqualToSomething() throws Exception {
         // Initialize the database
         doctorRepository.saveAndFlush(doctor);
@@ -448,41 +542,119 @@ public class DoctorResourceIntTest {
 
     @Test
     @Transactional
-    public void getAllDoctorsByEmailIsEqualToSomething() throws Exception {
+    public void getAllDoctorsByLicenceNumberIsEqualToSomething() throws Exception {
         // Initialize the database
         doctorRepository.saveAndFlush(doctor);
 
-        // Get all the doctorList where email equals to DEFAULT_EMAIL
-        defaultDoctorShouldBeFound("email.equals=" + DEFAULT_EMAIL);
+        // Get all the doctorList where licenceNumber equals to DEFAULT_LICENCE_NUMBER
+        defaultDoctorShouldBeFound("licenceNumber.equals=" + DEFAULT_LICENCE_NUMBER);
 
-        // Get all the doctorList where email equals to UPDATED_EMAIL
-        defaultDoctorShouldNotBeFound("email.equals=" + UPDATED_EMAIL);
+        // Get all the doctorList where licenceNumber equals to UPDATED_LICENCE_NUMBER
+        defaultDoctorShouldNotBeFound("licenceNumber.equals=" + UPDATED_LICENCE_NUMBER);
     }
 
     @Test
     @Transactional
-    public void getAllDoctorsByEmailIsInShouldWork() throws Exception {
+    public void getAllDoctorsByLicenceNumberIsInShouldWork() throws Exception {
         // Initialize the database
         doctorRepository.saveAndFlush(doctor);
 
-        // Get all the doctorList where email in DEFAULT_EMAIL or UPDATED_EMAIL
-        defaultDoctorShouldBeFound("email.in=" + DEFAULT_EMAIL + "," + UPDATED_EMAIL);
+        // Get all the doctorList where licenceNumber in DEFAULT_LICENCE_NUMBER or UPDATED_LICENCE_NUMBER
+        defaultDoctorShouldBeFound("licenceNumber.in=" + DEFAULT_LICENCE_NUMBER + "," + UPDATED_LICENCE_NUMBER);
 
-        // Get all the doctorList where email equals to UPDATED_EMAIL
-        defaultDoctorShouldNotBeFound("email.in=" + UPDATED_EMAIL);
+        // Get all the doctorList where licenceNumber equals to UPDATED_LICENCE_NUMBER
+        defaultDoctorShouldNotBeFound("licenceNumber.in=" + UPDATED_LICENCE_NUMBER);
     }
 
     @Test
     @Transactional
-    public void getAllDoctorsByEmailIsNullOrNotNull() throws Exception {
+    public void getAllDoctorsByLicenceNumberIsNullOrNotNull() throws Exception {
         // Initialize the database
         doctorRepository.saveAndFlush(doctor);
 
-        // Get all the doctorList where email is not null
-        defaultDoctorShouldBeFound("email.specified=true");
+        // Get all the doctorList where licenceNumber is not null
+        defaultDoctorShouldBeFound("licenceNumber.specified=true");
 
-        // Get all the doctorList where email is null
-        defaultDoctorShouldNotBeFound("email.specified=false");
+        // Get all the doctorList where licenceNumber is null
+        defaultDoctorShouldNotBeFound("licenceNumber.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllDoctorsByNationalIdIsEqualToSomething() throws Exception {
+        // Initialize the database
+        doctorRepository.saveAndFlush(doctor);
+
+        // Get all the doctorList where nationalId equals to DEFAULT_NATIONAL_ID
+        defaultDoctorShouldBeFound("nationalId.equals=" + DEFAULT_NATIONAL_ID);
+
+        // Get all the doctorList where nationalId equals to UPDATED_NATIONAL_ID
+        defaultDoctorShouldNotBeFound("nationalId.equals=" + UPDATED_NATIONAL_ID);
+    }
+
+    @Test
+    @Transactional
+    public void getAllDoctorsByNationalIdIsInShouldWork() throws Exception {
+        // Initialize the database
+        doctorRepository.saveAndFlush(doctor);
+
+        // Get all the doctorList where nationalId in DEFAULT_NATIONAL_ID or UPDATED_NATIONAL_ID
+        defaultDoctorShouldBeFound("nationalId.in=" + DEFAULT_NATIONAL_ID + "," + UPDATED_NATIONAL_ID);
+
+        // Get all the doctorList where nationalId equals to UPDATED_NATIONAL_ID
+        defaultDoctorShouldNotBeFound("nationalId.in=" + UPDATED_NATIONAL_ID);
+    }
+
+    @Test
+    @Transactional
+    public void getAllDoctorsByNationalIdIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        doctorRepository.saveAndFlush(doctor);
+
+        // Get all the doctorList where nationalId is not null
+        defaultDoctorShouldBeFound("nationalId.specified=true");
+
+        // Get all the doctorList where nationalId is null
+        defaultDoctorShouldNotBeFound("nationalId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllDoctorsByPassportNoIsEqualToSomething() throws Exception {
+        // Initialize the database
+        doctorRepository.saveAndFlush(doctor);
+
+        // Get all the doctorList where passportNo equals to DEFAULT_PASSPORT_NO
+        defaultDoctorShouldBeFound("passportNo.equals=" + DEFAULT_PASSPORT_NO);
+
+        // Get all the doctorList where passportNo equals to UPDATED_PASSPORT_NO
+        defaultDoctorShouldNotBeFound("passportNo.equals=" + UPDATED_PASSPORT_NO);
+    }
+
+    @Test
+    @Transactional
+    public void getAllDoctorsByPassportNoIsInShouldWork() throws Exception {
+        // Initialize the database
+        doctorRepository.saveAndFlush(doctor);
+
+        // Get all the doctorList where passportNo in DEFAULT_PASSPORT_NO or UPDATED_PASSPORT_NO
+        defaultDoctorShouldBeFound("passportNo.in=" + DEFAULT_PASSPORT_NO + "," + UPDATED_PASSPORT_NO);
+
+        // Get all the doctorList where passportNo equals to UPDATED_PASSPORT_NO
+        defaultDoctorShouldNotBeFound("passportNo.in=" + UPDATED_PASSPORT_NO);
+    }
+
+    @Test
+    @Transactional
+    public void getAllDoctorsByPassportNoIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        doctorRepository.saveAndFlush(doctor);
+
+        // Get all the doctorList where passportNo is not null
+        defaultDoctorShouldBeFound("passportNo.specified=true");
+
+        // Get all the doctorList where passportNo is null
+        defaultDoctorShouldNotBeFound("passportNo.specified=false");
     }
 
     @Test
@@ -561,6 +733,45 @@ public class DoctorResourceIntTest {
 
         // Get all the doctorList where designation is null
         defaultDoctorShouldNotBeFound("designation.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllDoctorsByAddressIsEqualToSomething() throws Exception {
+        // Initialize the database
+        doctorRepository.saveAndFlush(doctor);
+
+        // Get all the doctorList where address equals to DEFAULT_ADDRESS
+        defaultDoctorShouldBeFound("address.equals=" + DEFAULT_ADDRESS);
+
+        // Get all the doctorList where address equals to UPDATED_ADDRESS
+        defaultDoctorShouldNotBeFound("address.equals=" + UPDATED_ADDRESS);
+    }
+
+    @Test
+    @Transactional
+    public void getAllDoctorsByAddressIsInShouldWork() throws Exception {
+        // Initialize the database
+        doctorRepository.saveAndFlush(doctor);
+
+        // Get all the doctorList where address in DEFAULT_ADDRESS or UPDATED_ADDRESS
+        defaultDoctorShouldBeFound("address.in=" + DEFAULT_ADDRESS + "," + UPDATED_ADDRESS);
+
+        // Get all the doctorList where address equals to UPDATED_ADDRESS
+        defaultDoctorShouldNotBeFound("address.in=" + UPDATED_ADDRESS);
+    }
+
+    @Test
+    @Transactional
+    public void getAllDoctorsByAddressIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        doctorRepository.saveAndFlush(doctor);
+
+        // Get all the doctorList where address is not null
+        defaultDoctorShouldBeFound("address.specified=true");
+
+        // Get all the doctorList where address is null
+        defaultDoctorShouldNotBeFound("address.specified=false");
     }
 
     @Test
@@ -666,14 +877,18 @@ public class DoctorResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(doctor.getId().intValue())))
-            .andExpect(jsonPath("$.[*].licenceNumber").value(hasItem(DEFAULT_LICENCE_NUMBER.toString())))
+            .andExpect(jsonPath("$.[*].registrationId").value(hasItem(DEFAULT_REGISTRATION_ID.intValue())))
             .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRST_NAME.toString())))
             .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME.toString())))
-            .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE.toString())))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL.toString())))
+            .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE.toString())))
+            .andExpect(jsonPath("$.[*].licenceNumber").value(hasItem(DEFAULT_LICENCE_NUMBER.toString())))
+            .andExpect(jsonPath("$.[*].nationalId").value(hasItem(DEFAULT_NATIONAL_ID.toString())))
+            .andExpect(jsonPath("$.[*].passportNo").value(hasItem(DEFAULT_PASSPORT_NO.toString())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
             .andExpect(jsonPath("$.[*].designation").value(hasItem(DEFAULT_DESIGNATION.toString())))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
+            .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS.toString())))
             .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
             .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))))
             .andExpect(jsonPath("$.[*].activated").value(hasItem(DEFAULT_ACTIVATED.booleanValue())));
@@ -681,8 +896,8 @@ public class DoctorResourceIntTest {
         // Check, that the count call also returns 1
         restDoctorMockMvc.perform(get("/api/doctors/count?sort=id,desc&" + filter))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
-//            .andExpect(content().string("1")); // In case of preloaded data this test causing problem 
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
     }
 
     /**
@@ -724,14 +939,18 @@ public class DoctorResourceIntTest {
         // Disconnect from session so that the updates on updatedDoctor are not directly saved in db
         em.detach(updatedDoctor);
         updatedDoctor
-            .licenceNumber(UPDATED_LICENCE_NUMBER)
+            .registrationId(UPDATED_REGISTRATION_ID)
             .firstName(UPDATED_FIRST_NAME)
             .lastName(UPDATED_LAST_NAME)
-            .phone(UPDATED_PHONE)
             .email(UPDATED_EMAIL)
+            .phone(UPDATED_PHONE)
+            .licenceNumber(UPDATED_LICENCE_NUMBER)
+            .nationalId(UPDATED_NATIONAL_ID)
+            .passportNo(UPDATED_PASSPORT_NO)
             .type(UPDATED_TYPE)
             .designation(UPDATED_DESIGNATION)
             .description(UPDATED_DESCRIPTION)
+            .address(UPDATED_ADDRESS)
             .image(UPDATED_IMAGE)
             .imageContentType(UPDATED_IMAGE_CONTENT_TYPE)
             .activated(UPDATED_ACTIVATED);
@@ -746,14 +965,18 @@ public class DoctorResourceIntTest {
         List<Doctor> doctorList = doctorRepository.findAll();
         assertThat(doctorList).hasSize(databaseSizeBeforeUpdate);
         Doctor testDoctor = doctorList.get(doctorList.size() - 1);
-        assertThat(testDoctor.getLicenceNumber()).isEqualTo(UPDATED_LICENCE_NUMBER);
+        assertThat(testDoctor.getRegistrationId()).isEqualTo(UPDATED_REGISTRATION_ID);
         assertThat(testDoctor.getFirstName()).isEqualTo(UPDATED_FIRST_NAME);
         assertThat(testDoctor.getLastName()).isEqualTo(UPDATED_LAST_NAME);
-        assertThat(testDoctor.getPhone()).isEqualTo(UPDATED_PHONE);
         assertThat(testDoctor.getEmail()).isEqualTo(UPDATED_EMAIL);
+        assertThat(testDoctor.getPhone()).isEqualTo(UPDATED_PHONE);
+        assertThat(testDoctor.getLicenceNumber()).isEqualTo(UPDATED_LICENCE_NUMBER);
+        assertThat(testDoctor.getNationalId()).isEqualTo(UPDATED_NATIONAL_ID);
+        assertThat(testDoctor.getPassportNo()).isEqualTo(UPDATED_PASSPORT_NO);
         assertThat(testDoctor.getType()).isEqualTo(UPDATED_TYPE);
         assertThat(testDoctor.getDesignation()).isEqualTo(UPDATED_DESIGNATION);
         assertThat(testDoctor.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+        assertThat(testDoctor.getAddress()).isEqualTo(UPDATED_ADDRESS);
         assertThat(testDoctor.getImage()).isEqualTo(UPDATED_IMAGE);
         assertThat(testDoctor.getImageContentType()).isEqualTo(UPDATED_IMAGE_CONTENT_TYPE);
         assertThat(testDoctor.isActivated()).isEqualTo(UPDATED_ACTIVATED);
@@ -817,14 +1040,18 @@ public class DoctorResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(doctor.getId().intValue())))
-            .andExpect(jsonPath("$.[*].licenceNumber").value(hasItem(DEFAULT_LICENCE_NUMBER)))
+            .andExpect(jsonPath("$.[*].registrationId").value(hasItem(DEFAULT_REGISTRATION_ID.intValue())))
             .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRST_NAME)))
             .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME)))
-            .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE)))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
+            .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE)))
+            .andExpect(jsonPath("$.[*].licenceNumber").value(hasItem(DEFAULT_LICENCE_NUMBER)))
+            .andExpect(jsonPath("$.[*].nationalId").value(hasItem(DEFAULT_NATIONAL_ID)))
+            .andExpect(jsonPath("$.[*].passportNo").value(hasItem(DEFAULT_PASSPORT_NO)))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
             .andExpect(jsonPath("$.[*].designation").value(hasItem(DEFAULT_DESIGNATION)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
+            .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)))
             .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
             .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))))
             .andExpect(jsonPath("$.[*].activated").value(hasItem(DEFAULT_ACTIVATED.booleanValue())));
