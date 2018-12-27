@@ -1,0 +1,2 @@
+id;licence_number;first_name;last_name;phone;email;jhi_type;designation;description;activated;medical_department_id
+1;1111111111;Arhan;Sajjad;8801111111111;arhan@gmail.com;PHYSICIAN;Assistant Professor;desc;false;2

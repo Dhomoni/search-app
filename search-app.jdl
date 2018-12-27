@@ -82,7 +82,7 @@ relationship OneToMany {
 	Doctor{chambers} to Chamber
 }
 
-entity WeeklyVisitingHours {
+entity WeeklyVisitingHour {
 	weekDay WeekDay
 	startHour Integer min(0) max(23)
 	startMinute Integer min(0) max(59)
@@ -101,7 +101,7 @@ enum WeekDay {
 }
 
 relationship OneToMany {
-	Chamber{weeklyVisitingHours} to WeeklyVisitingHours
+	Chamber{weeklyVisitingHours} to WeeklyVisitingHour
 }
 
 entity ProfessionalDegree {

@@ -17,7 +17,7 @@
         Added the entity Chamber.
     -->
     <changeSet id="20181226102647-1" author="jhipster">
-        <createTable tableName="chamber">
+        <createTable tableName="CHAMBER">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -32,6 +32,8 @@
             <column name="fee" type="double">
                 <constraints nullable="true" />
             </column>
+            
+            <column name="GEOM" type="GEOMETRY(Point, 4326)"/>
 
             <column name="doctor_id" type="bigint">
                 <constraints nullable="true" />
@@ -39,7 +41,10 @@
 
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-        
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/chambers.csv"
+                  separator=";"
+                  tableName="CHAMBER"/>
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

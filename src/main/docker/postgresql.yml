@@ -1,11 +1,22 @@
 version: '2'
 services:
     search-postgresql:
-        image: postgres:10.4
-        # volumes:
-        #     - ~/volumes/jhipster/search/postgresql/:/var/lib/postgresql/data/
+        image: postgresql-postgis:10.6
         environment:
             - POSTGRES_USER=search
             - POSTGRES_PASSWORD=
         ports:
-            - 5432:5432
+            - 5434:5432
+
+
+#version: '2'
+#services:
+#    search-postgresql:
+#        image: postgres:10.4
+#        # volumes:
+#        #     - ~/volumes/jhipster/search/postgresql/:/var/lib/postgresql/data/
+#        environment:
+#            - POSTGRES_USER=search
+#            - POSTGRES_PASSWORD=
+#        ports:
+#            - 5432:5432
