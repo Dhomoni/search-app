@@ -1,6 +1,8 @@
 package com.dhomoni.search.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vividsolutions.jts.geom.Point;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -70,6 +72,9 @@ public class Doctor implements Serializable {
 
     @Column(name = "address")
     private String address;
+    
+    @Column(name = "GEOM", columnDefinition = "GEOMETRY(Point, 4326)")
+    private Point location;
 
     @Lob
     @Column(name = "image")
@@ -399,4 +404,12 @@ public class Doctor implements Serializable {
             ", activated='" + isActivated() + "'" +
             "}";
     }
+
+	public Point getLocation() {
+		return location;
+	}
+
+	public void setLocation(Point location) {
+		this.location = location;
+	}
 }

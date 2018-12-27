@@ -1,17 +1,26 @@
 package com.dhomoni.search.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
-
-import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
+import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.elasticsearch.annotations.Document;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.vividsolutions.jts.geom.Point;
 
 /**
  * A Chamber.
@@ -31,6 +40,9 @@ public class Chamber implements Serializable {
 
     @Column(name = "address")
     private String address;
+    
+    @Column(name = "GEOM", columnDefinition = "GEOMETRY(Point, 4326)")
+    private Point location;
 
     @Column(name = "phone")
     private String phone;
@@ -161,4 +173,12 @@ public class Chamber implements Serializable {
             ", fee=" + getFee() +
             "}";
     }
+
+	public Point getLocation() {
+		return location;
+	}
+
+	public void setLocation(Point location) {
+		this.location = location;
+	}
 }

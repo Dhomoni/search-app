@@ -129,8 +129,8 @@ entity Patient {
     bloodGroup BloodGroup
     weightInKG Double
     heightInInch Double
-	image ImageBlob
 	address String
+	image ImageBlob
 //	location Point
 	activated Boolean
 }

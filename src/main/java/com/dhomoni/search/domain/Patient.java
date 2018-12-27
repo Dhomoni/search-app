@@ -12,7 +12,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 import com.dhomoni.search.domain.enumeration.Sex;
-
+import com.vividsolutions.jts.geom.Point;
 import com.dhomoni.search.domain.enumeration.BloodGroup;
 
 /**
@@ -64,16 +64,19 @@ public class Patient implements Serializable {
     @Column(name = "height_in_inch")
     private Double heightInInch;
 
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "GEOM", columnDefinition = "GEOMETRY(Point, 4326)")
+    private Point location;
+
     @Lob
     @Column(name = "image")
     private byte[] image;
 
     @Column(name = "image_content_type")
     private String imageContentType;
-
-    @Column(name = "address")
-    private String address;
-
+    
     @Column(name = "activated")
     private Boolean activated;
 
@@ -309,4 +312,12 @@ public class Patient implements Serializable {
             ", activated='" + isActivated() + "'" +
             "}";
     }
+
+	public Point getLocation() {
+		return location;
+	}
+
+	public void setLocation(Point location) {
+		this.location = location;
+	}
 }
