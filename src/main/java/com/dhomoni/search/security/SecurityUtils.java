@@ -1,10 +1,10 @@
 package com.dhomoni.search.security;
 
+import java.util.Optional;
+
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Optional;
 
 /**
  * Utility class for Spring Security.
@@ -14,6 +14,23 @@ public final class SecurityUtils {
     private SecurityUtils() {
     }
 
+    /**
+     * Get registrationId of the current user.
+     *
+     * @return the registrationId of the current user
+     */
+    public static Optional<Long> getCurrentUserRegistrationId() {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        return Optional.ofNullable(securityContext.getAuthentication())
+            .map(authentication -> {
+                if (authentication.getPrincipal() instanceof CustomUser) {
+                    CustomUser springSecurityUser = (CustomUser) authentication.getPrincipal();
+                    return springSecurityUser.getRegistrationId();
+                }
+                return null;
+            });
+    }
+    
     /**
      * Get the login of the current user.
      *

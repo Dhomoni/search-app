@@ -59,6 +59,7 @@
 		<jackson-datatype-jts.version>2.4</jackson-datatype-jts.version>
 		<validation-api.version>2.0.1.Final</validation-api.version>
 		<mapstruct.version>1.2.0.Final</mapstruct.version>
+		<lombok.version>1.16.22</lombok.version>
 
 		<!-- Plugin versions -->
 		<maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
@@ -276,6 +277,11 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<scope>provided</scope>
@@ -480,6 +486,11 @@
 							<groupId>org.mapstruct</groupId>
 							<artifactId>mapstruct-processor</artifactId>
 							<version>${mapstruct.version}</version>
+						</path>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
 						</path>
 						<!-- For JPA static metamodel generation -->
 						<path>
@@ -1053,6 +1064,10 @@
 				<dependency>
 					<groupId>org.mapstruct</groupId>
 					<artifactId>mapstruct-processor</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>org.projectlombok</groupId>
+					<artifactId>lombok</artifactId>
 				</dependency>
 				<dependency>
 					<groupId>org.hibernate</groupId>

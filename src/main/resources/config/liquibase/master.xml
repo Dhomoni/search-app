@@ -4,6 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
+	<include file="config/liquibase/changelog/init_geodb.xml" relativeToChangelogFile="false"/>    
     <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181226102645_added_entity_MedicalDepartment.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181226102646_added_entity_Disease.xml" relativeToChangelogFile="false"/>
@@ -13,6 +14,7 @@
     <include file="config/liquibase/changelog/20181227124020_added_entity_Chamber.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181227124021_added_entity_WeeklyVisitingHour.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181227124022_added_entity_ProfessionalDegree.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/load_data.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20181226102646_added_entity_constraints_Disease.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181227124017_added_entity_constraints_Doctor.xml" relativeToChangelogFile="false"/>
