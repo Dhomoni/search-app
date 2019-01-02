@@ -28,7 +28,7 @@
 		<loadData encoding="UTF-8"
                   file="config/liquibase/weekly_visiting_hours.csv"
                   separator=";"
-                  tableName="weekly_visiting_hours"/>
+                  tableName="weekly_visiting_hour"/>
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>
