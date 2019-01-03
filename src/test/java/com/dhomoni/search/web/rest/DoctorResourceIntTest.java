@@ -99,8 +99,8 @@ public class DoctorResourceIntTest {
     private static final String DEFAULT_IMAGE_CONTENT_TYPE = "image/jpg";
     private static final String UPDATED_IMAGE_CONTENT_TYPE = "image/png";
 
-    private static final Boolean DEFAULT_ACTIVATED = false;
-    private static final Boolean UPDATED_ACTIVATED = true;
+    private static final Boolean DEFAULT_ACTIVATED = true;
+    private static final Boolean UPDATED_ACTIVATED = false;
 
     @Autowired
     private DoctorRepository doctorRepository;

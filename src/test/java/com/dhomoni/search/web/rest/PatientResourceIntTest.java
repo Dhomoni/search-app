@@ -96,8 +96,8 @@ public class PatientResourceIntTest {
     private static final String DEFAULT_ADDRESS = "AAAAAAAAAA";
     private static final String UPDATED_ADDRESS = "BBBBBBBBBB";
 
-    private static final Boolean DEFAULT_ACTIVATED = false;
-    private static final Boolean UPDATED_ACTIVATED = true;
+    private static final Boolean DEFAULT_ACTIVATED = true;
+    private static final Boolean UPDATED_ACTIVATED = false;
 
     @Autowired
     private PatientRepository patientRepository;
