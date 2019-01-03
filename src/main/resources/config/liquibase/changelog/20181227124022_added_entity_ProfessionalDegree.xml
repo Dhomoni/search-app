@@ -29,6 +29,14 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="country" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="enrollment_year" type="integer">
+                <constraints nullable="true" />
+            </column>
+
             <column name="passing_year" type="integer">
                 <constraints nullable="true" />
             </column>

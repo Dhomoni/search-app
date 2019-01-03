@@ -10,6 +10,14 @@
             "fieldType": "String"
         },
         {
+            "fieldName": "country",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "enrollmentYear",
+            "fieldType": "Integer"
+        },
+        {
             "fieldName": "passingYear",
             "fieldType": "Integer"
         }

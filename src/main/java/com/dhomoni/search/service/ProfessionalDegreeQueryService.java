@@ -99,6 +99,12 @@ public class ProfessionalDegreeQueryService extends QueryService<ProfessionalDeg
             if (criteria.getInstitute() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getInstitute(), ProfessionalDegree_.institute));
             }
+            if (criteria.getCountry() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getCountry(), ProfessionalDegree_.country));
+            }
+            if (criteria.getEnrollmentYear() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getEnrollmentYear(), ProfessionalDegree_.enrollmentYear));
+            }
             if (criteria.getPassingYear() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getPassingYear(), ProfessionalDegree_.passingYear));
             }

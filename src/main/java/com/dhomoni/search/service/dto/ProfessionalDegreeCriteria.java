@@ -28,6 +28,10 @@ public class ProfessionalDegreeCriteria implements Serializable {
 
     private StringFilter institute;
 
+    private StringFilter country;
+
+    private IntegerFilter enrollmentYear;
+
     private IntegerFilter passingYear;
 
     private LongFilter doctorId;
@@ -54,6 +58,22 @@ public class ProfessionalDegreeCriteria implements Serializable {
 
     public void setInstitute(StringFilter institute) {
         this.institute = institute;
+    }
+
+    public StringFilter getCountry() {
+        return country;
+    }
+
+    public void setCountry(StringFilter country) {
+        this.country = country;
+    }
+
+    public IntegerFilter getEnrollmentYear() {
+        return enrollmentYear;
+    }
+
+    public void setEnrollmentYear(IntegerFilter enrollmentYear) {
+        this.enrollmentYear = enrollmentYear;
     }
 
     public IntegerFilter getPassingYear() {
@@ -86,6 +106,8 @@ public class ProfessionalDegreeCriteria implements Serializable {
             Objects.equals(id, that.id) &&
             Objects.equals(name, that.name) &&
             Objects.equals(institute, that.institute) &&
+            Objects.equals(country, that.country) &&
+            Objects.equals(enrollmentYear, that.enrollmentYear) &&
             Objects.equals(passingYear, that.passingYear) &&
             Objects.equals(doctorId, that.doctorId);
     }
@@ -96,6 +118,8 @@ public class ProfessionalDegreeCriteria implements Serializable {
         id,
         name,
         institute,
+        country,
+        enrollmentYear,
         passingYear,
         doctorId
         );
@@ -107,6 +131,8 @@ public class ProfessionalDegreeCriteria implements Serializable {
                 (id != null ? "id=" + id + ", " : "") +
                 (name != null ? "name=" + name + ", " : "") +
                 (institute != null ? "institute=" + institute + ", " : "") +
+                (country != null ? "country=" + country + ", " : "") +
+                (enrollmentYear != null ? "enrollmentYear=" + enrollmentYear + ", " : "") +
                 (passingYear != null ? "passingYear=" + passingYear + ", " : "") +
                 (doctorId != null ? "doctorId=" + doctorId + ", " : "") +
             "}";

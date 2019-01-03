@@ -32,6 +32,12 @@ public class ProfessionalDegree implements Serializable {
     @Column(name = "institute")
     private String institute;
 
+    @Column(name = "country")
+    private String country;
+
+    @Column(name = "enrollment_year")
+    private Integer enrollmentYear;
+
     @Column(name = "passing_year")
     private Integer passingYear;
 
@@ -72,6 +78,32 @@ public class ProfessionalDegree implements Serializable {
 
     public void setInstitute(String institute) {
         this.institute = institute;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public ProfessionalDegree country(String country) {
+        this.country = country;
+        return this;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public Integer getEnrollmentYear() {
+        return enrollmentYear;
+    }
+
+    public ProfessionalDegree enrollmentYear(Integer enrollmentYear) {
+        this.enrollmentYear = enrollmentYear;
+        return this;
+    }
+
+    public void setEnrollmentYear(Integer enrollmentYear) {
+        this.enrollmentYear = enrollmentYear;
     }
 
     public Integer getPassingYear() {
@@ -127,6 +159,8 @@ public class ProfessionalDegree implements Serializable {
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", institute='" + getInstitute() + "'" +
+            ", country='" + getCountry() + "'" +
+            ", enrollmentYear=" + getEnrollmentYear() +
             ", passingYear=" + getPassingYear() +
             "}";
     }

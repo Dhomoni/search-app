@@ -14,6 +14,10 @@ public class ProfessionalDegreeDTO implements Serializable {
 
     private String institute;
 
+    private String country;
+
+    private Integer enrollmentYear;
+
     private Integer passingYear;
 
     private Long doctorId;
@@ -40,6 +44,22 @@ public class ProfessionalDegreeDTO implements Serializable {
 
     public void setInstitute(String institute) {
         this.institute = institute;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public Integer getEnrollmentYear() {
+        return enrollmentYear;
+    }
+
+    public void setEnrollmentYear(Integer enrollmentYear) {
+        this.enrollmentYear = enrollmentYear;
     }
 
     public Integer getPassingYear() {
@@ -85,6 +105,8 @@ public class ProfessionalDegreeDTO implements Serializable {
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", institute='" + getInstitute() + "'" +
+            ", country='" + getCountry() + "'" +
+            ", enrollmentYear=" + getEnrollmentYear() +
             ", passingYear=" + getPassingYear() +
             ", doctor=" + getDoctorId() +
             "}";

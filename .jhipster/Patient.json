@@ -47,13 +47,13 @@
             "fieldType": "Double"
         },
         {
+            "fieldName": "address",
+            "fieldType": "String"
+        },
+        {
             "fieldName": "image",
             "fieldType": "byte[]",
             "fieldTypeBlobContent": "image"
-        },
-        {
-            "fieldName": "address",
-            "fieldType": "String"
         },
         {
             "fieldName": "activated",

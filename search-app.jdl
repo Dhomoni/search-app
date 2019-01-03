@@ -111,6 +111,8 @@ relationship OneToMany {
 entity ProfessionalDegree {
 	name String
 	institute String
+	country String
+	enrollmentYear Integer
 	passingYear Integer
 }
 
