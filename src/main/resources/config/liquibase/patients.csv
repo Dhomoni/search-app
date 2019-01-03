@@ -1,0 +1,2 @@
+id;first_name;last_name;email;phone;sex;birth_timestamp;blood_group;weight_in_kg;height_in_inch;address;activated
+1;Adnan;Salehin;adnan@gmail.com;7777777777;MALE;2019-01-01 10:40:52.615;B_NEGATIVE;71;68;Jashimuddin, Uttara, Dhaka;true

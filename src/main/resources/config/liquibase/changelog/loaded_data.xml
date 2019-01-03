@@ -18,6 +18,12 @@
 			<column name="activated" type="boolean"/>
 		</loadData>
 		<loadData encoding="UTF-8"
+                  file="config/liquibase/patients.csv"
+                  separator=";"
+                  tableName="PATIENT">
+			<column name="activated" type="boolean"/>
+		</loadData>
+		<loadData encoding="UTF-8"
                   file="config/liquibase/chambers.csv"
                   separator=";"
                   tableName="CHAMBER"/>

@@ -61,7 +61,7 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="image" type="longblob">
+            <column name="image" type="BLOB">
                 <constraints nullable="true" />
             </column>
             <column name="image_content_type" type="varchar(255)">
