@@ -8,7 +8,7 @@ application {
 		packageName com.dhomoni.search
 		applicationType microservice
 		authenticationType uaa
-		uaaBaseName "../uaa-app"
+		uaaBaseName "uaa"
 		databaseType sql
 		devDatabaseType h2Disk
 		prodDatabaseType postgresql
@@ -50,14 +50,6 @@ enum DoctorType {
 
 entity MedicalDepartment {
 	name String required
-//	MEDICINE, NEURO_DISEASE, CARDIOLOGY, GASTROENTEROLOGY_LIVER, 
-//	EAR_NOSE_THROAT_HEAD_NECK, EYE_DISEASE, ARTHROSCOPIC_ARTHROPLASTY,
-//	ORTHOPAEDICS, GYNAE_OBS, PSYCHIATRY, DERMATOLOGY_VENEREOLOGY,
-//	KIDNEY_DIABETES, DIABETES_THYROID_HORMONE_DISEASE,
-//	MEDICINE_HEART_ASTHMA_TB_CHEST, ASTHMA_COPD_DIABETES,
-//	GENERAL, PHYSICAL_MEDICINE, UROLOGY, DENTAL, PHYSIOTHERAPY,
-//	ENDOCRINOLOGY, VASCULAR_DISEASE, CHILD_SPECIALIST, BREAST_PLASTIC_SURGERY,
-//	CHEST_DISEASE8
 }
 
 relationship OneToOne {
