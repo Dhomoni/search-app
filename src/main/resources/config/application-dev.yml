@@ -133,8 +133,8 @@ jhipster:
         # max-age: 1800
     security:
         client-authorization:
-            access-token-uri: http://../uaa-app/oauth/token
-            token-service-id: ../uaa-app
+            access-token-uri: http://uaa/oauth/token
+            token-service-id: uaa
             client-id: internal
             client-secret: internal
     mail: # specific JHipster mail property, for standard properties see MailProperties
@@ -156,7 +156,7 @@ jhipster:
             queue-size: 512
 oauth2:
     signature-verification:
-        public-key-endpoint-uri: http://../uaa-app/oauth/token_key
+        public-key-endpoint-uri: http://uaa/oauth/token_key
         #ttl for public keys to verify JWT tokens (in ms)
         ttl: 3600000
         #max. rate at which public keys will be fetched (in ms)

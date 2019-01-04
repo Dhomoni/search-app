@@ -92,7 +92,7 @@ enum WeekDay {
     TUES, 
     WED, 
     THURS, 
-    FRY, 
+    FRI, 
     SAT
 }
 
