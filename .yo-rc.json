@@ -26,7 +26,7 @@
     "baseName": "search",
     "applicationType": "microservice",
     "authenticationType": "uaa",
-    "uaaBaseName": "../uaa-app",
+    "uaaBaseName": "uaa",
     "cacheProvider": "hazelcast",
     "serverPort": "8081",
     "buildTool": "maven",

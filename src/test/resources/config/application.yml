@@ -108,8 +108,8 @@ jhipster:
                 # Token is valid 24 hours
                 token-validity-in-seconds: 86400
         client-authorization:
-            access-token-uri: http://../uaa-app/oauth/token
-            token-service-id: ../uaa-app
+            access-token-uri: http://uaa/oauth/token
+            token-service-id: uaa
             client-id: internal
             client-secret: internal
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
