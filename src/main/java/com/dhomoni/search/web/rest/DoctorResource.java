@@ -102,6 +102,23 @@ public class DoctorResource {
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/doctors");
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
+    
+    /**
+     * SEARCH  /_search/doctors?query=:query : search for the doctor corresponding
+     * to the query.
+     *
+     * @param query the query of the doctor search
+     * @param pageable the pagination information
+     * @return the result of the search
+     */
+    @GetMapping("/_search/doctors")
+    @Timed
+    public ResponseEntity<List<DoctorDTO>> searchDoctors(@RequestParam String query, Pageable pageable) {
+        log.debug("REST request to search for a page of Doctors for query {}", query);
+        Page<DoctorDTO> page = doctorService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/doctors");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
 
     /**
     * GET  /doctors/count : count all the doctors.
@@ -143,22 +160,4 @@ public class DoctorResource {
         doctorService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-
-    /**
-     * SEARCH  /_search/doctors?query=:query : search for the doctor corresponding
-     * to the query.
-     *
-     * @param query the query of the doctor search
-     * @param pageable the pagination information
-     * @return the result of the search
-     */
-    @GetMapping("/_search/doctors")
-    @Timed
-    public ResponseEntity<List<DoctorDTO>> searchDoctors(@RequestParam String query, Pageable pageable) {
-        log.debug("REST request to search for a page of Doctors for query {}", query);
-        Page<DoctorDTO> page = doctorService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/doctors");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
 }
