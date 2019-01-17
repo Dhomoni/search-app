@@ -371,12 +371,12 @@ public class DiseaseResourceIntTest {
     @Transactional
     public void getAllDiseasesByDeptIsEqualToSomething() throws Exception {
         // Initialize the database
-        MedicalDepartment dept = MedicalDepartmentResourceIntTest.createEntity(em);
-        em.persist(dept);
+        MedicalDepartment medicalDepartment = MedicalDepartmentResourceIntTest.createEntity(em);
+        em.persist(medicalDepartment);
         em.flush();
-        disease.setDept(dept);
+        disease.setMedicalDepartment(medicalDepartment);
         diseaseRepository.saveAndFlush(disease);
-        Long deptId = dept.getId();
+        Long deptId = medicalDepartment.getId();
 
         // Get all the diseaseList where dept equals to deptId
         defaultDiseaseShouldBeFound("deptId.equals=" + deptId);

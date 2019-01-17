@@ -17,7 +17,6 @@ import io.github.jhipster.service.QueryService;
 import com.dhomoni.search.domain.MedicalDepartment;
 import com.dhomoni.search.domain.*; // for static metamodels
 import com.dhomoni.search.repository.MedicalDepartmentRepository;
-import com.dhomoni.search.repository.search.MedicalDepartmentSearchRepository;
 import com.dhomoni.search.service.dto.MedicalDepartmentCriteria;
 import com.dhomoni.search.service.dto.MedicalDepartmentDTO;
 import com.dhomoni.search.service.mapper.MedicalDepartmentMapper;
@@ -38,12 +37,9 @@ public class MedicalDepartmentQueryService extends QueryService<MedicalDepartmen
 
     private final MedicalDepartmentMapper medicalDepartmentMapper;
 
-    private final MedicalDepartmentSearchRepository medicalDepartmentSearchRepository;
-
-    public MedicalDepartmentQueryService(MedicalDepartmentRepository medicalDepartmentRepository, MedicalDepartmentMapper medicalDepartmentMapper, MedicalDepartmentSearchRepository medicalDepartmentSearchRepository) {
+    public MedicalDepartmentQueryService(MedicalDepartmentRepository medicalDepartmentRepository, MedicalDepartmentMapper medicalDepartmentMapper) {
         this.medicalDepartmentRepository = medicalDepartmentRepository;
         this.medicalDepartmentMapper = medicalDepartmentMapper;
-        this.medicalDepartmentSearchRepository = medicalDepartmentSearchRepository;
     }
 
     /**

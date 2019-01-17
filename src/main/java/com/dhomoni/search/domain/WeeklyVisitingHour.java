@@ -8,6 +8,9 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -19,7 +22,6 @@ import com.dhomoni.search.domain.enumeration.WeekDay;
 @Entity
 @Table(name = "weekly_visiting_hour")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "weeklyvisitinghour")
 public class WeeklyVisitingHour implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -27,6 +29,7 @@ public class WeeklyVisitingHour implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
+    @Field(type = FieldType.Long, index=false)
     private Long id;
 
     @Enumerated(EnumType.STRING)
@@ -36,21 +39,25 @@ public class WeeklyVisitingHour implements Serializable {
     @Min(value = 0)
     @Max(value = 23)
     @Column(name = "start_hour")
+    @Field(type = FieldType.Integer, index=false)
     private Integer startHour;
 
     @Min(value = 0)
     @Max(value = 59)
     @Column(name = "start_minute")
+    @Field(type = FieldType.Integer, index=false)
     private Integer startMinute;
 
     @Min(value = 0)
     @Max(value = 23)
     @Column(name = "end_hour")
+    @Field(type = FieldType.Integer, index=false)
     private Integer endHour;
 
     @Min(value = 0)
     @Max(value = 59)
     @Column(name = "end_minute")
+    @Field(type = FieldType.Integer, index=false)
     private Integer endMinute;
 
     @ManyToOne

@@ -17,7 +17,6 @@ import io.github.jhipster.service.QueryService;
 import com.dhomoni.search.domain.Chamber;
 import com.dhomoni.search.domain.*; // for static metamodels
 import com.dhomoni.search.repository.ChamberRepository;
-import com.dhomoni.search.repository.search.ChamberSearchRepository;
 import com.dhomoni.search.service.dto.ChamberCriteria;
 import com.dhomoni.search.service.dto.ChamberDTO;
 import com.dhomoni.search.service.mapper.ChamberMapper;
@@ -38,12 +37,9 @@ public class ChamberQueryService extends QueryService<Chamber> {
 
     private final ChamberMapper chamberMapper;
 
-    private final ChamberSearchRepository chamberSearchRepository;
-
-    public ChamberQueryService(ChamberRepository chamberRepository, ChamberMapper chamberMapper, ChamberSearchRepository chamberSearchRepository) {
+    public ChamberQueryService(ChamberRepository chamberRepository, ChamberMapper chamberMapper) {
         this.chamberRepository = chamberRepository;
         this.chamberMapper = chamberMapper;
-        this.chamberSearchRepository = chamberSearchRepository;
     }
 
     /**

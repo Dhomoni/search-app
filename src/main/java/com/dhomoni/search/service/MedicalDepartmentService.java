@@ -1,21 +1,18 @@
 package com.dhomoni.search.service;
 
-import com.dhomoni.search.domain.MedicalDepartment;
-import com.dhomoni.search.repository.MedicalDepartmentRepository;
-import com.dhomoni.search.repository.search.MedicalDepartmentSearchRepository;
-import com.dhomoni.search.service.dto.MedicalDepartmentDTO;
-import com.dhomoni.search.service.mapper.MedicalDepartmentMapper;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.dhomoni.search.domain.MedicalDepartment;
+import com.dhomoni.search.repository.MedicalDepartmentRepository;
+import com.dhomoni.search.service.dto.MedicalDepartmentDTO;
+import com.dhomoni.search.service.mapper.MedicalDepartmentMapper;
 
 /**
  * Service Implementation for managing MedicalDepartment.
@@ -30,12 +27,9 @@ public class MedicalDepartmentService {
 
     private final MedicalDepartmentMapper medicalDepartmentMapper;
 
-    private final MedicalDepartmentSearchRepository medicalDepartmentSearchRepository;
-
-    public MedicalDepartmentService(MedicalDepartmentRepository medicalDepartmentRepository, MedicalDepartmentMapper medicalDepartmentMapper, MedicalDepartmentSearchRepository medicalDepartmentSearchRepository) {
+    public MedicalDepartmentService(MedicalDepartmentRepository medicalDepartmentRepository, MedicalDepartmentMapper medicalDepartmentMapper) {
         this.medicalDepartmentRepository = medicalDepartmentRepository;
         this.medicalDepartmentMapper = medicalDepartmentMapper;
-        this.medicalDepartmentSearchRepository = medicalDepartmentSearchRepository;
     }
 
     /**
@@ -50,7 +44,6 @@ public class MedicalDepartmentService {
         MedicalDepartment medicalDepartment = medicalDepartmentMapper.toEntity(medicalDepartmentDTO);
         medicalDepartment = medicalDepartmentRepository.save(medicalDepartment);
         MedicalDepartmentDTO result = medicalDepartmentMapper.toDto(medicalDepartment);
-        medicalDepartmentSearchRepository.save(medicalDepartment);
         return result;
     }
 
@@ -89,20 +82,5 @@ public class MedicalDepartmentService {
     public void delete(Long id) {
         log.debug("Request to delete MedicalDepartment : {}", id);
         medicalDepartmentRepository.deleteById(id);
-        medicalDepartmentSearchRepository.deleteById(id);
-    }
-
-    /**
-     * Search for the medicalDepartment corresponding to the query.
-     *
-     * @param query the query of the search
-     * @param pageable the pagination information
-     * @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public Page<MedicalDepartmentDTO> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of MedicalDepartments for query {}", query);
-        return medicalDepartmentSearchRepository.search(queryStringQuery(query), pageable)
-            .map(medicalDepartmentMapper::toDto);
     }
 }

@@ -1,19 +1,19 @@
 package com.dhomoni.search.web.rest;
 
-import com.dhomoni.search.SearchApp;
+import static com.dhomoni.search.web.rest.TestUtil.createFormattingConversionService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.dhomoni.search.config.SecurityBeanOverrideConfiguration;
+import java.util.List;
 
-import com.dhomoni.search.domain.MedicalDepartment;
-import com.dhomoni.search.domain.Disease;
-import com.dhomoni.search.repository.MedicalDepartmentRepository;
-import com.dhomoni.search.repository.search.MedicalDepartmentSearchRepository;
-import com.dhomoni.search.service.MedicalDepartmentService;
-import com.dhomoni.search.service.dto.MedicalDepartmentDTO;
-import com.dhomoni.search.service.mapper.MedicalDepartmentMapper;
-import com.dhomoni.search.web.rest.errors.ExceptionTranslator;
-import com.dhomoni.search.service.dto.MedicalDepartmentCriteria;
-import com.dhomoni.search.service.MedicalDepartmentQueryService;
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,8 +21,6 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -32,18 +30,16 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Validator;
 
-import javax.persistence.EntityManager;
-import java.util.Collections;
-import java.util.List;
-
-
-import static com.dhomoni.search.web.rest.TestUtil.createFormattingConversionService;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import com.dhomoni.search.SearchApp;
+import com.dhomoni.search.config.SecurityBeanOverrideConfiguration;
+import com.dhomoni.search.domain.Disease;
+import com.dhomoni.search.domain.MedicalDepartment;
+import com.dhomoni.search.repository.MedicalDepartmentRepository;
+import com.dhomoni.search.service.MedicalDepartmentQueryService;
+import com.dhomoni.search.service.MedicalDepartmentService;
+import com.dhomoni.search.service.dto.MedicalDepartmentDTO;
+import com.dhomoni.search.service.mapper.MedicalDepartmentMapper;
+import com.dhomoni.search.web.rest.errors.ExceptionTranslator;
 
 /**
  * Test class for the MedicalDepartmentResource REST controller.
@@ -65,14 +61,6 @@ public class MedicalDepartmentResourceIntTest {
 
     @Autowired
     private MedicalDepartmentService medicalDepartmentService;
-
-    /**
-     * This repository is mocked in the com.dhomoni.search.repository.search test package.
-     *
-     * @see com.dhomoni.search.repository.search.MedicalDepartmentSearchRepositoryMockConfiguration
-     */
-    @Autowired
-    private MedicalDepartmentSearchRepository mockMedicalDepartmentSearchRepository;
 
     @Autowired
     private MedicalDepartmentQueryService medicalDepartmentQueryService;
@@ -142,9 +130,6 @@ public class MedicalDepartmentResourceIntTest {
         assertThat(medicalDepartmentList).hasSize(databaseSizeBeforeCreate + 1);
         MedicalDepartment testMedicalDepartment = medicalDepartmentList.get(medicalDepartmentList.size() - 1);
         assertThat(testMedicalDepartment.getName()).isEqualTo(DEFAULT_NAME);
-
-        // Validate the MedicalDepartment in Elasticsearch
-        verify(mockMedicalDepartmentSearchRepository, times(1)).save(testMedicalDepartment);
     }
 
     @Test
@@ -165,9 +150,6 @@ public class MedicalDepartmentResourceIntTest {
         // Validate the MedicalDepartment in the database
         List<MedicalDepartment> medicalDepartmentList = medicalDepartmentRepository.findAll();
         assertThat(medicalDepartmentList).hasSize(databaseSizeBeforeCreate);
-
-        // Validate the MedicalDepartment in Elasticsearch
-        verify(mockMedicalDepartmentSearchRepository, times(0)).save(medicalDepartment);
     }
 
     @Test
@@ -343,9 +325,6 @@ public class MedicalDepartmentResourceIntTest {
         assertThat(medicalDepartmentList).hasSize(databaseSizeBeforeUpdate);
         MedicalDepartment testMedicalDepartment = medicalDepartmentList.get(medicalDepartmentList.size() - 1);
         assertThat(testMedicalDepartment.getName()).isEqualTo(UPDATED_NAME);
-
-        // Validate the MedicalDepartment in Elasticsearch
-        verify(mockMedicalDepartmentSearchRepository, times(1)).save(testMedicalDepartment);
     }
 
     @Test
@@ -365,9 +344,6 @@ public class MedicalDepartmentResourceIntTest {
         // Validate the MedicalDepartment in the database
         List<MedicalDepartment> medicalDepartmentList = medicalDepartmentRepository.findAll();
         assertThat(medicalDepartmentList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the MedicalDepartment in Elasticsearch
-        verify(mockMedicalDepartmentSearchRepository, times(0)).save(medicalDepartment);
     }
 
     @Test
@@ -386,24 +362,6 @@ public class MedicalDepartmentResourceIntTest {
         // Validate the database is empty
         List<MedicalDepartment> medicalDepartmentList = medicalDepartmentRepository.findAll();
         assertThat(medicalDepartmentList).hasSize(databaseSizeBeforeDelete - 1);
-
-        // Validate the MedicalDepartment in Elasticsearch
-        verify(mockMedicalDepartmentSearchRepository, times(1)).deleteById(medicalDepartment.getId());
-    }
-
-    @Test
-    @Transactional
-    public void searchMedicalDepartment() throws Exception {
-        // Initialize the database
-        medicalDepartmentRepository.saveAndFlush(medicalDepartment);
-        when(mockMedicalDepartmentSearchRepository.search(queryStringQuery("id:" + medicalDepartment.getId()), PageRequest.of(0, 20)))
-            .thenReturn(new PageImpl<>(Collections.singletonList(medicalDepartment), PageRequest.of(0, 1), 1));
-        // Search the medicalDepartment
-        restMedicalDepartmentMockMvc.perform(get("/api/_search/medical-departments?query=id:" + medicalDepartment.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(medicalDepartment.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)));
     }
 
     @Test

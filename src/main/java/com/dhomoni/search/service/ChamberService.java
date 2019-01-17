@@ -1,21 +1,18 @@
 package com.dhomoni.search.service;
 
-import com.dhomoni.search.domain.Chamber;
-import com.dhomoni.search.repository.ChamberRepository;
-import com.dhomoni.search.repository.search.ChamberSearchRepository;
-import com.dhomoni.search.service.dto.ChamberDTO;
-import com.dhomoni.search.service.mapper.ChamberMapper;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.dhomoni.search.domain.Chamber;
+import com.dhomoni.search.repository.ChamberRepository;
+import com.dhomoni.search.service.dto.ChamberDTO;
+import com.dhomoni.search.service.mapper.ChamberMapper;
 
 /**
  * Service Implementation for managing Chamber.
@@ -30,12 +27,11 @@ public class ChamberService {
 
     private final ChamberMapper chamberMapper;
 
-    private final ChamberSearchRepository chamberSearchRepository;
+//    private final ChamberSearchRepository chamberSearchRepository;
 
-    public ChamberService(ChamberRepository chamberRepository, ChamberMapper chamberMapper, ChamberSearchRepository chamberSearchRepository) {
+    public ChamberService(ChamberRepository chamberRepository, ChamberMapper chamberMapper) {
         this.chamberRepository = chamberRepository;
         this.chamberMapper = chamberMapper;
-        this.chamberSearchRepository = chamberSearchRepository;
     }
 
     /**
@@ -50,7 +46,6 @@ public class ChamberService {
         Chamber chamber = chamberMapper.toEntity(chamberDTO);
         chamber = chamberRepository.save(chamber);
         ChamberDTO result = chamberMapper.toDto(chamber);
-        chamberSearchRepository.save(chamber);
         return result;
     }
 
@@ -89,20 +84,5 @@ public class ChamberService {
     public void delete(Long id) {
         log.debug("Request to delete Chamber : {}", id);
         chamberRepository.deleteById(id);
-        chamberSearchRepository.deleteById(id);
-    }
-
-    /**
-     * Search for the chamber corresponding to the query.
-     *
-     * @param query the query of the search
-     * @param pageable the pagination information
-     * @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public Page<ChamberDTO> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of Chambers for query {}", query);
-        return chamberSearchRepository.search(queryStringQuery(query), pageable)
-            .map(chamberMapper::toDto);
     }
 }

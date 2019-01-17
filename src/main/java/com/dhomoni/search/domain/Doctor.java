@@ -23,6 +23,8 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import com.dhomoni.search.domain.enumeration.DoctorType;
 import com.vividsolutions.jts.geom.Point;
@@ -41,9 +43,11 @@ public class Doctor implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
+    @Field(type = FieldType.Long, index=false)
     private Long id;
 
     @Column(name = "registration_id", unique = true)
+    @Field(type = FieldType.Long, store=false)
     private Long registrationId;
 
     @Column(name = "first_name")
@@ -60,12 +64,15 @@ public class Doctor implements Serializable {
 
     @NotNull
     @Column(name = "licence_number", nullable = false)
+    @Field(type = FieldType.Text, store=false)
     private String licenceNumber;
 
     @Column(name = "national_id")
+    @Field(type = FieldType.Text, store=false)
     private String nationalId;
 
     @Column(name = "passport_no")
+    @Field(type = FieldType.Text, store=false)
     private String passportNo;
 
     @Enumerated(EnumType.STRING)
@@ -80,30 +87,39 @@ public class Doctor implements Serializable {
     private String description;
 
     @Column(name = "address")
+    @Field(type = FieldType.Text, store=false)
     private String address;
     
     @Column(name = "GEOM", columnDefinition = "GEOMETRY(Point, 4326)")
+    @Field(type = FieldType.Object, store=false)
     private Point location;
 
     @Lob
     @Column(name = "image")
+    @Field(type = FieldType.Keyword, index=false)
     private byte[] image;
 
     @Column(name = "image_content_type")
+    @Field(type = FieldType.Keyword, index=false)
     private String imageContentType;
 
     @Column(name = "activated")
     private Boolean activated;
 
-    @OneToOne    @JoinColumn(unique = true)
+    @OneToOne    
+    @JoinColumn(unique = true)
     private MedicalDepartment medicalDepartment;
 
     @OneToMany(mappedBy = "doctor")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @Field(type = FieldType.Nested, includeInParent = true, ignoreFields = {"doctor"})
     private Set<Chamber> chambers = new HashSet<>();
+    
     @OneToMany(mappedBy = "doctor")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @Field(type = FieldType.Nested, includeInParent = true, ignoreFields = {"doctor"})
     private Set<ProfessionalDegree> professionalDegrees = new HashSet<>();
+    
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;

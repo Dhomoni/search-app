@@ -7,7 +7,6 @@ import com.dhomoni.search.config.SecurityBeanOverrideConfiguration;
 import com.dhomoni.search.domain.WeeklyVisitingHour;
 import com.dhomoni.search.domain.Chamber;
 import com.dhomoni.search.repository.WeeklyVisitingHourRepository;
-import com.dhomoni.search.repository.search.WeeklyVisitingHourSearchRepository;
 import com.dhomoni.search.service.WeeklyVisitingHourService;
 import com.dhomoni.search.service.dto.WeeklyVisitingHourDTO;
 import com.dhomoni.search.service.mapper.WeeklyVisitingHourMapper;
@@ -78,14 +77,6 @@ public class WeeklyVisitingHourResourceIntTest {
 
     @Autowired
     private WeeklyVisitingHourService weeklyVisitingHourService;
-
-    /**
-     * This repository is mocked in the com.dhomoni.search.repository.search test package.
-     *
-     * @see com.dhomoni.search.repository.search.WeeklyVisitingHourSearchRepositoryMockConfiguration
-     */
-    @Autowired
-    private WeeklyVisitingHourSearchRepository mockWeeklyVisitingHourSearchRepository;
 
     @Autowired
     private WeeklyVisitingHourQueryService weeklyVisitingHourQueryService;
@@ -163,9 +154,6 @@ public class WeeklyVisitingHourResourceIntTest {
         assertThat(testWeeklyVisitingHour.getStartMinute()).isEqualTo(DEFAULT_START_MINUTE);
         assertThat(testWeeklyVisitingHour.getEndHour()).isEqualTo(DEFAULT_END_HOUR);
         assertThat(testWeeklyVisitingHour.getEndMinute()).isEqualTo(DEFAULT_END_MINUTE);
-
-        // Validate the WeeklyVisitingHour in Elasticsearch
-        verify(mockWeeklyVisitingHourSearchRepository, times(1)).save(testWeeklyVisitingHour);
     }
 
     @Test
@@ -186,9 +174,6 @@ public class WeeklyVisitingHourResourceIntTest {
         // Validate the WeeklyVisitingHour in the database
         List<WeeklyVisitingHour> weeklyVisitingHourList = weeklyVisitingHourRepository.findAll();
         assertThat(weeklyVisitingHourList).hasSize(databaseSizeBeforeCreate);
-
-        // Validate the WeeklyVisitingHour in Elasticsearch
-        verify(mockWeeklyVisitingHourSearchRepository, times(0)).save(weeklyVisitingHour);
     }
 
     @Test
@@ -637,9 +622,6 @@ public class WeeklyVisitingHourResourceIntTest {
         assertThat(testWeeklyVisitingHour.getStartMinute()).isEqualTo(UPDATED_START_MINUTE);
         assertThat(testWeeklyVisitingHour.getEndHour()).isEqualTo(UPDATED_END_HOUR);
         assertThat(testWeeklyVisitingHour.getEndMinute()).isEqualTo(UPDATED_END_MINUTE);
-
-        // Validate the WeeklyVisitingHour in Elasticsearch
-        verify(mockWeeklyVisitingHourSearchRepository, times(1)).save(testWeeklyVisitingHour);
     }
 
     @Test
@@ -659,9 +641,6 @@ public class WeeklyVisitingHourResourceIntTest {
         // Validate the WeeklyVisitingHour in the database
         List<WeeklyVisitingHour> weeklyVisitingHourList = weeklyVisitingHourRepository.findAll();
         assertThat(weeklyVisitingHourList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the WeeklyVisitingHour in Elasticsearch
-        verify(mockWeeklyVisitingHourSearchRepository, times(0)).save(weeklyVisitingHour);
     }
 
     @Test
@@ -680,28 +659,6 @@ public class WeeklyVisitingHourResourceIntTest {
         // Validate the database is empty
         List<WeeklyVisitingHour> weeklyVisitingHourList = weeklyVisitingHourRepository.findAll();
         assertThat(weeklyVisitingHourList).hasSize(databaseSizeBeforeDelete - 1);
-
-        // Validate the WeeklyVisitingHour in Elasticsearch
-        verify(mockWeeklyVisitingHourSearchRepository, times(1)).deleteById(weeklyVisitingHour.getId());
-    }
-
-    @Test
-    @Transactional
-    public void searchWeeklyVisitingHour() throws Exception {
-        // Initialize the database
-        weeklyVisitingHourRepository.saveAndFlush(weeklyVisitingHour);
-        when(mockWeeklyVisitingHourSearchRepository.search(queryStringQuery("id:" + weeklyVisitingHour.getId()), PageRequest.of(0, 20)))
-            .thenReturn(new PageImpl<>(Collections.singletonList(weeklyVisitingHour), PageRequest.of(0, 1), 1));
-        // Search the weeklyVisitingHour
-        restWeeklyVisitingHourMockMvc.perform(get("/api/_search/weekly-visiting-hours?query=id:" + weeklyVisitingHour.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(weeklyVisitingHour.getId().intValue())))
-            .andExpect(jsonPath("$.[*].weekDay").value(hasItem(DEFAULT_WEEK_DAY.toString())))
-            .andExpect(jsonPath("$.[*].startHour").value(hasItem(DEFAULT_START_HOUR)))
-            .andExpect(jsonPath("$.[*].startMinute").value(hasItem(DEFAULT_START_MINUTE)))
-            .andExpect(jsonPath("$.[*].endHour").value(hasItem(DEFAULT_END_HOUR)))
-            .andExpect(jsonPath("$.[*].endMinute").value(hasItem(DEFAULT_END_MINUTE)));
     }
 
     @Test

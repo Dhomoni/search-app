@@ -17,7 +17,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vividsolutions.jts.geom.Point;
@@ -28,7 +29,6 @@ import com.vividsolutions.jts.geom.Point;
 @Entity
 @Table(name = "chamber")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "chamber")
 public class Chamber implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -56,7 +56,9 @@ public class Chamber implements Serializable {
 
     @OneToMany(mappedBy = "chamber")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @Field(type = FieldType.Nested, includeInParent = true, ignoreFields = {"chamber"})
     private Set<WeeklyVisitingHour> weeklyVisitingHours = new HashSet<>();
+    
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;

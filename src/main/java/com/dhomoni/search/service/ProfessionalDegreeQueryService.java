@@ -17,7 +17,6 @@ import io.github.jhipster.service.QueryService;
 import com.dhomoni.search.domain.ProfessionalDegree;
 import com.dhomoni.search.domain.*; // for static metamodels
 import com.dhomoni.search.repository.ProfessionalDegreeRepository;
-import com.dhomoni.search.repository.search.ProfessionalDegreeSearchRepository;
 import com.dhomoni.search.service.dto.ProfessionalDegreeCriteria;
 import com.dhomoni.search.service.dto.ProfessionalDegreeDTO;
 import com.dhomoni.search.service.mapper.ProfessionalDegreeMapper;
@@ -38,12 +37,9 @@ public class ProfessionalDegreeQueryService extends QueryService<ProfessionalDeg
 
     private final ProfessionalDegreeMapper professionalDegreeMapper;
 
-    private final ProfessionalDegreeSearchRepository professionalDegreeSearchRepository;
-
-    public ProfessionalDegreeQueryService(ProfessionalDegreeRepository professionalDegreeRepository, ProfessionalDegreeMapper professionalDegreeMapper, ProfessionalDegreeSearchRepository professionalDegreeSearchRepository) {
+    public ProfessionalDegreeQueryService(ProfessionalDegreeRepository professionalDegreeRepository, ProfessionalDegreeMapper professionalDegreeMapper) {
         this.professionalDegreeRepository = professionalDegreeRepository;
         this.professionalDegreeMapper = professionalDegreeMapper;
-        this.professionalDegreeSearchRepository = professionalDegreeSearchRepository;
     }
 
     /**

@@ -6,6 +6,7 @@ import com.dhomoni.search.web.rest.errors.BadRequestAlertException;
 import com.dhomoni.search.web.rest.util.HeaderUtil;
 import com.dhomoni.search.web.rest.util.PaginationUtil;
 import com.dhomoni.search.service.dto.DoctorDTO;
+import com.dhomoni.search.service.dto.SearchDTO;
 import com.dhomoni.search.service.dto.DoctorCriteria;
 import com.dhomoni.search.service.DoctorQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -113,10 +114,10 @@ public class DoctorResource {
      */
     @GetMapping("/_search/doctors")
     @Timed
-    public ResponseEntity<List<DoctorDTO>> searchDoctors(@RequestParam String query, Pageable pageable) {
-        log.debug("REST request to search for a page of Doctors for query {}", query);
-        Page<DoctorDTO> page = doctorService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/doctors");
+    public ResponseEntity<List<DoctorDTO>> searchDoctors(@Valid SearchDTO searchDTO, Pageable pageable) {
+        log.debug("REST request to search for a page of Doctors for query {}", searchDTO.getQuery());
+        Page<DoctorDTO> page = doctorService.search(searchDTO, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(searchDTO.getQuery(), page, "/api/_search/doctors");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 

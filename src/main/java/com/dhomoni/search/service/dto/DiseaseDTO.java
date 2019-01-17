@@ -19,7 +19,7 @@ public class DiseaseDTO implements Serializable {
 
     private String symptoms;
 
-    private Long deptId;
+    private Long medicalDepartmentId;
 
     public Long getId() {
         return id;
@@ -53,12 +53,12 @@ public class DiseaseDTO implements Serializable {
         this.symptoms = symptoms;
     }
 
-    public Long getDeptId() {
-        return deptId;
+    public Long getMedicalDepartmentId() {
+        return medicalDepartmentId;
     }
 
-    public void setDeptId(Long medicalDepartmentId) {
-        this.deptId = medicalDepartmentId;
+    public void setMedicalDepartmentId(Long medicalDepartmentId) {
+        this.medicalDepartmentId = medicalDepartmentId;
     }
 
     @Override
@@ -89,7 +89,7 @@ public class DiseaseDTO implements Serializable {
             ", medicalName='" + getMedicalName() + "'" +
             ", generalName='" + getGeneralName() + "'" +
             ", symptoms='" + getSymptoms() + "'" +
-            ", dept=" + getDeptId() +
+            ", dept=" + getMedicalDepartmentId() +
             "}";
     }
 }

@@ -17,7 +17,6 @@ import io.github.jhipster.service.QueryService;
 import com.dhomoni.search.domain.WeeklyVisitingHour;
 import com.dhomoni.search.domain.*; // for static metamodels
 import com.dhomoni.search.repository.WeeklyVisitingHourRepository;
-import com.dhomoni.search.repository.search.WeeklyVisitingHourSearchRepository;
 import com.dhomoni.search.service.dto.WeeklyVisitingHourCriteria;
 import com.dhomoni.search.service.dto.WeeklyVisitingHourDTO;
 import com.dhomoni.search.service.mapper.WeeklyVisitingHourMapper;
@@ -38,12 +37,9 @@ public class WeeklyVisitingHourQueryService extends QueryService<WeeklyVisitingH
 
     private final WeeklyVisitingHourMapper weeklyVisitingHourMapper;
 
-    private final WeeklyVisitingHourSearchRepository weeklyVisitingHourSearchRepository;
-
-    public WeeklyVisitingHourQueryService(WeeklyVisitingHourRepository weeklyVisitingHourRepository, WeeklyVisitingHourMapper weeklyVisitingHourMapper, WeeklyVisitingHourSearchRepository weeklyVisitingHourSearchRepository) {
+    public WeeklyVisitingHourQueryService(WeeklyVisitingHourRepository weeklyVisitingHourRepository, WeeklyVisitingHourMapper weeklyVisitingHourMapper) {
         this.weeklyVisitingHourRepository = weeklyVisitingHourRepository;
         this.weeklyVisitingHourMapper = weeklyVisitingHourMapper;
-        this.weeklyVisitingHourSearchRepository = weeklyVisitingHourSearchRepository;
     }
 
     /**

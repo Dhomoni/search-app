@@ -1,21 +1,18 @@
 package com.dhomoni.search.service;
 
-import com.dhomoni.search.domain.WeeklyVisitingHour;
-import com.dhomoni.search.repository.WeeklyVisitingHourRepository;
-import com.dhomoni.search.repository.search.WeeklyVisitingHourSearchRepository;
-import com.dhomoni.search.service.dto.WeeklyVisitingHourDTO;
-import com.dhomoni.search.service.mapper.WeeklyVisitingHourMapper;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.dhomoni.search.domain.WeeklyVisitingHour;
+import com.dhomoni.search.repository.WeeklyVisitingHourRepository;
+import com.dhomoni.search.service.dto.WeeklyVisitingHourDTO;
+import com.dhomoni.search.service.mapper.WeeklyVisitingHourMapper;
 
 /**
  * Service Implementation for managing WeeklyVisitingHour.
@@ -30,12 +27,9 @@ public class WeeklyVisitingHourService {
 
     private final WeeklyVisitingHourMapper weeklyVisitingHourMapper;
 
-    private final WeeklyVisitingHourSearchRepository weeklyVisitingHourSearchRepository;
-
-    public WeeklyVisitingHourService(WeeklyVisitingHourRepository weeklyVisitingHourRepository, WeeklyVisitingHourMapper weeklyVisitingHourMapper, WeeklyVisitingHourSearchRepository weeklyVisitingHourSearchRepository) {
+    public WeeklyVisitingHourService(WeeklyVisitingHourRepository weeklyVisitingHourRepository, WeeklyVisitingHourMapper weeklyVisitingHourMapper) {
         this.weeklyVisitingHourRepository = weeklyVisitingHourRepository;
         this.weeklyVisitingHourMapper = weeklyVisitingHourMapper;
-        this.weeklyVisitingHourSearchRepository = weeklyVisitingHourSearchRepository;
     }
 
     /**
@@ -50,7 +44,6 @@ public class WeeklyVisitingHourService {
         WeeklyVisitingHour weeklyVisitingHour = weeklyVisitingHourMapper.toEntity(weeklyVisitingHourDTO);
         weeklyVisitingHour = weeklyVisitingHourRepository.save(weeklyVisitingHour);
         WeeklyVisitingHourDTO result = weeklyVisitingHourMapper.toDto(weeklyVisitingHour);
-        weeklyVisitingHourSearchRepository.save(weeklyVisitingHour);
         return result;
     }
 
@@ -89,20 +82,5 @@ public class WeeklyVisitingHourService {
     public void delete(Long id) {
         log.debug("Request to delete WeeklyVisitingHour : {}", id);
         weeklyVisitingHourRepository.deleteById(id);
-        weeklyVisitingHourSearchRepository.deleteById(id);
-    }
-
-    /**
-     * Search for the weeklyVisitingHour corresponding to the query.
-     *
-     * @param query the query of the search
-     * @param pageable the pagination information
-     * @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public Page<WeeklyVisitingHourDTO> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of WeeklyVisitingHours for query {}", query);
-        return weeklyVisitingHourSearchRepository.search(queryStringQuery(query), pageable)
-            .map(weeklyVisitingHourMapper::toDto);
     }
 }

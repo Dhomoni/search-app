@@ -146,22 +146,4 @@ public class MedicalDepartmentResource {
         medicalDepartmentService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-
-    /**
-     * SEARCH  /_search/medical-departments?query=:query : search for the medicalDepartment corresponding
-     * to the query.
-     *
-     * @param query the query of the medicalDepartment search
-     * @param pageable the pagination information
-     * @return the result of the search
-     */
-    @GetMapping("/_search/medical-departments")
-    @Timed
-    public ResponseEntity<List<MedicalDepartmentDTO>> searchMedicalDepartments(@RequestParam String query, Pageable pageable) {
-        log.debug("REST request to search for a page of MedicalDepartments for query {}", query);
-        Page<MedicalDepartmentDTO> page = medicalDepartmentService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/medical-departments");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
 }

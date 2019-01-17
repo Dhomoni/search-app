@@ -64,7 +64,7 @@ entity Disease {
 }
 
 relationship OneToMany {
-	MedicalDepartment{diseases} to Disease{dept}
+	MedicalDepartment{diseases} to Disease{medicalDepartment}
 }
 
 entity Chamber {

@@ -11,10 +11,10 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring", uses = {MedicalDepartmentMapper.class})
 public interface DiseaseMapper extends EntityMapper<DiseaseDTO, Disease> {
 
-    @Mapping(source = "dept.id", target = "deptId")
+    @Mapping(source = "medicalDepartment.id", target = "medicalDepartmentId")
     DiseaseDTO toDto(Disease disease);
 
-    @Mapping(source = "deptId", target = "dept")
+    @Mapping(source = "medicalDepartmentId", target = "medicalDepartment")
     Disease toEntity(DiseaseDTO diseaseDTO);
 
     default Disease fromId(Long id) {

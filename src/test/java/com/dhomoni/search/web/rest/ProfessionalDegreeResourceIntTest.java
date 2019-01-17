@@ -1,19 +1,19 @@
 package com.dhomoni.search.web.rest;
 
-import com.dhomoni.search.SearchApp;
+import static com.dhomoni.search.web.rest.TestUtil.createFormattingConversionService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.dhomoni.search.config.SecurityBeanOverrideConfiguration;
+import java.util.List;
 
-import com.dhomoni.search.domain.ProfessionalDegree;
-import com.dhomoni.search.domain.Doctor;
-import com.dhomoni.search.repository.ProfessionalDegreeRepository;
-import com.dhomoni.search.repository.search.ProfessionalDegreeSearchRepository;
-import com.dhomoni.search.service.ProfessionalDegreeService;
-import com.dhomoni.search.service.dto.ProfessionalDegreeDTO;
-import com.dhomoni.search.service.mapper.ProfessionalDegreeMapper;
-import com.dhomoni.search.web.rest.errors.ExceptionTranslator;
-import com.dhomoni.search.service.dto.ProfessionalDegreeCriteria;
-import com.dhomoni.search.service.ProfessionalDegreeQueryService;
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,8 +21,6 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -32,18 +30,16 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Validator;
 
-import javax.persistence.EntityManager;
-import java.util.Collections;
-import java.util.List;
-
-
-import static com.dhomoni.search.web.rest.TestUtil.createFormattingConversionService;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import com.dhomoni.search.SearchApp;
+import com.dhomoni.search.config.SecurityBeanOverrideConfiguration;
+import com.dhomoni.search.domain.Doctor;
+import com.dhomoni.search.domain.ProfessionalDegree;
+import com.dhomoni.search.repository.ProfessionalDegreeRepository;
+import com.dhomoni.search.service.ProfessionalDegreeQueryService;
+import com.dhomoni.search.service.ProfessionalDegreeService;
+import com.dhomoni.search.service.dto.ProfessionalDegreeDTO;
+import com.dhomoni.search.service.mapper.ProfessionalDegreeMapper;
+import com.dhomoni.search.web.rest.errors.ExceptionTranslator;
 
 /**
  * Test class for the ProfessionalDegreeResource REST controller.
@@ -71,14 +67,6 @@ public class ProfessionalDegreeResourceIntTest {
 
     @Autowired
     private ProfessionalDegreeService professionalDegreeService;
-
-    /**
-     * This repository is mocked in the com.dhomoni.search.repository.search test package.
-     *
-     * @see com.dhomoni.search.repository.search.ProfessionalDegreeSearchRepositoryMockConfiguration
-     */
-    @Autowired
-    private ProfessionalDegreeSearchRepository mockProfessionalDegreeSearchRepository;
 
     @Autowired
     private ProfessionalDegreeQueryService professionalDegreeQueryService;
@@ -152,9 +140,6 @@ public class ProfessionalDegreeResourceIntTest {
         assertThat(testProfessionalDegree.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testProfessionalDegree.getInstitute()).isEqualTo(DEFAULT_INSTITUTE);
         assertThat(testProfessionalDegree.getPassingYear()).isEqualTo(DEFAULT_PASSING_YEAR);
-
-        // Validate the ProfessionalDegree in Elasticsearch
-        verify(mockProfessionalDegreeSearchRepository, times(1)).save(testProfessionalDegree);
     }
 
     @Test
@@ -175,9 +160,6 @@ public class ProfessionalDegreeResourceIntTest {
         // Validate the ProfessionalDegree in the database
         List<ProfessionalDegree> professionalDegreeList = professionalDegreeRepository.findAll();
         assertThat(professionalDegreeList).hasSize(databaseSizeBeforeCreate);
-
-        // Validate the ProfessionalDegree in Elasticsearch
-        verify(mockProfessionalDegreeSearchRepository, times(0)).save(professionalDegree);
     }
 
     @Test
@@ -450,9 +432,6 @@ public class ProfessionalDegreeResourceIntTest {
         assertThat(testProfessionalDegree.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testProfessionalDegree.getInstitute()).isEqualTo(UPDATED_INSTITUTE);
         assertThat(testProfessionalDegree.getPassingYear()).isEqualTo(UPDATED_PASSING_YEAR);
-
-        // Validate the ProfessionalDegree in Elasticsearch
-        verify(mockProfessionalDegreeSearchRepository, times(1)).save(testProfessionalDegree);
     }
 
     @Test
@@ -472,9 +451,6 @@ public class ProfessionalDegreeResourceIntTest {
         // Validate the ProfessionalDegree in the database
         List<ProfessionalDegree> professionalDegreeList = professionalDegreeRepository.findAll();
         assertThat(professionalDegreeList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the ProfessionalDegree in Elasticsearch
-        verify(mockProfessionalDegreeSearchRepository, times(0)).save(professionalDegree);
     }
 
     @Test
@@ -493,26 +469,6 @@ public class ProfessionalDegreeResourceIntTest {
         // Validate the database is empty
         List<ProfessionalDegree> professionalDegreeList = professionalDegreeRepository.findAll();
         assertThat(professionalDegreeList).hasSize(databaseSizeBeforeDelete - 1);
-
-        // Validate the ProfessionalDegree in Elasticsearch
-        verify(mockProfessionalDegreeSearchRepository, times(1)).deleteById(professionalDegree.getId());
-    }
-
-    @Test
-    @Transactional
-    public void searchProfessionalDegree() throws Exception {
-        // Initialize the database
-        professionalDegreeRepository.saveAndFlush(professionalDegree);
-        when(mockProfessionalDegreeSearchRepository.search(queryStringQuery("id:" + professionalDegree.getId()), PageRequest.of(0, 20)))
-            .thenReturn(new PageImpl<>(Collections.singletonList(professionalDegree), PageRequest.of(0, 1), 1));
-        // Search the professionalDegree
-        restProfessionalDegreeMockMvc.perform(get("/api/_search/professional-degrees?query=id:" + professionalDegree.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(professionalDegree.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
-            .andExpect(jsonPath("$.[*].institute").value(hasItem(DEFAULT_INSTITUTE)))
-            .andExpect(jsonPath("$.[*].passingYear").value(hasItem(DEFAULT_PASSING_YEAR)));
     }
 
     @Test

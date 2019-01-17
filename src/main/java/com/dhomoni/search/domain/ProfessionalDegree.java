@@ -7,6 +7,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -16,7 +19,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "professional_degree")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "professionaldegree")
 public class ProfessionalDegree implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -24,6 +26,7 @@ public class ProfessionalDegree implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
+    @Field(type = FieldType.Long, index=false)
     private Long id;
 
     @Column(name = "name")
@@ -33,12 +36,15 @@ public class ProfessionalDegree implements Serializable {
     private String institute;
 
     @Column(name = "country")
+    @Field(type = FieldType.Text, index=false)
     private String country;
 
     @Column(name = "enrollment_year")
+    @Field(type = FieldType.Integer, index=false)
     private Integer enrollmentYear;
 
     @Column(name = "passing_year")
+    @Field(type = FieldType.Integer, index=false)
     private Integer passingYear;
 
     @ManyToOne

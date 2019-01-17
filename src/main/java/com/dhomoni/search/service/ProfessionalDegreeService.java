@@ -2,7 +2,6 @@ package com.dhomoni.search.service;
 
 import com.dhomoni.search.domain.ProfessionalDegree;
 import com.dhomoni.search.repository.ProfessionalDegreeRepository;
-import com.dhomoni.search.repository.search.ProfessionalDegreeSearchRepository;
 import com.dhomoni.search.service.dto.ProfessionalDegreeDTO;
 import com.dhomoni.search.service.mapper.ProfessionalDegreeMapper;
 import org.slf4j.Logger;
@@ -30,12 +29,9 @@ public class ProfessionalDegreeService {
 
     private final ProfessionalDegreeMapper professionalDegreeMapper;
 
-    private final ProfessionalDegreeSearchRepository professionalDegreeSearchRepository;
-
-    public ProfessionalDegreeService(ProfessionalDegreeRepository professionalDegreeRepository, ProfessionalDegreeMapper professionalDegreeMapper, ProfessionalDegreeSearchRepository professionalDegreeSearchRepository) {
+    public ProfessionalDegreeService(ProfessionalDegreeRepository professionalDegreeRepository, ProfessionalDegreeMapper professionalDegreeMapper) {
         this.professionalDegreeRepository = professionalDegreeRepository;
         this.professionalDegreeMapper = professionalDegreeMapper;
-        this.professionalDegreeSearchRepository = professionalDegreeSearchRepository;
     }
 
     /**
@@ -50,7 +46,6 @@ public class ProfessionalDegreeService {
         ProfessionalDegree professionalDegree = professionalDegreeMapper.toEntity(professionalDegreeDTO);
         professionalDegree = professionalDegreeRepository.save(professionalDegree);
         ProfessionalDegreeDTO result = professionalDegreeMapper.toDto(professionalDegree);
-        professionalDegreeSearchRepository.save(professionalDegree);
         return result;
     }
 
@@ -89,20 +84,5 @@ public class ProfessionalDegreeService {
     public void delete(Long id) {
         log.debug("Request to delete ProfessionalDegree : {}", id);
         professionalDegreeRepository.deleteById(id);
-        professionalDegreeSearchRepository.deleteById(id);
-    }
-
-    /**
-     * Search for the professionalDegree corresponding to the query.
-     *
-     * @param query the query of the search
-     * @param pageable the pagination information
-     * @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public Page<ProfessionalDegreeDTO> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of ProfessionalDegrees for query {}", query);
-        return professionalDegreeSearchRepository.search(queryStringQuery(query), pageable)
-            .map(professionalDegreeMapper::toDto);
     }
 }

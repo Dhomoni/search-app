@@ -1,17 +1,24 @@
 package com.dhomoni.search.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
-
-import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
+import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  * A MedicalDepartment.
@@ -19,7 +26,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "medical_department")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "medicaldepartment")
 public class MedicalDepartment implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -27,15 +33,18 @@ public class MedicalDepartment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
+    @Field(type = FieldType.Long, index=false)
     private Long id;
 
     @NotNull
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "dept")
+    @OneToMany(mappedBy = "medicalDepartment")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @Field(type = FieldType.Nested, includeInParent = true, ignoreFields = {"medicalDepartment"})
     private Set<Disease> diseases = new HashSet<>();
+    
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -69,13 +78,13 @@ public class MedicalDepartment implements Serializable {
 
     public MedicalDepartment addDiseases(Disease disease) {
         this.diseases.add(disease);
-        disease.setDept(this);
+        disease.setMedicalDepartment(this);
         return this;
     }
 
     public MedicalDepartment removeDiseases(Disease disease) {
         this.diseases.remove(disease);
-        disease.setDept(null);
+        disease.setMedicalDepartment(null);
         return this;
     }
 

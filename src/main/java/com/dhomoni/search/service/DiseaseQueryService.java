@@ -104,7 +104,7 @@ public class DiseaseQueryService extends QueryService<Disease> {
             }
             if (criteria.getDeptId() != null) {
                 specification = specification.and(buildSpecification(criteria.getDeptId(),
-                    root -> root.join(Disease_.dept, JoinType.LEFT).get(MedicalDepartment_.id)));
+                    root -> root.join(Disease_.medicalDepartment, JoinType.LEFT).get(MedicalDepartment_.id)));
             }
         }
         return specification;

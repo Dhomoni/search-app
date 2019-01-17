@@ -23,7 +23,7 @@
     "relationships": [
         {
             "relationshipType": "many-to-one",
-            "relationshipName": "dept",
+            "relationshipName": "medicalDepartment",
             "otherEntityName": "medicalDepartment",
             "otherEntityField": "id"
         }

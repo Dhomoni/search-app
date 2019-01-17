@@ -14,7 +14,7 @@
             "relationshipType": "one-to-many",
             "relationshipName": "diseases",
             "otherEntityName": "disease",
-            "otherEntityRelationshipName": "dept"
+            "otherEntityRelationshipName": "medicalDepartment"
         }
     ],
     "changelogDate": "20181226102645",

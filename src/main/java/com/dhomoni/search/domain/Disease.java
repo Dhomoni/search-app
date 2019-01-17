@@ -8,6 +8,9 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -25,6 +28,7 @@ public class Disease implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
+    @Field(type = FieldType.Long, index = false)
     private Long id;
 
     @NotNull
@@ -40,7 +44,8 @@ public class Disease implements Serializable {
 
     @ManyToOne
     @JsonIgnoreProperties("diseases")
-    private MedicalDepartment dept;
+    @Field(type = FieldType.Object, ignoreFields = {"diseases"})
+    private MedicalDepartment medicalDepartment;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -90,17 +95,17 @@ public class Disease implements Serializable {
         this.symptoms = symptoms;
     }
 
-    public MedicalDepartment getDept() {
-        return dept;
+    public MedicalDepartment getMedicalDepartment() {
+        return medicalDepartment;
     }
 
-    public Disease dept(MedicalDepartment medicalDepartment) {
-        this.dept = medicalDepartment;
+    public Disease medicalDepartment(MedicalDepartment medicalDepartment) {
+        this.medicalDepartment = medicalDepartment;
         return this;
     }
 
-    public void setDept(MedicalDepartment medicalDepartment) {
-        this.dept = medicalDepartment;
+    public void setMedicalDepartment(MedicalDepartment medicalDepartment) {
+        this.medicalDepartment = medicalDepartment;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

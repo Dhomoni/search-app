@@ -146,22 +146,4 @@ public class WeeklyVisitingHourResource {
         weeklyVisitingHourService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-
-    /**
-     * SEARCH  /_search/weekly-visiting-hours?query=:query : search for the weeklyVisitingHour corresponding
-     * to the query.
-     *
-     * @param query the query of the weeklyVisitingHour search
-     * @param pageable the pagination information
-     * @return the result of the search
-     */
-    @GetMapping("/_search/weekly-visiting-hours")
-    @Timed
-    public ResponseEntity<List<WeeklyVisitingHourDTO>> searchWeeklyVisitingHours(@RequestParam String query, Pageable pageable) {
-        log.debug("REST request to search for a page of WeeklyVisitingHours for query {}", query);
-        Page<WeeklyVisitingHourDTO> page = weeklyVisitingHourService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/weekly-visiting-hours");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
 }

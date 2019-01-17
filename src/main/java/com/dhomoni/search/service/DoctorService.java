@@ -4,18 +4,31 @@ import com.dhomoni.search.domain.Doctor;
 import com.dhomoni.search.repository.DoctorRepository;
 import com.dhomoni.search.repository.search.DoctorSearchRepository;
 import com.dhomoni.search.service.dto.DoctorDTO;
+import com.dhomoni.search.service.dto.SearchDTO;
 import com.dhomoni.search.service.mapper.DoctorMapper;
+import com.vividsolutions.jts.geom.Point;
+
+import org.elasticsearch.common.geo.ShapeRelation;
+import org.elasticsearch.common.geo.builders.CircleBuilder;
+import org.elasticsearch.common.geo.builders.ShapeBuilders;
+import org.elasticsearch.common.unit.DistanceUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
+
+import org.elasticsearch.index.mapper.GeoShapeFieldMapper.GeoShapeFieldType;
+import org.elasticsearch.index.query.GeoDistanceRangeQueryBuilder;
 
 /**
  * Service Implementation for managing Doctor.
@@ -100,9 +113,23 @@ public class DoctorService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<DoctorDTO> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of Doctors for query {}", query);
-        return doctorSearchRepository.search(queryStringQuery(query), pageable)
+    public Page<DoctorDTO> search(SearchDTO searchDTO, Pageable pageable) {
+        log.debug("Request to search for a page of Doctors for query {}", searchDTO.getQuery());
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+        CircleBuilder circleBuilder = ShapeBuilders.newCircleBuilder().radius(10, DistanceUnit.KILOMETERS);
+        searchDTO.getLocation().ifPresent(loc -> {
+			try {
+				queryBuilder.withFilter(geoShapeQuery("chambers.location", circleBuilder.center(loc.getY(), loc.getX()))
+											.relation(ShapeRelation.WITHIN));
+			} catch (IOException e) {
+				log.debug(e.getMessage(), e);
+			}
+		});
+        SearchQuery searchQuery = queryBuilder
+        		  .withQuery(queryStringQuery(searchDTO.getQuery()))
+        		  .withPageable(pageable)
+        		  .build();
+        return doctorSearchRepository.search(searchQuery)
             .map(doctorMapper::toDto);
     }
 }
