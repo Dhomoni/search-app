@@ -29,7 +29,7 @@ public class WeeklyVisitingHour implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
-    @Field(type = FieldType.Long, index=false)
+    @Field(type = FieldType.Long, index = false)
     private Long id;
 
     @Enumerated(EnumType.STRING)
@@ -39,25 +39,25 @@ public class WeeklyVisitingHour implements Serializable {
     @Min(value = 0)
     @Max(value = 23)
     @Column(name = "start_hour")
-    @Field(type = FieldType.Integer, index=false)
+    @Field(type = FieldType.Integer, index = false)
     private Integer startHour;
 
     @Min(value = 0)
     @Max(value = 59)
     @Column(name = "start_minute")
-    @Field(type = FieldType.Integer, index=false)
+    @Field(type = FieldType.Integer, index = false)
     private Integer startMinute;
 
     @Min(value = 0)
     @Max(value = 23)
     @Column(name = "end_hour")
-    @Field(type = FieldType.Integer, index=false)
+    @Field(type = FieldType.Integer, index = false)
     private Integer endHour;
 
     @Min(value = 0)
     @Max(value = 59)
     @Column(name = "end_minute")
-    @Field(type = FieldType.Integer, index=false)
+    @Field(type = FieldType.Integer, index = false)
     private Integer endMinute;
 
     @ManyToOne

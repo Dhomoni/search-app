@@ -43,11 +43,11 @@ public class Doctor implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
-    @Field(type = FieldType.Long, index=false)
+    @Field(type = FieldType.Long, index = false)
     private Long id;
 
     @Column(name = "registration_id", unique = true)
-    @Field(type = FieldType.Long, store=false)
+    @Field(type = FieldType.Long, store = false)
     private Long registrationId;
 
     @Column(name = "first_name")
@@ -64,15 +64,15 @@ public class Doctor implements Serializable {
 
     @NotNull
     @Column(name = "licence_number", nullable = false)
-    @Field(type = FieldType.Text, store=false)
+    @Field(type = FieldType.Text, store = false)
     private String licenceNumber;
 
     @Column(name = "national_id")
-    @Field(type = FieldType.Text, store=false)
+    @Field(type = FieldType.Text, store = false)
     private String nationalId;
 
     @Column(name = "passport_no")
-    @Field(type = FieldType.Text, store=false)
+    @Field(type = FieldType.Text, store = false)
     private String passportNo;
 
     @Enumerated(EnumType.STRING)
@@ -87,20 +87,20 @@ public class Doctor implements Serializable {
     private String description;
 
     @Column(name = "address")
-    @Field(type = FieldType.Text, store=false)
+    @Field(type = FieldType.Text, store = false)
     private String address;
     
     @Column(name = "GEOM", columnDefinition = "GEOMETRY(Point, 4326)")
-    @Field(type = FieldType.Object, store=false)
+    @Field(type = FieldType.Object, store = false)
     private Point location;
 
     @Lob
     @Column(name = "image")
-    @Field(type = FieldType.Keyword, index=false)
+    @Field(type = FieldType.Keyword, index = false)
     private byte[] image;
 
     @Column(name = "image_content_type")
-    @Field(type = FieldType.Keyword, index=false)
+    @Field(type = FieldType.Keyword, index = false)
     private String imageContentType;
 
     @Column(name = "activated")

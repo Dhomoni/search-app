@@ -26,7 +26,7 @@ public class ProfessionalDegree implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
-    @Field(type = FieldType.Long, index=false)
+    @Field(type = FieldType.Long, index = false)
     private Long id;
 
     @Column(name = "name")
@@ -36,15 +36,15 @@ public class ProfessionalDegree implements Serializable {
     private String institute;
 
     @Column(name = "country")
-    @Field(type = FieldType.Text, index=false)
+    @Field(type = FieldType.Text, index = false)
     private String country;
 
     @Column(name = "enrollment_year")
-    @Field(type = FieldType.Integer, index=false)
+    @Field(type = FieldType.Integer, index = false)
     private Integer enrollmentYear;
 
     @Column(name = "passing_year")
-    @Field(type = FieldType.Integer, index=false)
+    @Field(type = FieldType.Integer, index = false)
     private Integer passingYear;
 
     @ManyToOne

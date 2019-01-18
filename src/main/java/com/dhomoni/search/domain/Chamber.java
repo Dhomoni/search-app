@@ -36,6 +36,7 @@ public class Chamber implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
+    @Field(type = FieldType.Long, index = false)
     private Long id;
 
     @Column(name = "address")
