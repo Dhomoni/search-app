@@ -36,7 +36,7 @@ public class Chamber implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
-    @Field(type = FieldType.Long, index = false)
+    @Field(type = FieldType.Long)
     private Long id;
 
     @Column(name = "address")
@@ -52,7 +52,7 @@ public class Chamber implements Serializable {
     private Double fee;
 
     @ManyToOne
-    @JsonIgnoreProperties("chambers")
+    @JsonIgnoreProperties({"chambers", "professionalDegrees"})
     private Doctor doctor;
 
     @OneToMany(mappedBy = "chamber")

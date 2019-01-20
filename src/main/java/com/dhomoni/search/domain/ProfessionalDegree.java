@@ -1,17 +1,24 @@
 package com.dhomoni.search.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.io.Serializable;
+import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
-
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import java.io.Serializable;
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * A ProfessionalDegree.
@@ -26,17 +33,18 @@ public class ProfessionalDegree implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
-    @Field(type = FieldType.Long, index = false)
+    @Field(type = FieldType.Long)
     private Long id;
 
     @Column(name = "name")
     private String name;
 
     @Column(name = "institute")
+    @Field(type = FieldType.Keyword)
     private String institute;
 
     @Column(name = "country")
-    @Field(type = FieldType.Text, index = false)
+    @Field(type = FieldType.Keyword, index = false)
     private String country;
 
     @Column(name = "enrollment_year")
@@ -48,7 +56,7 @@ public class ProfessionalDegree implements Serializable {
     private Integer passingYear;
 
     @ManyToOne
-    @JsonIgnoreProperties("professionalDegrees")
+    @JsonIgnoreProperties({"chambers", "professionalDegrees"})
     private Doctor doctor;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

@@ -3,6 +3,8 @@ package com.dhomoni.search.service.dto;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Set;
+
 import javax.persistence.Lob;
 import com.dhomoni.search.domain.enumeration.DoctorType;
 
@@ -46,7 +48,13 @@ public class DoctorDTO implements Serializable {
 
     private Boolean activated;
 
-    private Long medicalDepartmentId;
+//    private Long medicalDepartmentId;
+    
+    private MedicalDepartmentDTO medicalDepartment;
+    
+    private Set<ChamberDTO> chambers;
+    
+    private Set<ProfessionalDegreeDTO> professionalDegrees;
 
     public Long getId() {
         return id;
@@ -175,14 +183,38 @@ public class DoctorDTO implements Serializable {
     public void setActivated(Boolean activated) {
         this.activated = activated;
     }
+    
+	public MedicalDepartmentDTO getMedicalDepartment() {
+		return medicalDepartment;
+	}
 
-    public Long getMedicalDepartmentId() {
-        return medicalDepartmentId;
-    }
+	public void setMedicalDepartment(MedicalDepartmentDTO medicalDepartment) {
+		this.medicalDepartment = medicalDepartment;
+	}
 
-    public void setMedicalDepartmentId(Long medicalDepartmentId) {
-        this.medicalDepartmentId = medicalDepartmentId;
-    }
+	public Set<ChamberDTO> getChambers() {
+		return chambers;
+	}
+
+	public void setChambers(Set<ChamberDTO> chambers) {
+		this.chambers = chambers;
+	}
+
+	public Set<ProfessionalDegreeDTO> getProfessionalDegrees() {
+		return professionalDegrees;
+	}
+
+	public void setProfessionalDegrees(Set<ProfessionalDegreeDTO> professionalDegrees) {
+		this.professionalDegrees = professionalDegrees;
+	}
+
+//    public Long getMedicalDepartmentId() {
+//        return medicalDepartmentId;
+//    }
+//
+//    public void setMedicalDepartmentId(Long medicalDepartmentId) {
+//        this.medicalDepartmentId = medicalDepartmentId;
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -223,7 +255,7 @@ public class DoctorDTO implements Serializable {
             ", address='" + getAddress() + "'" +
             ", image='" + getImage() + "'" +
             ", activated='" + isActivated() + "'" +
-            ", medicalDepartment=" + getMedicalDepartmentId() +
+            ", medicalDepartment=" + getMedicalDepartment() +
             "}";
     }
 }

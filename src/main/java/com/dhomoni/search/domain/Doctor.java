@@ -43,11 +43,11 @@ public class Doctor implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
-    @Field(type = FieldType.Long, index = false)
+    @Field(type = FieldType.Long)
     private Long id;
 
     @Column(name = "registration_id", unique = true)
-    @Field(type = FieldType.Long, store = false)
+    @Field(type = FieldType.Long, index = false)
     private Long registrationId;
 
     @Column(name = "first_name")
@@ -57,26 +57,29 @@ public class Doctor implements Serializable {
     private String lastName;
 
     @Column(name = "email")
+    @Field(type = FieldType.Keyword)
     private String email;
 
     @Column(name = "phone")
+    @Field(type = FieldType.Keyword)
     private String phone;
 
     @NotNull
     @Column(name = "licence_number", nullable = false)
-    @Field(type = FieldType.Text, store = false)
+    @Field(type = FieldType.Keyword, index = false)
     private String licenceNumber;
 
     @Column(name = "national_id")
-    @Field(type = FieldType.Text, store = false)
+    @Field(type = FieldType.Keyword, index = false)
     private String nationalId;
 
     @Column(name = "passport_no")
-    @Field(type = FieldType.Text, store = false)
+    @Field(type = FieldType.Keyword, index = false)
     private String passportNo;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
+    @Field(type = FieldType.Keyword)
     private DoctorType type;
 
     @Column(name = "designation")
@@ -84,14 +87,15 @@ public class Doctor implements Serializable {
 
     @Lob
     @Column(name = "description")
+    @Field(type = FieldType.Text, index = false)
     private String description;
 
     @Column(name = "address")
-    @Field(type = FieldType.Text, store = false)
+    @Field(type = FieldType.Keyword, index = false)
     private String address;
     
     @Column(name = "GEOM", columnDefinition = "GEOMETRY(Point, 4326)")
-    @Field(type = FieldType.Object, store = false)
+    @Field(type = FieldType.Object, index = false)
     private Point location;
 
     @Lob
@@ -104,10 +108,12 @@ public class Doctor implements Serializable {
     private String imageContentType;
 
     @Column(name = "activated")
+    @Field(type = FieldType.Boolean, index = false)
     private Boolean activated;
 
     @OneToOne    
     @JoinColumn(unique = true)
+    @Field(type = FieldType.Object)
     private MedicalDepartment medicalDepartment;
 
     @OneToMany(mappedBy = "doctor")

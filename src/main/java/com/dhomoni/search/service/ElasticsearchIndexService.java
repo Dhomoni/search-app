@@ -1,10 +1,18 @@
 package com.dhomoni.search.service;
 
-import com.codahale.metrics.annotation.Timed;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.dhomoni.search.domain.*;
-import com.dhomoni.search.repository.*;
-import com.dhomoni.search.repository.search.*;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
+
+import javax.persistence.ManyToMany;
 
 import org.elasticsearch.ResourceAlreadyExistsException;
 import org.slf4j.Logger;
@@ -19,18 +27,20 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.ManyToMany;
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
+import com.codahale.metrics.annotation.Timed;
+import com.dhomoni.search.domain.Disease;
+import com.dhomoni.search.domain.Doctor;
+import com.dhomoni.search.domain.Medicine;
+import com.dhomoni.search.domain.Patient;
+import com.dhomoni.search.repository.DiseaseRepository;
+import com.dhomoni.search.repository.DoctorRepository;
+import com.dhomoni.search.repository.MedicineRepository;
+import com.dhomoni.search.repository.PatientRepository;
+import com.dhomoni.search.repository.search.DiseaseSearchRepository;
+import com.dhomoni.search.repository.search.DoctorSearchRepository;
+import com.dhomoni.search.repository.search.MedicineSearchRepository;
+import com.dhomoni.search.repository.search.PatientSearchRepository;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Service
 @Transactional(readOnly = true)
@@ -88,7 +98,6 @@ public class ElasticsearchIndexService {
                 reindexForClass(Doctor.class, doctorRepository, doctorSearchRepository);
                 reindexForClass(Medicine.class, medicineRepository, medicineSearchRepository);
                 reindexForClass(Patient.class, patientRepository, patientSearchRepository);
-
                 log.info("Elasticsearch: Successfully performed reindexing");
             } finally {
                 reindexLock.unlock();
@@ -112,8 +121,9 @@ public class ElasticsearchIndexService {
             // if a JHipster entity field is the owner side of a many-to-many relationship, it should be loaded manually
             List<Method> relationshipGetters = Arrays.stream(entityClass.getDeclaredFields())
                 .filter(field -> field.getType().equals(Set.class))
-                .filter(field -> field.getAnnotation(ManyToMany.class) != null)
-                .filter(field -> field.getAnnotation(ManyToMany.class).mappedBy().isEmpty())
+                .filter(field -> field.getAnnotation(ManyToMany.class) == null
+                		|| (field.getAnnotation(ManyToMany.class) != null 
+                			&& field.getAnnotation(ManyToMany.class).mappedBy().isEmpty()))
                 .filter(field -> field.getAnnotation(JsonIgnore.class) == null)
                 .map(field -> {
                     try {
@@ -126,7 +136,6 @@ public class ElasticsearchIndexService {
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-
             int size = 100;
             for (int i = 0; i <= jpaRepository.count() / size; i++) {
                 Pageable page = PageRequest.of(i, size);
@@ -134,7 +143,7 @@ public class ElasticsearchIndexService {
                 Page<T> results = jpaRepository.findAll(page);
                 results.map(result -> {
                     // if there are any relationships to load, do it now
-                    relationshipGetters.forEach(method -> {
+                	relationshipGetters.forEach(method -> {
                         try {
                             // eagerly load the relationship set
                             ((Set) method.invoke(result)).size();

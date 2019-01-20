@@ -33,7 +33,7 @@ public class MedicalDepartment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
-    @Field(type = FieldType.Long, index = false)
+    @Field(type = FieldType.Long)
     private Long id;
 
     @NotNull
