@@ -1,10 +1,5 @@
 package com.dhomoni.search.config;
 
-import com.dhomoni.search.config.oauth2.OAuth2JwtAccessTokenConverter;
-import com.dhomoni.search.config.oauth2.OAuth2Properties;
-import com.dhomoni.search.security.oauth2.OAuth2SignatureVerifierClient;
-import com.dhomoni.search.security.AuthoritiesConstants;
-
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cloud.client.loadbalancer.RestTemplateCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -17,8 +12,12 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.client.RestTemplate;
+
+import com.dhomoni.search.config.oauth2.OAuth2JwtAccessTokenConverter;
+import com.dhomoni.search.config.oauth2.OAuth2Properties;
+import com.dhomoni.search.security.AuthoritiesConstants;
+import com.dhomoni.search.security.oauth2.OAuth2SignatureVerifierClient;
 
 @Configuration
 @EnableResourceServer
@@ -43,6 +42,7 @@ public class SecurityConfiguration extends ResourceServerConfigurerAdapter {
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
             .authorizeRequests()
+            .antMatchers("/api/_search/doctors").permitAll()
             .antMatchers("/api/**").authenticated()
             .antMatchers("/management/health").permitAll()
             .antMatchers("/management/info").permitAll()
