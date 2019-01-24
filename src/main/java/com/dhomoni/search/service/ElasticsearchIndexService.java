@@ -41,6 +41,8 @@ import com.dhomoni.search.repository.search.DoctorSearchRepository;
 import com.dhomoni.search.repository.search.MedicineSearchRepository;
 import com.dhomoni.search.repository.search.PatientSearchRepository;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 @Transactional(readOnly = true)
@@ -119,40 +121,45 @@ public class ElasticsearchIndexService {
         elasticsearchTemplate.putMapping(entityClass);
         if (jpaRepository.count() > 0) {
             // if a JHipster entity field is the owner side of a many-to-many relationship, it should be loaded manually
-            List<Method> relationshipGetters = Arrays.stream(entityClass.getDeclaredFields())
-                .filter(field -> field.getType().equals(Set.class))
-                .filter(field -> field.getAnnotation(ManyToMany.class) == null
-                		|| (field.getAnnotation(ManyToMany.class) != null 
-                			&& field.getAnnotation(ManyToMany.class).mappedBy().isEmpty()))
-                .filter(field -> field.getAnnotation(JsonIgnore.class) == null)
-                .map(field -> {
-                    try {
-                        return new PropertyDescriptor(field.getName(), entityClass).getReadMethod();
-                    } catch (IntrospectionException e) {
-                        log.error("Error retrieving getter for class {}, field {}. Field will NOT be indexed",
-                            entityClass.getSimpleName(), field.getName(), e);
-                        return null;
-                    }
-                })
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+//            List<Method> relationshipGetters = Arrays.stream(entityClass.getDeclaredFields())
+//                .filter(field -> field.getType().equals(Set.class))
+//                .filter(field -> field.getAnnotation(ManyToMany.class) == null
+//                		|| (field.getAnnotation(ManyToMany.class) != null 
+//                			&& field.getAnnotation(ManyToMany.class).mappedBy().isEmpty()))
+//                .filter(field -> field.getAnnotation(JsonIgnore.class) == null)
+//                .map(field -> {
+//                    try {
+//                        return new PropertyDescriptor(field.getName(), entityClass).getReadMethod();
+//                    } catch (IntrospectionException e) {
+//                        log.error("Error retrieving getter for class {}, field {}. Field will NOT be indexed",
+//                            entityClass.getSimpleName(), field.getName(), e);
+//                        return null;
+//                    }
+//                })
+//                .filter(Objects::nonNull)
+//                .collect(Collectors.toList());
             int size = 100;
             for (int i = 0; i <= jpaRepository.count() / size; i++) {
                 Pageable page = PageRequest.of(i, size);
                 log.info("Indexing page {} of {}, size {}", i, jpaRepository.count() / size, size);
                 Page<T> results = jpaRepository.findAll(page);
-                results.map(result -> {
-                    // if there are any relationships to load, do it now
-                	relationshipGetters.forEach(method -> {
-                        try {
-                            // eagerly load the relationship set
-                            ((Set) method.invoke(result)).size();
-                        } catch (Exception ex) {
-                            log.error(ex.getMessage());
-                        }
-                    });
-                    return result;
-                });
+//                results.map(result -> {
+//                    // if there are any relationships to load, do it now
+//                	relationshipGetters.forEach(method -> {
+//                        try {
+//                            ((Set) method.invoke(result)).size();		// eagerly load the relationship set
+//                        } catch (Exception ex) {
+//                            log.error(ex.getMessage());
+//                        }
+//                    });
+//                    return result;
+//                });
+                try {
+                	ObjectMapper objectMapper = new ObjectMapper();
+                	objectMapper.writeValueAsString(results.getContent());
+				} catch (JsonProcessingException e) {
+					log.error(e.getMessage(), e);
+				}
                 elasticsearchRepository.saveAll(results.getContent());
             }
         }

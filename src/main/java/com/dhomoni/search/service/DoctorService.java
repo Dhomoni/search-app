@@ -1,17 +1,24 @@
 package com.dhomoni.search.service;
 
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
+import static org.elasticsearch.index.query.QueryBuilders.constantScoreQuery;
 import static org.elasticsearch.index.query.QueryBuilders.geoShapeQuery;
+import static org.elasticsearch.index.query.QueryBuilders.idsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
+import static org.elasticsearch.index.query.QueryBuilders.nestedQuery;
 import static org.elasticsearch.index.query.QueryBuilders.simpleQueryStringQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 import java.io.IOException;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.common.geo.ShapeRelation;
 import org.elasticsearch.common.geo.builders.CircleBuilder;
 import org.elasticsearch.common.geo.builders.ShapeBuilders;
 import org.elasticsearch.common.unit.DistanceUnit;
-import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -127,12 +134,17 @@ public class DoctorService {
 			}
 		});
         String[] excludeFields = {"registrationId", "licenceNumber", "nationalId", "passportNo"};
-        QueryBuilder boolQuery =boolQuery()
+        BoolQueryBuilder boolQuery = boolQuery()
         		.should(simpleQueryStringQuery(searchDTO.getQuery()))
-        		.should(simpleQueryStringQuery(searchDTO.getQuery())
-        				.field("id", -1f).field("*.id", -1f).field("registrationId", -1f)
-        				.field("licenceNumber", -1f).field("nationalId", -1f)
-        				.field("passportNo", -1f).lenient(true));
+        		.should(nestedQuery("professionalDegrees", constantScoreQuery(termQuery("professionalDegrees.institute.verbatim", searchDTO.getQuery())), ScoreMode.Avg))
+        		.should(nestedQuery("professionalDegrees", matchQuery("professionalDegrees.institute", searchDTO.getQuery()), ScoreMode.Avg).boost(-1f));        
+        if(StringUtils.isNumeric(searchDTO.getQuery())) {
+        	boolQuery.should(constantScoreQuery(termQuery("id", searchDTO.getQuery()).boost(-1f)))
+        		.should(constantScoreQuery(termQuery("medicalDepartment.id", searchDTO.getQuery()).boost(-1f)))
+        		.should(nestedQuery("chambers", constantScoreQuery(termQuery("chambers.id", searchDTO.getQuery())), ScoreMode.Avg).boost(-1f))
+        		.should(nestedQuery("chambers", nestedQuery("chambers.weeklyVisitingHours", constantScoreQuery(termQuery("chambers.weeklyVisitingHours.id", searchDTO.getQuery())), ScoreMode.Avg), ScoreMode.Avg).boost(-1f))
+        		.should(nestedQuery("professionalDegrees", constantScoreQuery(termQuery("professionalDegrees.id", searchDTO.getQuery())), ScoreMode.Avg).boost(-1f));
+        }
         SearchQuery searchQuery = queryBuilder
         		.withQuery(boolQuery)
         		.withSourceFilter(new FetchSourceFilterBuilder().withExcludes(excludeFields).build())

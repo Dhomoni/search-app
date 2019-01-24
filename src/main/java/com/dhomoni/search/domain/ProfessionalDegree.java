@@ -14,9 +14,10 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.MultiField;
+import org.springframework.data.elasticsearch.annotations.InnerField;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -41,6 +42,9 @@ public class ProfessionalDegree implements Serializable {
 
     @Column(name = "institute")
     @Field(type = FieldType.Keyword)
+    
+    @MultiField(mainField = @Field(type = FieldType.Text), 
+    	otherFields = {@InnerField(suffix = "verbatim", type = FieldType.Keyword)})
     private String institute;
 
     @Column(name = "country")
@@ -56,7 +60,7 @@ public class ProfessionalDegree implements Serializable {
     private Integer passingYear;
 
     @ManyToOne
-    @JsonIgnoreProperties({"chambers", "professionalDegrees"})
+    @JsonIgnoreProperties({"professionalDegrees"})
     private Doctor doctor;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

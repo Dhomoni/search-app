@@ -27,6 +27,7 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import com.dhomoni.search.domain.enumeration.DoctorType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vividsolutions.jts.geom.Point;
 
 /**
@@ -118,12 +119,14 @@ public class Doctor implements Serializable {
 
     @OneToMany(mappedBy = "doctor")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @Field(type = FieldType.Nested, includeInParent = true, ignoreFields = {"doctor"})
+    @JsonIgnoreProperties({"doctor"})
+    @Field(type = FieldType.Nested, ignoreFields = {"doctor"})
     private Set<Chamber> chambers = new HashSet<>();
     
     @OneToMany(mappedBy = "doctor")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @Field(type = FieldType.Nested, includeInParent = true, ignoreFields = {"doctor"})
+    @JsonIgnoreProperties({"doctor"})
+    @Field(type = FieldType.Nested, ignoreFields = {"doctor"})
     private Set<ProfessionalDegree> professionalDegrees = new HashSet<>();
     
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

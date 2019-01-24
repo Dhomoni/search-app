@@ -52,11 +52,12 @@ public class Chamber implements Serializable {
     private Double fee;
 
     @ManyToOne
-    @JsonIgnoreProperties({"chambers", "professionalDegrees"})
+    @JsonIgnoreProperties({"chambers"})
     private Doctor doctor;
 
     @OneToMany(mappedBy = "chamber")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JsonIgnoreProperties("chamber")
     @Field(type = FieldType.Nested, includeInParent = true, ignoreFields = {"chamber"})
     private Set<WeeklyVisitingHour> weeklyVisitingHours = new HashSet<>();
     
