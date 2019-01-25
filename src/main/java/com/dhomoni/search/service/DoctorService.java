@@ -7,6 +7,7 @@ import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 import static org.elasticsearch.index.query.QueryBuilders.nestedQuery;
 import static org.elasticsearch.index.query.QueryBuilders.simpleQueryStringQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
+import static org.elasticsearch.index.query.QueryBuilders.idsQuery;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -152,5 +153,26 @@ public class DoctorService {
         		.build();
         Page<Doctor> doctors = doctorSearchRepository.search(searchQuery);
         return doctors.map(doctorMapper::toDto);
+    }
+    
+    /**
+     * Search for the doctor corresponding to the id.
+     *
+     * @param query the query of the search
+     * @param pageable the pagination information
+     * @return the list of entities
+     */
+    @Transactional(readOnly = true)
+    public Optional<DoctorDTO> search(long id) {
+        log.debug("Request to search for a doctor for query {}", id);
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+        String[] excludeFields = {"registrationId", "licenceNumber", "nationalId", "passportNo"};
+        SearchQuery searchQuery = queryBuilder
+        		.withQuery(idsQuery().addIds(Long.toString(id)))
+        		.withSourceFilter(new FetchSourceFilterBuilder().withExcludes(excludeFields).build())
+        		.withMinScore(0.00001f)
+        		.build();
+        Page<Doctor> doctors = doctorSearchRepository.search(searchQuery);
+        return doctors.map(doctorMapper::toDto).stream().findFirst();
     }
 }

@@ -120,6 +120,22 @@ public class DoctorResource {
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(searchDTO.getQuery(), page, "/api/_search/doctors");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
+    
+    /**
+     * SEARCH  /_search/doctor?id=:doctorId : search for the doctor corresponding
+     * to the id.
+     *
+     * @param query the query of the doctor search
+     * @param pageable the pagination information
+     * @return the result of the search
+     */
+    @GetMapping("/_search/doctors/{id}")
+    @Timed
+    public ResponseEntity<Optional<DoctorDTO>> searchDoctor(@PathVariable Long id) {
+        log.debug("REST request to search for a doctor for query {}", id);
+        Optional<DoctorDTO> doctorDTO = doctorService.search(id);
+        return new ResponseEntity<>(doctorDTO, HttpStatus.OK);
+    }
 
     /**
     * GET  /doctors/count : count all the doctors.
