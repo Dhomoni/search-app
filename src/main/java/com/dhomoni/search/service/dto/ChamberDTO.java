@@ -3,14 +3,23 @@ package com.dhomoni.search.service.dto;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.vividsolutions.jts.geom.Point;
+
 /**
  * A DTO for the Chamber entity.
  */
 public class ChamberDTO implements Serializable {
 
-    private Long id;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private Long id;
 
     private String address;
+    
+    private Point location;
 
     private String phone;
 
@@ -33,6 +42,14 @@ public class ChamberDTO implements Serializable {
     public void setAddress(String address) {
         this.address = address;
     }
+    
+	public Point getLocation() {
+		return location;
+	}
+
+	public void setLocation(Point location) {
+		this.location = location;
+	}
 
     public String getPhone() {
         return phone;

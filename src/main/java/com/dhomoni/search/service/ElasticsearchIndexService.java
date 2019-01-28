@@ -1,37 +1,34 @@
 package com.dhomoni.search.service;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
+import java.io.IOException;
 import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
-
-import javax.persistence.ManyToMany;
 
 import org.elasticsearch.ResourceAlreadyExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bedatadriven.jackson.datatype.jts.JtsModule;
 import com.codahale.metrics.annotation.Timed;
 import com.dhomoni.search.domain.Disease;
 import com.dhomoni.search.domain.Doctor;
 import com.dhomoni.search.domain.Medicine;
 import com.dhomoni.search.domain.Patient;
+import com.dhomoni.search.repository.ChamberRepository;
 import com.dhomoni.search.repository.DiseaseRepository;
 import com.dhomoni.search.repository.DoctorRepository;
 import com.dhomoni.search.repository.MedicineRepository;
@@ -40,129 +37,143 @@ import com.dhomoni.search.repository.search.DiseaseSearchRepository;
 import com.dhomoni.search.repository.search.DoctorSearchRepository;
 import com.dhomoni.search.repository.search.MedicineSearchRepository;
 import com.dhomoni.search.repository.search.PatientSearchRepository;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.PrecisionModel;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class ElasticsearchIndexService {
 
-    private static final Lock reindexLock = new ReentrantLock();
+	private static final Lock reindexLock = new ReentrantLock();
+	private final Logger log = LoggerFactory.getLogger(ElasticsearchIndexService.class);
 
-    private final Logger log = LoggerFactory.getLogger(ElasticsearchIndexService.class);
+	private final DiseaseRepository diseaseRepository;
+	private final DiseaseSearchRepository diseaseSearchRepository;
+	private final DoctorRepository doctorRepository;
+	private final DoctorSearchRepository doctorSearchRepository;
+	private final MedicineRepository medicineRepository;
+	private final MedicineSearchRepository medicineSearchRepository;
+	private final PatientRepository patientRepository;
+	private final PatientSearchRepository patientSearchRepository;
+	private final ChamberRepository chamberRepository;
+	private final ElasticsearchOperations elasticsearchTemplate;
 
-    private final DiseaseRepository diseaseRepository;
+	public ElasticsearchIndexService(DiseaseRepository diseaseRepository,
+			DiseaseSearchRepository diseaseSearchRepository, DoctorRepository doctorRepository,
+			DoctorSearchRepository doctorSearchRepository, MedicineRepository medicineRepository,
+			MedicineSearchRepository medicineSearchRepository, PatientRepository patientRepository,
+			PatientSearchRepository patientSearchRepository, ChamberRepository chamberRepository,
+			ElasticsearchOperations elasticsearchTemplate)
+	{
+		this.diseaseRepository = diseaseRepository;
+		this.diseaseSearchRepository = diseaseSearchRepository;
+		this.doctorRepository = doctorRepository;
+		this.doctorSearchRepository = doctorSearchRepository;
+		this.medicineRepository = medicineRepository;
+		this.medicineSearchRepository = medicineSearchRepository;
+		this.patientRepository = patientRepository;
+		this.patientSearchRepository = patientSearchRepository;
+		this.chamberRepository = chamberRepository;
+		this.elasticsearchTemplate = elasticsearchTemplate;
+	}
 
-    private final DiseaseSearchRepository diseaseSearchRepository;
+	@Async
+	@Timed
+	public void reindexAll() {
+		GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), 4326);
+		loadDoctorImagesAndLocations(geometryFactory);
+		if (reindexLock.tryLock()) {
+			try {
+				reindexForClass(Disease.class, diseaseRepository, diseaseSearchRepository, geometryFactory);
+				reindexForClass(Doctor.class, doctorRepository, doctorSearchRepository, geometryFactory);
+				reindexForClass(Medicine.class, medicineRepository, medicineSearchRepository, geometryFactory);
+				reindexForClass(Patient.class, patientRepository, patientSearchRepository, geometryFactory);
+				log.info("Elasticsearch: Successfully performed reindexing");
+			} finally {
+				reindexLock.unlock();
+			}
+		} else {
+			log.info("Elasticsearch: concurrent reindexing attempt");
+		}
+	}
 
-    private final DoctorRepository doctorRepository;
+	private void loadDoctorImagesAndLocations(GeometryFactory geometryFactory) {
+		try {
+			Coordinate coordinate = new Coordinate(90.4125, 23.8103);
+			Point location = geometryFactory.createPoint(coordinate);
+			Path imagePath = new ClassPathResource("static/images/pervez.jpg").getFile().toPath();
+			byte[] image = Files.readAllBytes(imagePath);
+			if (doctorRepository.count() > 0) {
+				int size = 100;
+				for (int i = 0; i <= doctorRepository.count() / size; i++) {
+					Pageable page = PageRequest.of(i, size);
+					log.info("Indexing doctor page {} of {}, size {}", i, doctorRepository.count() / size, size);
+					Page<Doctor> results = doctorRepository.findAll(page);
+					results.forEach(doctor -> {
+						if (doctor.getId().equals(1L)) {
+							doctor.setImage(image);
+							doctor.setImageContentType(MediaType.IMAGE_JPEG_VALUE);
+							doctor.setLocation(location);
+							doctorRepository.save(doctor);
+							doctor.getChambers().forEach(chamber -> {
+								chamber.setLocation(location);
+								chamberRepository.save(chamber);
+							});
+						}
+					});
+				}
+			}
+			if (patientRepository.count() > 0) {
+				int size = 100;
+				for (int i = 0; i <= patientRepository.count() / size; i++) {
+					Pageable page = PageRequest.of(i, size);
+					log.info("Indexing patient page {} of {}, size {}", i, patientRepository.count() / size, size);
+					Page<Patient> results = patientRepository.findAll(page);
+					results.forEach(patient -> {
+						if (patient.getId().equals(1L)) {
+							patient.setImage(image);
+							patient.setImageContentType(MediaType.IMAGE_JPEG_VALUE);
+							patient.setLocation(location);
+							patientRepository.save(patient);
+						}
+					});
+				}
+			}
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+		}
 
-    private final DoctorSearchRepository doctorSearchRepository;
+	}
 
-    private final MedicineRepository medicineRepository;
-
-    private final MedicineSearchRepository medicineSearchRepository;
-
-    private final PatientRepository patientRepository;
-
-    private final PatientSearchRepository patientSearchRepository;
-
-    private final ElasticsearchOperations elasticsearchTemplate;
-
-    public ElasticsearchIndexService(
-        DiseaseRepository diseaseRepository,
-        DiseaseSearchRepository diseaseSearchRepository,
-        DoctorRepository doctorRepository,
-        DoctorSearchRepository doctorSearchRepository,
-        MedicineRepository medicineRepository,
-        MedicineSearchRepository medicineSearchRepository,
-        PatientRepository patientRepository,
-        PatientSearchRepository patientSearchRepository,
-        ElasticsearchOperations elasticsearchTemplate) {
-        this.diseaseRepository = diseaseRepository;
-        this.diseaseSearchRepository = diseaseSearchRepository;
-        this.doctorRepository = doctorRepository;
-        this.doctorSearchRepository = doctorSearchRepository;
-        this.medicineRepository = medicineRepository;
-        this.medicineSearchRepository = medicineSearchRepository;
-        this.patientRepository = patientRepository;
-        this.patientSearchRepository = patientSearchRepository;
-        this.elasticsearchTemplate = elasticsearchTemplate;
-    }
-
-    @Async
-    @Timed
-    public void reindexAll() {
-        if (reindexLock.tryLock()) {
-            try {
-                reindexForClass(Disease.class, diseaseRepository, diseaseSearchRepository);
-                reindexForClass(Doctor.class, doctorRepository, doctorSearchRepository);
-                reindexForClass(Medicine.class, medicineRepository, medicineSearchRepository);
-                reindexForClass(Patient.class, patientRepository, patientSearchRepository);
-                log.info("Elasticsearch: Successfully performed reindexing");
-            } finally {
-                reindexLock.unlock();
-            }
-        } else {
-            log.info("Elasticsearch: concurrent reindexing attempt");
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T, ID extends Serializable> void reindexForClass(Class<T> entityClass, JpaRepository<T, ID> jpaRepository,
-                                                              ElasticsearchRepository<T, ID> elasticsearchRepository) {
-        elasticsearchTemplate.deleteIndex(entityClass);
-        try {
-            elasticsearchTemplate.createIndex(entityClass);
-        } catch (ResourceAlreadyExistsException e) {
-            // Do nothing. Index was already concurrently recreated by some other service.
-        }
-        elasticsearchTemplate.putMapping(entityClass);
-        if (jpaRepository.count() > 0) {
-            // if a JHipster entity field is the owner side of a many-to-many relationship, it should be loaded manually
-//            List<Method> relationshipGetters = Arrays.stream(entityClass.getDeclaredFields())
-//                .filter(field -> field.getType().equals(Set.class))
-//                .filter(field -> field.getAnnotation(ManyToMany.class) == null
-//                		|| (field.getAnnotation(ManyToMany.class) != null 
-//                			&& field.getAnnotation(ManyToMany.class).mappedBy().isEmpty()))
-//                .filter(field -> field.getAnnotation(JsonIgnore.class) == null)
-//                .map(field -> {
-//                    try {
-//                        return new PropertyDescriptor(field.getName(), entityClass).getReadMethod();
-//                    } catch (IntrospectionException e) {
-//                        log.error("Error retrieving getter for class {}, field {}. Field will NOT be indexed",
-//                            entityClass.getSimpleName(), field.getName(), e);
-//                        return null;
-//                    }
-//                })
-//                .filter(Objects::nonNull)
-//                .collect(Collectors.toList());
-            int size = 100;
-            for (int i = 0; i <= jpaRepository.count() / size; i++) {
-                Pageable page = PageRequest.of(i, size);
-                log.info("Indexing page {} of {}, size {}", i, jpaRepository.count() / size, size);
-                Page<T> results = jpaRepository.findAll(page);
-//                results.map(result -> {
-//                    // if there are any relationships to load, do it now
-//                	relationshipGetters.forEach(method -> {
-//                        try {
-//                            ((Set) method.invoke(result)).size();		// eagerly load the relationship set
-//                        } catch (Exception ex) {
-//                            log.error(ex.getMessage());
-//                        }
-//                    });
-//                    return result;
-//                });
-                try {
-                	ObjectMapper objectMapper = new ObjectMapper();
-                	objectMapper.writeValueAsString(results.getContent());
+	private <T, ID extends Serializable> void reindexForClass(Class<T> entityClass, JpaRepository<T, ID> jpaRepository,
+			ElasticsearchRepository<T, ID> elasticsearchRepository, GeometryFactory geometryFactory) {
+		elasticsearchTemplate.deleteIndex(entityClass);
+		try {
+			elasticsearchTemplate.createIndex(entityClass);
+		} catch (ResourceAlreadyExistsException e) {
+			// Do nothing. Index was already concurrently recreated by some other service.
+		}
+		elasticsearchTemplate.putMapping(entityClass);
+		if (jpaRepository.count() > 0) {
+			int size = 100;
+			for (int i = 0; i <= jpaRepository.count() / size; i++) {
+				Pageable page = PageRequest.of(i, size);
+				log.info("Indexing page {} of {}, size {}", i, jpaRepository.count() / size, size);
+				Page<T> results = jpaRepository.findAll(page);
+				try {
+					ObjectMapper objectMapper = new ObjectMapper();
+					objectMapper.registerModule(new JtsModule(geometryFactory));
+					objectMapper.writeValueAsString(results.getContent());
 				} catch (JsonProcessingException e) {
 					log.error(e.getMessage(), e);
 				}
-                elasticsearchRepository.saveAll(results.getContent());
-            }
-        }
-        log.info("Elasticsearch: Indexed all rows for {}", entityClass.getSimpleName());
-    }
+				elasticsearchRepository.saveAll(results.getContent());
+			}
+		}
+		log.info("Elasticsearch: Indexed all rows for {}", entityClass.getSimpleName());
+	}
 }

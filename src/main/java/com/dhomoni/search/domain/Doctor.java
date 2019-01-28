@@ -101,7 +101,7 @@ public class Doctor implements Serializable {
 
     @Lob
     @Column(name = "image")
-    @Field(type = FieldType.Keyword, index = false)
+    @Field(type = FieldType.Text, index = false)
     private byte[] image;
 
     @Column(name = "image_content_type")
@@ -293,6 +293,14 @@ public class Doctor implements Serializable {
     public void setAddress(String address) {
         this.address = address;
     }
+    
+	public Point getLocation() {
+		return location;
+	}
+
+	public void setLocation(Point location) {
+		this.location = location;
+	}
 
     public byte[] getImage() {
         return image;
@@ -438,12 +446,4 @@ public class Doctor implements Serializable {
             ", activated='" + isActivated() + "'" +
             "}";
     }
-
-	public Point getLocation() {
-		return location;
-	}
-
-	public void setLocation(Point location) {
-		this.location = location;
-	}
 }

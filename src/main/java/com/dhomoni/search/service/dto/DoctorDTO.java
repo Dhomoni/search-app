@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.persistence.Lob;
 import com.dhomoni.search.domain.enumeration.DoctorType;
+import com.vividsolutions.jts.geom.Point;
 
 /**
  * A DTO for the Doctor entity.
@@ -42,8 +43,11 @@ public class DoctorDTO implements Serializable {
 
     private String address;
 
+    private Point location;
+    
     @Lob
     private byte[] image;
+    
     private String imageContentType;
 
     private Boolean activated;
@@ -159,6 +163,14 @@ public class DoctorDTO implements Serializable {
     public void setAddress(String address) {
         this.address = address;
     }
+    
+	public Point getLocation() {
+		return location;
+	}
+
+	public void setLocation(Point location) {
+		this.location = location;
+	}
 
     public byte[] getImage() {
         return image;
