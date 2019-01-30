@@ -112,10 +112,10 @@ public class DoctorResource {
      * @param pageable the pagination information
      * @return the result of the search
      */
-    @GetMapping("/_search/doctors")
+    @PostMapping("/_search/doctors")
     @Timed
-    public ResponseEntity<List<DoctorDTO>> searchDoctors(@Valid SearchDTO searchDTO, Pageable pageable) {
-        log.debug("REST request to search for a page of Doctors for query {}", searchDTO.getQuery());
+    public ResponseEntity<List<DoctorDTO>> searchDoctors(@Valid @RequestBody SearchDTO searchDTO, Pageable pageable) {
+        log.debug("REST request to search for a page of Doctors for searchDTO {}", searchDTO);
         Page<DoctorDTO> page = doctorService.search(searchDTO, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(searchDTO.getQuery(), page, "/api/_search/doctors");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);

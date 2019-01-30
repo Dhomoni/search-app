@@ -20,5 +20,8 @@
     	<addColumn tableName="CHAMBER">
         	<column name="GEOM" type="GEOMETRY(Point, 4326)"/>
    		</addColumn>
+   		<addColumn tableName="CHAMBER">
+        	<column name="searchable_location" type="varchar(255)"/>
+   		</addColumn>
 	</changeSet>
 </databaseChangeLog>

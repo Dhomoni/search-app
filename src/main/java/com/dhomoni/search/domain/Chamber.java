@@ -19,6 +19,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.GeoPointField;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vividsolutions.jts.geom.Point;
@@ -43,7 +44,12 @@ public class Chamber implements Serializable {
     private String address;
     
     @Column(name = "GEOM", columnDefinition = "GEOMETRY(Point, 4326)")
+    @Field(type = FieldType.Object, index = false)
     private Point location;
+    
+    // https://github.com/spring-projects/spring-data-elasticsearch/blob/master/src/test/java/org/springframework/data/elasticsearch/core/geo/LocationMarkerEntity.java
+    @GeoPointField
+    private String searchableLocation;
 
     @Column(name = "phone")
     private String phone;
@@ -82,6 +88,22 @@ public class Chamber implements Serializable {
     public void setAddress(String address) {
         this.address = address;
     }
+    
+	public Point getLocation() {
+		return location;
+	}
+
+	public void setLocation(Point location) {
+		this.location = location;
+	}
+
+	public String getSearchableLocation() {
+		return searchableLocation;
+	}
+
+	public void setSearchableLocation(String searchableLocation) {
+		this.searchableLocation = searchableLocation;
+	}
 
     public String getPhone() {
         return phone;
@@ -177,12 +199,4 @@ public class Chamber implements Serializable {
             ", fee=" + getFee() +
             "}";
     }
-
-	public Point getLocation() {
-		return location;
-	}
-
-	public void setLocation(Point location) {
-		this.location = location;
-	}
 }

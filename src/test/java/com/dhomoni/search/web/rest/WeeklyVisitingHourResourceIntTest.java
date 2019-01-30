@@ -1,18 +1,19 @@
 package com.dhomoni.search.web.rest;
 
-import com.dhomoni.search.SearchApp;
+import static com.dhomoni.search.web.rest.TestUtil.createFormattingConversionService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.dhomoni.search.config.SecurityBeanOverrideConfiguration;
+import java.util.List;
 
-import com.dhomoni.search.domain.WeeklyVisitingHour;
-import com.dhomoni.search.domain.Chamber;
-import com.dhomoni.search.repository.WeeklyVisitingHourRepository;
-import com.dhomoni.search.service.WeeklyVisitingHourService;
-import com.dhomoni.search.service.dto.WeeklyVisitingHourDTO;
-import com.dhomoni.search.service.mapper.WeeklyVisitingHourMapper;
-import com.dhomoni.search.web.rest.errors.ExceptionTranslator;
-import com.dhomoni.search.service.dto.WeeklyVisitingHourCriteria;
-import com.dhomoni.search.service.WeeklyVisitingHourQueryService;
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,8 +21,6 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -31,20 +30,17 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Validator;
 
-import javax.persistence.EntityManager;
-import java.util.Collections;
-import java.util.List;
-
-
-import static com.dhomoni.search.web.rest.TestUtil.createFormattingConversionService;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+import com.dhomoni.search.SearchApp;
+import com.dhomoni.search.config.SecurityBeanOverrideConfiguration;
+import com.dhomoni.search.domain.Chamber;
+import com.dhomoni.search.domain.WeeklyVisitingHour;
 import com.dhomoni.search.domain.enumeration.WeekDay;
+import com.dhomoni.search.repository.WeeklyVisitingHourRepository;
+import com.dhomoni.search.service.WeeklyVisitingHourQueryService;
+import com.dhomoni.search.service.WeeklyVisitingHourService;
+import com.dhomoni.search.service.dto.WeeklyVisitingHourDTO;
+import com.dhomoni.search.service.mapper.WeeklyVisitingHourMapper;
+import com.dhomoni.search.web.rest.errors.ExceptionTranslator;
 /**
  * Test class for the WeeklyVisitingHourResource REST controller.
  *
@@ -54,8 +50,8 @@ import com.dhomoni.search.domain.enumeration.WeekDay;
 @SpringBootTest(classes = {SecurityBeanOverrideConfiguration.class, SearchApp.class})
 public class WeeklyVisitingHourResourceIntTest {
 
-    private static final WeekDay DEFAULT_WEEK_DAY = WeekDay.SUN;
-    private static final WeekDay UPDATED_WEEK_DAY = WeekDay.MON;
+    private static final WeekDay DEFAULT_WEEK_DAY = WeekDay.SUNDAY;
+    private static final WeekDay UPDATED_WEEK_DAY = WeekDay.MONDAY;
 
     private static final Integer DEFAULT_START_HOUR = 21;
     private static final Integer UPDATED_START_HOUR = 22;

@@ -2,23 +2,21 @@ package com.dhomoni.search.service;
 
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.constantScoreQuery;
-import static org.elasticsearch.index.query.QueryBuilders.geoShapeQuery;
+import static org.elasticsearch.index.query.QueryBuilders.geoDistanceQuery;
+import static org.elasticsearch.index.query.QueryBuilders.idsQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 import static org.elasticsearch.index.query.QueryBuilders.nestedQuery;
 import static org.elasticsearch.index.query.QueryBuilders.simpleQueryStringQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
-import static org.elasticsearch.index.query.QueryBuilders.idsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.search.join.ScoreMode;
-import org.elasticsearch.common.geo.ShapeRelation;
-import org.elasticsearch.common.geo.builders.CircleBuilder;
-import org.elasticsearch.common.geo.builders.ShapeBuilders;
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -35,6 +33,8 @@ import com.dhomoni.search.repository.search.DoctorSearchRepository;
 import com.dhomoni.search.service.dto.DoctorDTO;
 import com.dhomoni.search.service.dto.SearchDTO;
 import com.dhomoni.search.service.mapper.DoctorMapper;
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Splitter;
 
 /**
  * Service Implementation for managing Doctor.
@@ -42,8 +42,6 @@ import com.dhomoni.search.service.mapper.DoctorMapper;
 @Service
 @Transactional
 public class DoctorService {
-
-    private static final int _SEARCH_REDIUS_IN_KM = 20;
 
 	private final Logger log = LoggerFactory.getLogger(DoctorService.class);
 
@@ -124,27 +122,30 @@ public class DoctorService {
     public Page<DoctorDTO> search(SearchDTO searchDTO, Pageable pageable) {
         log.debug("Request to search for a page of Doctors for query {}", searchDTO.getQuery());
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
-        searchDTO.getLocation().ifPresent(loc -> {
-			try {
-		        CircleBuilder circleBuilder = ShapeBuilders.newCircleBuilder().radius(_SEARCH_REDIUS_IN_KM, DistanceUnit.KILOMETERS);
-				queryBuilder.withFilter(geoShapeQuery("chambers.location", circleBuilder.center(loc.getY(), loc.getX()))
-											.relation(ShapeRelation.WITHIN));
-			} catch (IOException e) {
-				log.debug(e.getMessage(), e);
-			}
-		});
+        GeoDistanceQueryBuilder geoDistanceQueryBuilder = geoDistanceQuery("chambers.searchableLocation");
+        searchDTO.getLocation().flatMap(loc -> {
+        	geoDistanceQueryBuilder.point(loc.getY(), loc.getX());
+        	return searchDTO.getDistance();
+        }).ifPresent(distance -> {
+        	geoDistanceQueryBuilder.distance(distance, DistanceUnit.KILOMETERS);
+	        queryBuilder.withFilter(nestedQuery("chambers", geoDistanceQueryBuilder, ScoreMode.None));
+        });
         String[] excludeFields = {"registrationId", "licenceNumber", "nationalId", "passportNo"};
         BoolQueryBuilder boolQuery = boolQuery()
         		.should(simpleQueryStringQuery(searchDTO.getQuery()))
         		.should(nestedQuery("professionalDegrees", constantScoreQuery(termQuery("professionalDegrees.institute.verbatim", searchDTO.getQuery())), ScoreMode.Avg))
         		.should(nestedQuery("professionalDegrees", matchQuery("professionalDegrees.institute", searchDTO.getQuery()), ScoreMode.Avg).boost(-1f));        
-        if(StringUtils.isNumeric(searchDTO.getQuery())) {
-        	boolQuery.should(constantScoreQuery(termQuery("id", searchDTO.getQuery()).boost(-1f)))
-        		.should(constantScoreQuery(termQuery("medicalDepartment.id", searchDTO.getQuery()).boost(-1f)))
-        		.should(nestedQuery("chambers", constantScoreQuery(termQuery("chambers.id", searchDTO.getQuery())), ScoreMode.Avg).boost(-1f))
-        		.should(nestedQuery("chambers", nestedQuery("chambers.weeklyVisitingHours", constantScoreQuery(termQuery("chambers.weeklyVisitingHours.id", searchDTO.getQuery())), ScoreMode.Avg), ScoreMode.Avg).boost(-1f))
-        		.should(nestedQuery("professionalDegrees", constantScoreQuery(termQuery("professionalDegrees.id", searchDTO.getQuery())), ScoreMode.Avg).boost(-1f));
+        Iterable<String> tokens = Splitter.on(CharMatcher.anyOf(", ")).omitEmptyStrings().split(searchDTO.getQuery());
+        for(String token: tokens) {
+        	if(StringUtils.isNumeric(token)) {
+            	boolQuery.should(constantScoreQuery(termQuery("id", token).boost(-1f)))
+            		.should(constantScoreQuery(termQuery("medicalDepartment.id", token).boost(-1f)))
+            		.should(nestedQuery("chambers", constantScoreQuery(termQuery("chambers.id", token)), ScoreMode.Avg).boost(-1f))
+            		.should(nestedQuery("chambers", nestedQuery("chambers.weeklyVisitingHours", constantScoreQuery(termQuery("chambers.weeklyVisitingHours.id", token)), ScoreMode.Avg), ScoreMode.Avg).boost(-1f))
+            		.should(nestedQuery("professionalDegrees", constantScoreQuery(termQuery("professionalDegrees.id", token)), ScoreMode.Avg).boost(-1f));
+            }
         }
+        
         SearchQuery searchQuery = queryBuilder
         		.withQuery(boolQuery)
         		.withSourceFilter(new FetchSourceFilterBuilder().withExcludes(excludeFields).build())

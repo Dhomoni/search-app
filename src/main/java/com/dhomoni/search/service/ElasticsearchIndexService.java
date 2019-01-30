@@ -85,11 +85,11 @@ public class ElasticsearchIndexService {
 	@Timed
 	public void reindexAll() {
 		GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), 4326);
-		loadDoctorImagesAndLocations(geometryFactory);
+		loadImagesAndLocations(geometryFactory);
 		if (reindexLock.tryLock()) {
 			try {
 				reindexForClass(Disease.class, diseaseRepository, diseaseSearchRepository, geometryFactory);
-				reindexForClass(Doctor.class, doctorRepository, doctorSearchRepository, geometryFactory);
+				reindexForDoctor(geometryFactory);
 				reindexForClass(Medicine.class, medicineRepository, medicineSearchRepository, geometryFactory);
 				reindexForClass(Patient.class, patientRepository, patientSearchRepository, geometryFactory);
 				log.info("Elasticsearch: Successfully performed reindexing");
@@ -101,7 +101,7 @@ public class ElasticsearchIndexService {
 		}
 	}
 
-	private void loadDoctorImagesAndLocations(GeometryFactory geometryFactory) {
+	private void loadImagesAndLocations(GeometryFactory geometryFactory) {
 		try {
 			Coordinate coordinate = new Coordinate(90.4125, 23.8103);
 			Point location = geometryFactory.createPoint(coordinate);
@@ -149,6 +149,41 @@ public class ElasticsearchIndexService {
 
 	}
 
+	private void reindexForDoctor(GeometryFactory geometryFactory) {
+		elasticsearchTemplate.deleteIndex(Doctor.class);
+		try {
+			elasticsearchTemplate.createIndex(Doctor.class);
+		} catch (ResourceAlreadyExistsException e) {
+			// Do nothing. Index was already concurrently recreated by some other service.
+		}
+		elasticsearchTemplate.putMapping(Doctor.class);
+		if (doctorRepository.count() > 0) {
+			int size = 100;
+			for (int i = 0; i <= doctorRepository.count() / size; i++) {
+				Pageable page = PageRequest.of(i, size);
+				log.info("Indexing page {} of {}, size {}", i, doctorRepository.count() / size, size);
+				Page<Doctor> results = doctorRepository.findAll(page);
+				results.getContent().forEach(doctor -> {
+					doctor.getChambers().stream().filter(chamber -> chamber.getLocation() != null).forEach(chamber -> {
+						Point point = chamber.getLocation();
+						String latLonString = point.getY() + ", " + point.getX();
+						chamber.setSearchableLocation(latLonString);
+					});
+				});
+				try {
+					ObjectMapper objectMapper = new ObjectMapper();
+					objectMapper.registerModule(new JtsModule(geometryFactory));
+					objectMapper.writeValueAsString(results.getContent());
+					
+				} catch (JsonProcessingException e) {
+					log.error(e.getMessage(), e);
+				}
+				doctorSearchRepository.saveAll(results.getContent());
+			}
+		}
+		log.info("Elasticsearch: Indexed all rows for {}", Doctor.class.getSimpleName());
+	}
+	
 	private <T, ID extends Serializable> void reindexForClass(Class<T> entityClass, JpaRepository<T, ID> jpaRepository,
 			ElasticsearchRepository<T, ID> elasticsearchRepository, GeometryFactory geometryFactory) {
 		elasticsearchTemplate.deleteIndex(entityClass);
