@@ -24,6 +24,8 @@ public class ChamberDTO implements Serializable {
     private String phone;
 
     private Double fee;
+    
+    private Double distanceInKM;
 
     private Long doctorId;
 
@@ -106,4 +108,12 @@ public class ChamberDTO implements Serializable {
             ", doctor=" + getDoctorId() +
             "}";
     }
+
+	public Double getDistanceInKM() {
+		return distanceInKM;
+	}
+
+	public void setDistanceInKM(Double distanceInKM) {
+		this.distanceInKM = distanceInKM;
+	}
 }

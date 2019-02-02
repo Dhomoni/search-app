@@ -2,6 +2,7 @@ package com.dhomoni.search.service.dto;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -56,7 +57,7 @@ public class DoctorDTO implements Serializable {
     
     private MedicalDepartmentDTO medicalDepartment;
     
-    private Set<ChamberDTO> chambers;
+    private List<ChamberDTO> chambers;
     
     private Set<ProfessionalDegreeDTO> professionalDegrees;
 
@@ -204,11 +205,11 @@ public class DoctorDTO implements Serializable {
 		this.medicalDepartment = medicalDepartment;
 	}
 
-	public Set<ChamberDTO> getChambers() {
+	public List<ChamberDTO> getChambers() {
 		return chambers;
 	}
 
-	public void setChambers(Set<ChamberDTO> chambers) {
+	public void setChambers(List<ChamberDTO> chambers) {
 		this.chambers = chambers;
 	}
 

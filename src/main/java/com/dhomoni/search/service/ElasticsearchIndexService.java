@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -103,8 +106,9 @@ public class ElasticsearchIndexService {
 
 	private void loadImagesAndLocations(GeometryFactory geometryFactory) {
 		try {
-			Coordinate coordinate = new Coordinate(90.4125, 23.8103);
-			Point location = geometryFactory.createPoint(coordinate);
+			Point location1 = geometryFactory.createPoint(new Coordinate(89.4125, 24.8103));
+			Point location2 = geometryFactory.createPoint(new Coordinate(90.4125, 23.8103));
+			List<Point> locations = Arrays.asList(location1, location2);
 			Path imagePath = new ClassPathResource("static/images/pervez.jpg").getFile().toPath();
 			byte[] image = Files.readAllBytes(imagePath);
 			if (doctorRepository.count() > 0) {
@@ -117,10 +121,11 @@ public class ElasticsearchIndexService {
 						if (doctor.getId().equals(1L)) {
 							doctor.setImage(image);
 							doctor.setImageContentType(MediaType.IMAGE_JPEG_VALUE);
-							doctor.setLocation(location);
+							doctor.setLocation(locations.get(0));
 							doctorRepository.save(doctor);
+							AtomicInteger count = new AtomicInteger(0);
 							doctor.getChambers().forEach(chamber -> {
-								chamber.setLocation(location);
+								chamber.setLocation(locations.get(count.getAndIncrement()));
 								chamberRepository.save(chamber);
 							});
 						}
@@ -137,7 +142,7 @@ public class ElasticsearchIndexService {
 						if (patient.getId().equals(1L)) {
 							patient.setImage(image);
 							patient.setImageContentType(MediaType.IMAGE_JPEG_VALUE);
-							patient.setLocation(location);
+							patient.setLocation(locations.get(0));
 							patientRepository.save(patient);
 						}
 					});
