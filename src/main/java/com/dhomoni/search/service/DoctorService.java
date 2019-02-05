@@ -123,7 +123,7 @@ public class DoctorService {
 		GeoDistanceQueryBuilder geoDistanceQueryBuilder = geoDistanceQuery("chambers.searchableLocation");
 		searchDTO.getLocation().flatMap(loc -> {
 			geoDistanceQueryBuilder.point(loc.getY(), loc.getX());
-			return searchDTO.getDistance();
+			return searchDTO.getRadius();
 		}).ifPresent(distance -> {
 			geoDistanceQueryBuilder.distance(distance, DistanceUnit.KILOMETERS);
 			queryBuilder.withFilter(nestedQuery("chambers", geoDistanceQueryBuilder, ScoreMode.None));

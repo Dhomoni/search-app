@@ -16,13 +16,13 @@ public class SearchDTO {
 	@NotNull
 	private String query;
 	private Point location;
-	private Double distance;
+	private Double radius;
 	
 	public Optional<Point> getLocation() {
 		return Optional.ofNullable(location);
 	}
 	
-	public Optional<Double> getDistance() {
-		return Optional.ofNullable(distance);
+	public Optional<Double> getRadius() {
+		return Optional.ofNullable(radius);
 	}
 }
