@@ -1,0 +1,4 @@
+id;first_name;last_name;email;phone;licence_number;national_id;passport_no;type;designation;address;activated;medical_department_id
+1;Arhan;Sajjad;arhan@gmail.com;8801345678904;1111111111;3333333333;9999999999;PHYSICIAN;Assistant Professor;pahartoli resedential area;true;2
+
+id;trade_name;unit_quantity;generic_name;chemical_name;jhi_type;manufacturer;mrp;indications;dose_and_admin;preparation;product_url;active
