@@ -1,21 +1,33 @@
 package com.dhomoni.search.service;
 
+import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
+import static org.elasticsearch.index.query.QueryBuilders.constantScoreQuery;
+import static org.elasticsearch.index.query.QueryBuilders.idsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.simpleQueryStringQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termQuery;
+
+import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.dhomoni.search.domain.Patient;
 import com.dhomoni.search.repository.PatientRepository;
 import com.dhomoni.search.repository.search.PatientSearchRepository;
 import com.dhomoni.search.service.dto.PatientDTO;
+import com.dhomoni.search.service.dto.SearchDTO;
 import com.dhomoni.search.service.mapper.PatientMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Splitter;
 
 /**
  * Service Implementation for managing Patient.
@@ -100,9 +112,40 @@ public class PatientService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<PatientDTO> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of Patients for query {}", query);
-        return patientSearchRepository.search(queryStringQuery(query), pageable)
+    public Page<PatientDTO> search(SearchDTO searchDTO, Pageable pageable) {
+        log.debug("Request to search for a page of Patients for query {}", searchDTO.getQuery());
+		NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+        String[] excludeFields = { "registrationId" };
+        BoolQueryBuilder boolQuery = boolQuery().should(simpleQueryStringQuery(searchDTO.getQuery()));
+		Iterable<String> tokens = Splitter.on(CharMatcher.anyOf(", ")).omitEmptyStrings().split(searchDTO.getQuery());
+		for (String token : tokens) {
+			if (StringUtils.isNumeric(token)) {
+				boolQuery.should(constantScoreQuery(termQuery("id", token).boost(-1f)));
+			}
+		}
+		SearchQuery searchQuery = queryBuilder.withQuery(boolQuery)
+				.withSourceFilter(new FetchSourceFilterBuilder().withExcludes(excludeFields).build())
+				.withPageable(pageable).withMinScore(0.00001f).build();
+        return patientSearchRepository.search(searchQuery)
             .map(patientMapper::toDto);
     }
+    
+	/**
+	 * Search for the doctor corresponding to the id.
+	 *
+	 * @param query    the query of the search
+	 * @param pageable the pagination information
+	 * @return the list of entities
+	 */
+	@Transactional(readOnly = true)
+	public Optional<PatientDTO> search(long id) {
+		log.debug("Request to search for a doctor for query {}", id);
+		NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+		String[] excludeFields = { "registrationId" };
+		SearchQuery searchQuery = queryBuilder.withQuery(idsQuery().addIds(Long.toString(id)))
+				.withSourceFilter(new FetchSourceFilterBuilder().withExcludes(excludeFields).build())
+				.withMinScore(0.00001f).build();
+		Page<Patient> patients = patientSearchRepository.search(searchQuery);
+		return patients.map(patientMapper::toDto).stream().findFirst();
+	}
 }

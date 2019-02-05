@@ -1,14 +1,12 @@
 package com.dhomoni.search.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import com.dhomoni.search.service.PatientService;
-import com.dhomoni.search.web.rest.errors.BadRequestAlertException;
-import com.dhomoni.search.web.rest.util.HeaderUtil;
-import com.dhomoni.search.web.rest.util.PaginationUtil;
-import com.dhomoni.search.service.dto.PatientDTO;
-import com.dhomoni.search.service.dto.PatientCriteria;
-import com.dhomoni.search.service.PatientQueryService;
-import io.github.jhipster.web.util.ResponseUtil;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,17 +14,26 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
+import com.codahale.metrics.annotation.Timed;
+import com.dhomoni.search.service.PatientQueryService;
+import com.dhomoni.search.service.PatientService;
+import com.dhomoni.search.service.dto.PatientCriteria;
+import com.dhomoni.search.service.dto.PatientDTO;
+import com.dhomoni.search.service.dto.SearchDTO;
+import com.dhomoni.search.web.rest.errors.BadRequestAlertException;
+import com.dhomoni.search.web.rest.util.HeaderUtil;
+import com.dhomoni.search.web.rest.util.PaginationUtil;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import io.github.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing Patient.
@@ -105,6 +112,39 @@ public class PatientResource {
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/patients");
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
+    
+    /**
+     * SEARCH  /_search/patients?query=:query : search for the patient corresponding
+     * to the query.
+     *
+     * @param query the query of the patient search
+     * @param pageable the pagination information
+     * @return the result of the search
+     */
+    @PostMapping("/_search/patients")
+    @Timed
+    public ResponseEntity<List<PatientDTO>> searchPatients(@Valid @RequestBody SearchDTO searchDTO, Pageable pageable) {
+        log.debug("REST request to search for a page of Patients for searchDTO {}", searchDTO);
+        Page<PatientDTO> page = patientService.search(searchDTO, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(searchDTO.getQuery(), page, "/api/_search/patients");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+    
+    /**
+     * SEARCH  /_search/patient?id=:doctorId : search for the doctor corresponding
+     * to the id.
+     *
+     * @param query the query of the doctor search
+     * @param pageable the pagination information
+     * @return the result of the search
+     */
+    @GetMapping("/_search/patients/{id}")
+    @Timed
+    public ResponseEntity<Optional<PatientDTO>> searchPatient(@PathVariable Long id) {
+        log.debug("REST request to search for a doctor for query {}", id);
+        Optional<PatientDTO> patientDTO = patientService.search(id);
+        return new ResponseEntity<>(patientDTO, HttpStatus.OK);
+    }
 
     /**
     * GET  /patients/count : count all the patients.
@@ -146,22 +186,4 @@ public class PatientResource {
         patientService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-
-    /**
-     * SEARCH  /_search/patients?query=:query : search for the patient corresponding
-     * to the query.
-     *
-     * @param query the query of the patient search
-     * @param pageable the pagination information
-     * @return the result of the search
-     */
-    @GetMapping("/_search/patients")
-    @Timed
-    public ResponseEntity<List<PatientDTO>> searchPatients(@RequestParam String query, Pageable pageable) {
-        log.debug("REST request to search for a page of Patients for query {}", query);
-        Page<PatientDTO> page = patientService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/patients");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
 }
