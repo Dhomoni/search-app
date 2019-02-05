@@ -1,4 +1,81 @@
-id;first_name;last_name;email;phone;licence_number;national_id;passport_no;type;designation;address;activated;medical_department_id
-1;Arhan;Sajjad;arhan@gmail.com;8801345678904;1111111111;3333333333;9999999999;PHYSICIAN;Assistant Professor;pahartoli resedential area;true;2
-
 id;medical_name;general_name;symptoms;medical_department_id
+1;Arrhythmias;;;3
+2;Deep venous thrombosis;;;3
+3;Heart failure;;;3
+4;Hypertension;;;3
+5;Endocarditis;;;3
+6;Myocarditis;;;3
+7;Pericardial disease;;;3
+8;Ischemic disease;;;3
+9;Peripheral vascular disease;;;3
+10;Shock;;;3
+11;Syncope;;;3
+12;Valvular disease;;;3
+13;Acute/chronic respiratory failure;;;20
+14;Assisted ventilation;;;20
+15;Asthma;;;20
+16;Chronic obstructive pulmonary disease;;;20
+17;Interstitial lung disease;;;20
+18;Neoplasms/Malignancies;;;20
+19;Pleural disease;;;20
+20;Pneumonia;;;20
+21;Pneumothorax;;;20
+22;Pulmonary embolism;;;20
+23;Tuberculosis;;;20
+24;Bleeding;;;4
+25;Gastroparesis;;;4
+26;Bleeding;;;4
+27;Constipation;;;4
+28;Diverticulosis;;;4
+29;Inflammatory bowel disease;;;4
+30;Infections;;;4
+31;Ischemia;;;4
+32;Obstruction;;;4
+33;Gallbladder disease;;;4
+34;Liver disease;;;4
+35;Pancreatitis;;;4
+36;Malnutrition;;;4
+37;Neoplasms/Malignancies;;;4
+38;Adrenal gland disease;;;19
+39;Diabetic ketoacidosis;;;19
+40;Hyperosmolar nonketotic coma;;;19
+41;Hypoglycemia/hyperglycemia;;;19
+42;Neoplasms/Malignancies;;;19
+43;Thyroid/parathyroid gland disease;;;19
+44;Acid-base disorders;;;12
+45;Acute kidney injury;;;12
+46;Chronic kidney disease/End-stage renal disease;;;12
+47;Diabetes insipidus;;;12
+48;Syndrome of inappropriate antidiuretic hormone secretion (SIADH);;;12
+49;Neoplasms/Malignancies;;;12
+50;Nephrolithiasis;;;12
+51;Urinary tract infections;;;12
+52;Anemias;;;21
+53;Bone marrow disorders;;;21
+54;Coagulopathies;;;21
+55;Hematologic malignancies;;;21
+56;Hematologic/oncologic emergencies;;;21
+57;Neutropenic fever;;;21
+58;Solid organ tumors;;;21
+59;Fungal infections;;;1
+60;HIV/AIDS;;;1
+61;Hospital-acquired infections;;;1
+62;Infection in immunocompromised host;;;1
+63;Sepsis syndrome;;;1
+64;Skin and soft-tissue infections;;;1
+65;Travel-related illnesses;;;1
+66;Viral infections;;;1
+67;Delirium/dementia;;;2
+68;Encephalopathy;;;2
+69;Meningitis/Encephalitis;;;2
+70;Myopathy;;;2
+71;Neoplasm/Malignancies;;;2
+72;Paraplegia/Quadriplegia;;;2
+73;Peripheral neuropathy;;;2
+74;Seizure disorders;;;2
+75;Ischemic;;;2
+76;Hemorrhagic;;;2
+77;Mood disorders;;;10
+78;Psychosis;;;10
+79;Substance use disorders;;;10
+80;Suicide/Overdose;;;10
