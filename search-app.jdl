@@ -60,7 +60,14 @@ entity Disease {
 	id UUID required
 	medicalName String required
 	generalName String required
-	symptoms String
+}
+
+entity Symptom {
+	name String
+}
+
+relationship OneToMany {
+	Disease{symptoms} to Symptom
 }
 
 relationship OneToMany {
@@ -151,17 +158,24 @@ entity Medicine {
 	unitQuantity String
 	genericName String required
 	chemicalName String required
-	type MedicineType
+	formulation Formulation
 	manufacturer String required
 	mrp Double
-	indications String
 	doseAndAdmin String
 	preparation String
 	productUrl String
 	active Boolean
 }
 
-enum MedicineType {
+entity Indication {
+	name String
+}
+
+relationship OneToMany {
+	Medicine{indications} to Indication
+}
+
+enum Formulation {
 	TABLET,
 	CAPSULE,
 	SYRUP,
