@@ -5,6 +5,7 @@ import com.dhomoni.search.SearchApp;
 import com.dhomoni.search.config.SecurityBeanOverrideConfiguration;
 
 import com.dhomoni.search.domain.Medicine;
+import com.dhomoni.search.domain.Indication;
 import com.dhomoni.search.repository.MedicineRepository;
 import com.dhomoni.search.repository.search.MedicineSearchRepository;
 import com.dhomoni.search.service.MedicineService;
@@ -44,7 +45,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.dhomoni.search.domain.enumeration.MedicineType;
+import com.dhomoni.search.domain.enumeration.Formulation;
 /**
  * Test class for the MedicineResource REST controller.
  *
@@ -66,17 +67,14 @@ public class MedicineResourceIntTest {
     private static final String DEFAULT_CHEMICAL_NAME = "AAAAAAAAAA";
     private static final String UPDATED_CHEMICAL_NAME = "BBBBBBBBBB";
 
-    private static final MedicineType DEFAULT_TYPE = MedicineType.TABLET;
-    private static final MedicineType UPDATED_TYPE = MedicineType.CAPSULE;
+    private static final Formulation DEFAULT_FORMULATION = Formulation.TABLET;
+    private static final Formulation UPDATED_FORMULATION = Formulation.CAPSULE;
 
     private static final String DEFAULT_MANUFACTURER = "AAAAAAAAAA";
     private static final String UPDATED_MANUFACTURER = "BBBBBBBBBB";
 
     private static final Double DEFAULT_MRP = 1D;
     private static final Double UPDATED_MRP = 2D;
-
-    private static final String DEFAULT_INDICATIONS = "AAAAAAAAAA";
-    private static final String UPDATED_INDICATIONS = "BBBBBBBBBB";
 
     private static final String DEFAULT_DOSE_AND_ADMIN = "AAAAAAAAAA";
     private static final String UPDATED_DOSE_AND_ADMIN = "BBBBBBBBBB";
@@ -153,10 +151,9 @@ public class MedicineResourceIntTest {
             .unitQuantity(DEFAULT_UNIT_QUANTITY)
             .genericName(DEFAULT_GENERIC_NAME)
             .chemicalName(DEFAULT_CHEMICAL_NAME)
-            .type(DEFAULT_TYPE)
+            .formulation(DEFAULT_FORMULATION)
             .manufacturer(DEFAULT_MANUFACTURER)
             .mrp(DEFAULT_MRP)
-            .indications(DEFAULT_INDICATIONS)
             .doseAndAdmin(DEFAULT_DOSE_AND_ADMIN)
             .preparation(DEFAULT_PREPARATION)
             .productUrl(DEFAULT_PRODUCT_URL)
@@ -189,10 +186,9 @@ public class MedicineResourceIntTest {
         assertThat(testMedicine.getUnitQuantity()).isEqualTo(DEFAULT_UNIT_QUANTITY);
         assertThat(testMedicine.getGenericName()).isEqualTo(DEFAULT_GENERIC_NAME);
         assertThat(testMedicine.getChemicalName()).isEqualTo(DEFAULT_CHEMICAL_NAME);
-        assertThat(testMedicine.getType()).isEqualTo(DEFAULT_TYPE);
+        assertThat(testMedicine.getFormulation()).isEqualTo(DEFAULT_FORMULATION);
         assertThat(testMedicine.getManufacturer()).isEqualTo(DEFAULT_MANUFACTURER);
         assertThat(testMedicine.getMrp()).isEqualTo(DEFAULT_MRP);
-        assertThat(testMedicine.getIndications()).isEqualTo(DEFAULT_INDICATIONS);
         assertThat(testMedicine.getDoseAndAdmin()).isEqualTo(DEFAULT_DOSE_AND_ADMIN);
         assertThat(testMedicine.getPreparation()).isEqualTo(DEFAULT_PREPARATION);
         assertThat(testMedicine.getProductUrl()).isEqualTo(DEFAULT_PRODUCT_URL);
@@ -316,10 +312,9 @@ public class MedicineResourceIntTest {
             .andExpect(jsonPath("$.[*].unitQuantity").value(hasItem(DEFAULT_UNIT_QUANTITY.toString())))
             .andExpect(jsonPath("$.[*].genericName").value(hasItem(DEFAULT_GENERIC_NAME.toString())))
             .andExpect(jsonPath("$.[*].chemicalName").value(hasItem(DEFAULT_CHEMICAL_NAME.toString())))
-            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
+            .andExpect(jsonPath("$.[*].formulation").value(hasItem(DEFAULT_FORMULATION.toString())))
             .andExpect(jsonPath("$.[*].manufacturer").value(hasItem(DEFAULT_MANUFACTURER.toString())))
             .andExpect(jsonPath("$.[*].mrp").value(hasItem(DEFAULT_MRP.doubleValue())))
-            .andExpect(jsonPath("$.[*].indications").value(hasItem(DEFAULT_INDICATIONS.toString())))
             .andExpect(jsonPath("$.[*].doseAndAdmin").value(hasItem(DEFAULT_DOSE_AND_ADMIN.toString())))
             .andExpect(jsonPath("$.[*].preparation").value(hasItem(DEFAULT_PREPARATION.toString())))
             .andExpect(jsonPath("$.[*].productUrl").value(hasItem(DEFAULT_PRODUCT_URL.toString())))
@@ -341,10 +336,9 @@ public class MedicineResourceIntTest {
             .andExpect(jsonPath("$.unitQuantity").value(DEFAULT_UNIT_QUANTITY.toString()))
             .andExpect(jsonPath("$.genericName").value(DEFAULT_GENERIC_NAME.toString()))
             .andExpect(jsonPath("$.chemicalName").value(DEFAULT_CHEMICAL_NAME.toString()))
-            .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()))
+            .andExpect(jsonPath("$.formulation").value(DEFAULT_FORMULATION.toString()))
             .andExpect(jsonPath("$.manufacturer").value(DEFAULT_MANUFACTURER.toString()))
             .andExpect(jsonPath("$.mrp").value(DEFAULT_MRP.doubleValue()))
-            .andExpect(jsonPath("$.indications").value(DEFAULT_INDICATIONS.toString()))
             .andExpect(jsonPath("$.doseAndAdmin").value(DEFAULT_DOSE_AND_ADMIN.toString()))
             .andExpect(jsonPath("$.preparation").value(DEFAULT_PREPARATION.toString()))
             .andExpect(jsonPath("$.productUrl").value(DEFAULT_PRODUCT_URL.toString()))
@@ -509,41 +503,41 @@ public class MedicineResourceIntTest {
 
     @Test
     @Transactional
-    public void getAllMedicinesByTypeIsEqualToSomething() throws Exception {
+    public void getAllMedicinesByFormulationIsEqualToSomething() throws Exception {
         // Initialize the database
         medicineRepository.saveAndFlush(medicine);
 
-        // Get all the medicineList where type equals to DEFAULT_TYPE
-        defaultMedicineShouldBeFound("type.equals=" + DEFAULT_TYPE);
+        // Get all the medicineList where formulation equals to DEFAULT_FORMULATION
+        defaultMedicineShouldBeFound("formulation.equals=" + DEFAULT_FORMULATION);
 
-        // Get all the medicineList where type equals to UPDATED_TYPE
-        defaultMedicineShouldNotBeFound("type.equals=" + UPDATED_TYPE);
+        // Get all the medicineList where formulation equals to UPDATED_FORMULATION
+        defaultMedicineShouldNotBeFound("formulation.equals=" + UPDATED_FORMULATION);
     }
 
     @Test
     @Transactional
-    public void getAllMedicinesByTypeIsInShouldWork() throws Exception {
+    public void getAllMedicinesByFormulationIsInShouldWork() throws Exception {
         // Initialize the database
         medicineRepository.saveAndFlush(medicine);
 
-        // Get all the medicineList where type in DEFAULT_TYPE or UPDATED_TYPE
-        defaultMedicineShouldBeFound("type.in=" + DEFAULT_TYPE + "," + UPDATED_TYPE);
+        // Get all the medicineList where formulation in DEFAULT_FORMULATION or UPDATED_FORMULATION
+        defaultMedicineShouldBeFound("formulation.in=" + DEFAULT_FORMULATION + "," + UPDATED_FORMULATION);
 
-        // Get all the medicineList where type equals to UPDATED_TYPE
-        defaultMedicineShouldNotBeFound("type.in=" + UPDATED_TYPE);
+        // Get all the medicineList where formulation equals to UPDATED_FORMULATION
+        defaultMedicineShouldNotBeFound("formulation.in=" + UPDATED_FORMULATION);
     }
 
     @Test
     @Transactional
-    public void getAllMedicinesByTypeIsNullOrNotNull() throws Exception {
+    public void getAllMedicinesByFormulationIsNullOrNotNull() throws Exception {
         // Initialize the database
         medicineRepository.saveAndFlush(medicine);
 
-        // Get all the medicineList where type is not null
-        defaultMedicineShouldBeFound("type.specified=true");
+        // Get all the medicineList where formulation is not null
+        defaultMedicineShouldBeFound("formulation.specified=true");
 
-        // Get all the medicineList where type is null
-        defaultMedicineShouldNotBeFound("type.specified=false");
+        // Get all the medicineList where formulation is null
+        defaultMedicineShouldNotBeFound("formulation.specified=false");
     }
 
     @Test
@@ -622,45 +616,6 @@ public class MedicineResourceIntTest {
 
         // Get all the medicineList where mrp is null
         defaultMedicineShouldNotBeFound("mrp.specified=false");
-    }
-
-    @Test
-    @Transactional
-    public void getAllMedicinesByIndicationsIsEqualToSomething() throws Exception {
-        // Initialize the database
-        medicineRepository.saveAndFlush(medicine);
-
-        // Get all the medicineList where indications equals to DEFAULT_INDICATIONS
-        defaultMedicineShouldBeFound("indications.equals=" + DEFAULT_INDICATIONS);
-
-        // Get all the medicineList where indications equals to UPDATED_INDICATIONS
-        defaultMedicineShouldNotBeFound("indications.equals=" + UPDATED_INDICATIONS);
-    }
-
-    @Test
-    @Transactional
-    public void getAllMedicinesByIndicationsIsInShouldWork() throws Exception {
-        // Initialize the database
-        medicineRepository.saveAndFlush(medicine);
-
-        // Get all the medicineList where indications in DEFAULT_INDICATIONS or UPDATED_INDICATIONS
-        defaultMedicineShouldBeFound("indications.in=" + DEFAULT_INDICATIONS + "," + UPDATED_INDICATIONS);
-
-        // Get all the medicineList where indications equals to UPDATED_INDICATIONS
-        defaultMedicineShouldNotBeFound("indications.in=" + UPDATED_INDICATIONS);
-    }
-
-    @Test
-    @Transactional
-    public void getAllMedicinesByIndicationsIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        medicineRepository.saveAndFlush(medicine);
-
-        // Get all the medicineList where indications is not null
-        defaultMedicineShouldBeFound("indications.specified=true");
-
-        // Get all the medicineList where indications is null
-        defaultMedicineShouldNotBeFound("indications.specified=false");
     }
 
     @Test
@@ -818,6 +773,25 @@ public class MedicineResourceIntTest {
         // Get all the medicineList where active is null
         defaultMedicineShouldNotBeFound("active.specified=false");
     }
+
+    @Test
+    @Transactional
+    public void getAllMedicinesByIndicationsIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Indication indications = IndicationResourceIntTest.createEntity(em);
+        em.persist(indications);
+        em.flush();
+        medicine.addIndications(indications);
+        medicineRepository.saveAndFlush(medicine);
+        Long indicationsId = indications.getId();
+
+        // Get all the medicineList where indications equals to indicationsId
+        defaultMedicineShouldBeFound("indicationsId.equals=" + indicationsId);
+
+        // Get all the medicineList where indications equals to indicationsId + 1
+        defaultMedicineShouldNotBeFound("indicationsId.equals=" + (indicationsId + 1));
+    }
+
     /**
      * Executes the search, and checks that the default entity is returned
      */
@@ -830,10 +804,9 @@ public class MedicineResourceIntTest {
             .andExpect(jsonPath("$.[*].unitQuantity").value(hasItem(DEFAULT_UNIT_QUANTITY.toString())))
             .andExpect(jsonPath("$.[*].genericName").value(hasItem(DEFAULT_GENERIC_NAME.toString())))
             .andExpect(jsonPath("$.[*].chemicalName").value(hasItem(DEFAULT_CHEMICAL_NAME.toString())))
-            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
+            .andExpect(jsonPath("$.[*].formulation").value(hasItem(DEFAULT_FORMULATION.toString())))
             .andExpect(jsonPath("$.[*].manufacturer").value(hasItem(DEFAULT_MANUFACTURER.toString())))
             .andExpect(jsonPath("$.[*].mrp").value(hasItem(DEFAULT_MRP.doubleValue())))
-            .andExpect(jsonPath("$.[*].indications").value(hasItem(DEFAULT_INDICATIONS.toString())))
             .andExpect(jsonPath("$.[*].doseAndAdmin").value(hasItem(DEFAULT_DOSE_AND_ADMIN.toString())))
             .andExpect(jsonPath("$.[*].preparation").value(hasItem(DEFAULT_PREPARATION.toString())))
             .andExpect(jsonPath("$.[*].productUrl").value(hasItem(DEFAULT_PRODUCT_URL.toString())))
@@ -889,10 +862,9 @@ public class MedicineResourceIntTest {
             .unitQuantity(UPDATED_UNIT_QUANTITY)
             .genericName(UPDATED_GENERIC_NAME)
             .chemicalName(UPDATED_CHEMICAL_NAME)
-            .type(UPDATED_TYPE)
+            .formulation(UPDATED_FORMULATION)
             .manufacturer(UPDATED_MANUFACTURER)
             .mrp(UPDATED_MRP)
-            .indications(UPDATED_INDICATIONS)
             .doseAndAdmin(UPDATED_DOSE_AND_ADMIN)
             .preparation(UPDATED_PREPARATION)
             .productUrl(UPDATED_PRODUCT_URL)
@@ -912,10 +884,9 @@ public class MedicineResourceIntTest {
         assertThat(testMedicine.getUnitQuantity()).isEqualTo(UPDATED_UNIT_QUANTITY);
         assertThat(testMedicine.getGenericName()).isEqualTo(UPDATED_GENERIC_NAME);
         assertThat(testMedicine.getChemicalName()).isEqualTo(UPDATED_CHEMICAL_NAME);
-        assertThat(testMedicine.getType()).isEqualTo(UPDATED_TYPE);
+        assertThat(testMedicine.getFormulation()).isEqualTo(UPDATED_FORMULATION);
         assertThat(testMedicine.getManufacturer()).isEqualTo(UPDATED_MANUFACTURER);
         assertThat(testMedicine.getMrp()).isEqualTo(UPDATED_MRP);
-        assertThat(testMedicine.getIndications()).isEqualTo(UPDATED_INDICATIONS);
         assertThat(testMedicine.getDoseAndAdmin()).isEqualTo(UPDATED_DOSE_AND_ADMIN);
         assertThat(testMedicine.getPreparation()).isEqualTo(UPDATED_PREPARATION);
         assertThat(testMedicine.getProductUrl()).isEqualTo(UPDATED_PRODUCT_URL);
@@ -984,10 +955,9 @@ public class MedicineResourceIntTest {
             .andExpect(jsonPath("$.[*].unitQuantity").value(hasItem(DEFAULT_UNIT_QUANTITY)))
             .andExpect(jsonPath("$.[*].genericName").value(hasItem(DEFAULT_GENERIC_NAME)))
             .andExpect(jsonPath("$.[*].chemicalName").value(hasItem(DEFAULT_CHEMICAL_NAME)))
-            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
+            .andExpect(jsonPath("$.[*].formulation").value(hasItem(DEFAULT_FORMULATION.toString())))
             .andExpect(jsonPath("$.[*].manufacturer").value(hasItem(DEFAULT_MANUFACTURER)))
             .andExpect(jsonPath("$.[*].mrp").value(hasItem(DEFAULT_MRP.doubleValue())))
-            .andExpect(jsonPath("$.[*].indications").value(hasItem(DEFAULT_INDICATIONS)))
             .andExpect(jsonPath("$.[*].doseAndAdmin").value(hasItem(DEFAULT_DOSE_AND_ADMIN)))
             .andExpect(jsonPath("$.[*].preparation").value(hasItem(DEFAULT_PREPARATION)))
             .andExpect(jsonPath("$.[*].productUrl").value(hasItem(DEFAULT_PRODUCT_URL)))

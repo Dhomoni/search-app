@@ -17,8 +17,6 @@ public class DiseaseDTO implements Serializable {
     @NotNull
     private String generalName;
 
-    private String symptoms;
-
     private Long medicalDepartmentId;
 
     public Long getId() {
@@ -43,14 +41,6 @@ public class DiseaseDTO implements Serializable {
 
     public void setGeneralName(String generalName) {
         this.generalName = generalName;
-    }
-
-    public String getSymptoms() {
-        return symptoms;
-    }
-
-    public void setSymptoms(String symptoms) {
-        this.symptoms = symptoms;
     }
 
     public Long getMedicalDepartmentId() {
@@ -88,8 +78,7 @@ public class DiseaseDTO implements Serializable {
             "id=" + getId() +
             ", medicalName='" + getMedicalName() + "'" +
             ", generalName='" + getGeneralName() + "'" +
-            ", symptoms='" + getSymptoms() + "'" +
-            ", dept=" + getMedicalDepartmentId() +
+            ", medicalDepartment=" + getMedicalDepartmentId() +
             "}";
     }
 }

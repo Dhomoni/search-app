@@ -5,6 +5,7 @@ import com.dhomoni.search.SearchApp;
 import com.dhomoni.search.config.SecurityBeanOverrideConfiguration;
 
 import com.dhomoni.search.domain.Disease;
+import com.dhomoni.search.domain.Symptom;
 import com.dhomoni.search.domain.MedicalDepartment;
 import com.dhomoni.search.repository.DiseaseRepository;
 import com.dhomoni.search.repository.search.DiseaseSearchRepository;
@@ -59,9 +60,6 @@ public class DiseaseResourceIntTest {
 
     private static final String DEFAULT_GENERAL_NAME = "AAAAAAAAAA";
     private static final String UPDATED_GENERAL_NAME = "BBBBBBBBBB";
-
-    private static final String DEFAULT_SYMPTOMS = "AAAAAAAAAA";
-    private static final String UPDATED_SYMPTOMS = "BBBBBBBBBB";
 
     @Autowired
     private DiseaseRepository diseaseRepository;
@@ -123,8 +121,7 @@ public class DiseaseResourceIntTest {
     public static Disease createEntity(EntityManager em) {
         Disease disease = new Disease()
             .medicalName(DEFAULT_MEDICAL_NAME)
-            .generalName(DEFAULT_GENERAL_NAME)
-            .symptoms(DEFAULT_SYMPTOMS);
+            .generalName(DEFAULT_GENERAL_NAME);
         return disease;
     }
 
@@ -151,7 +148,6 @@ public class DiseaseResourceIntTest {
         Disease testDisease = diseaseList.get(diseaseList.size() - 1);
         assertThat(testDisease.getMedicalName()).isEqualTo(DEFAULT_MEDICAL_NAME);
         assertThat(testDisease.getGeneralName()).isEqualTo(DEFAULT_GENERAL_NAME);
-        assertThat(testDisease.getSymptoms()).isEqualTo(DEFAULT_SYMPTOMS);
 
         // Validate the Disease in Elasticsearch
         verify(mockDiseaseSearchRepository, times(1)).save(testDisease);
@@ -230,8 +226,7 @@ public class DiseaseResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(disease.getId().intValue())))
             .andExpect(jsonPath("$.[*].medicalName").value(hasItem(DEFAULT_MEDICAL_NAME.toString())))
-            .andExpect(jsonPath("$.[*].generalName").value(hasItem(DEFAULT_GENERAL_NAME.toString())))
-            .andExpect(jsonPath("$.[*].symptoms").value(hasItem(DEFAULT_SYMPTOMS.toString())));
+            .andExpect(jsonPath("$.[*].generalName").value(hasItem(DEFAULT_GENERAL_NAME.toString())));
     }
     
     @Test
@@ -246,8 +241,7 @@ public class DiseaseResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(disease.getId().intValue()))
             .andExpect(jsonPath("$.medicalName").value(DEFAULT_MEDICAL_NAME.toString()))
-            .andExpect(jsonPath("$.generalName").value(DEFAULT_GENERAL_NAME.toString()))
-            .andExpect(jsonPath("$.symptoms").value(DEFAULT_SYMPTOMS.toString()));
+            .andExpect(jsonPath("$.generalName").value(DEFAULT_GENERAL_NAME.toString()));
     }
 
     @Test
@@ -332,57 +326,37 @@ public class DiseaseResourceIntTest {
     @Transactional
     public void getAllDiseasesBySymptomsIsEqualToSomething() throws Exception {
         // Initialize the database
+        Symptom symptoms = SymptomResourceIntTest.createEntity(em);
+        em.persist(symptoms);
+        em.flush();
+        disease.addSymptoms(symptoms);
         diseaseRepository.saveAndFlush(disease);
+        Long symptomsId = symptoms.getId();
 
-        // Get all the diseaseList where symptoms equals to DEFAULT_SYMPTOMS
-        defaultDiseaseShouldBeFound("symptoms.equals=" + DEFAULT_SYMPTOMS);
+        // Get all the diseaseList where symptoms equals to symptomsId
+        defaultDiseaseShouldBeFound("symptomsId.equals=" + symptomsId);
 
-        // Get all the diseaseList where symptoms equals to UPDATED_SYMPTOMS
-        defaultDiseaseShouldNotBeFound("symptoms.equals=" + UPDATED_SYMPTOMS);
+        // Get all the diseaseList where symptoms equals to symptomsId + 1
+        defaultDiseaseShouldNotBeFound("symptomsId.equals=" + (symptomsId + 1));
     }
+
 
     @Test
     @Transactional
-    public void getAllDiseasesBySymptomsIsInShouldWork() throws Exception {
-        // Initialize the database
-        diseaseRepository.saveAndFlush(disease);
-
-        // Get all the diseaseList where symptoms in DEFAULT_SYMPTOMS or UPDATED_SYMPTOMS
-        defaultDiseaseShouldBeFound("symptoms.in=" + DEFAULT_SYMPTOMS + "," + UPDATED_SYMPTOMS);
-
-        // Get all the diseaseList where symptoms equals to UPDATED_SYMPTOMS
-        defaultDiseaseShouldNotBeFound("symptoms.in=" + UPDATED_SYMPTOMS);
-    }
-
-    @Test
-    @Transactional
-    public void getAllDiseasesBySymptomsIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        diseaseRepository.saveAndFlush(disease);
-
-        // Get all the diseaseList where symptoms is not null
-        defaultDiseaseShouldBeFound("symptoms.specified=true");
-
-        // Get all the diseaseList where symptoms is null
-        defaultDiseaseShouldNotBeFound("symptoms.specified=false");
-    }
-
-    @Test
-    @Transactional
-    public void getAllDiseasesByDeptIsEqualToSomething() throws Exception {
+    public void getAllDiseasesByMedicalDepartmentIsEqualToSomething() throws Exception {
         // Initialize the database
         MedicalDepartment medicalDepartment = MedicalDepartmentResourceIntTest.createEntity(em);
         em.persist(medicalDepartment);
         em.flush();
         disease.setMedicalDepartment(medicalDepartment);
         diseaseRepository.saveAndFlush(disease);
-        Long deptId = medicalDepartment.getId();
+        Long medicalDepartmentId = medicalDepartment.getId();
 
-        // Get all the diseaseList where dept equals to deptId
-        defaultDiseaseShouldBeFound("deptId.equals=" + deptId);
+        // Get all the diseaseList where medicalDepartment equals to medicalDepartmentId
+        defaultDiseaseShouldBeFound("medicalDepartmentId.equals=" + medicalDepartmentId);
 
-        // Get all the diseaseList where dept equals to deptId + 1
-        defaultDiseaseShouldNotBeFound("deptId.equals=" + (deptId + 1));
+        // Get all the diseaseList where medicalDepartment equals to medicalDepartmentId + 1
+        defaultDiseaseShouldNotBeFound("medicalDepartmentId.equals=" + (medicalDepartmentId + 1));
     }
 
     /**
@@ -394,8 +368,7 @@ public class DiseaseResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(disease.getId().intValue())))
             .andExpect(jsonPath("$.[*].medicalName").value(hasItem(DEFAULT_MEDICAL_NAME.toString())))
-            .andExpect(jsonPath("$.[*].generalName").value(hasItem(DEFAULT_GENERAL_NAME.toString())))
-            .andExpect(jsonPath("$.[*].symptoms").value(hasItem(DEFAULT_SYMPTOMS.toString())));
+            .andExpect(jsonPath("$.[*].generalName").value(hasItem(DEFAULT_GENERAL_NAME.toString())));
 
         // Check, that the count call also returns 1
         restDiseaseMockMvc.perform(get("/api/diseases/count?sort=id,desc&" + filter))
@@ -444,8 +417,7 @@ public class DiseaseResourceIntTest {
         em.detach(updatedDisease);
         updatedDisease
             .medicalName(UPDATED_MEDICAL_NAME)
-            .generalName(UPDATED_GENERAL_NAME)
-            .symptoms(UPDATED_SYMPTOMS);
+            .generalName(UPDATED_GENERAL_NAME);
         DiseaseDTO diseaseDTO = diseaseMapper.toDto(updatedDisease);
 
         restDiseaseMockMvc.perform(put("/api/diseases")
@@ -459,7 +431,6 @@ public class DiseaseResourceIntTest {
         Disease testDisease = diseaseList.get(diseaseList.size() - 1);
         assertThat(testDisease.getMedicalName()).isEqualTo(UPDATED_MEDICAL_NAME);
         assertThat(testDisease.getGeneralName()).isEqualTo(UPDATED_GENERAL_NAME);
-        assertThat(testDisease.getSymptoms()).isEqualTo(UPDATED_SYMPTOMS);
 
         // Validate the Disease in Elasticsearch
         verify(mockDiseaseSearchRepository, times(1)).save(testDisease);
@@ -521,8 +492,7 @@ public class DiseaseResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(disease.getId().intValue())))
             .andExpect(jsonPath("$.[*].medicalName").value(hasItem(DEFAULT_MEDICAL_NAME)))
-            .andExpect(jsonPath("$.[*].generalName").value(hasItem(DEFAULT_GENERAL_NAME)))
-            .andExpect(jsonPath("$.[*].symptoms").value(hasItem(DEFAULT_SYMPTOMS)));
+            .andExpect(jsonPath("$.[*].generalName").value(hasItem(DEFAULT_GENERAL_NAME)));
     }
 
     @Test

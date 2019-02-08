@@ -1,5 +1,6 @@
 package com.dhomoni.search.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -8,10 +9,9 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
-
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -28,7 +28,6 @@ public class Disease implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
-    @Field(type = FieldType.Long)
     private Long id;
 
     @NotNull
@@ -39,12 +38,11 @@ public class Disease implements Serializable {
     @Column(name = "general_name", nullable = false)
     private String generalName;
 
-    @Column(name = "symptoms")
-    private String symptoms;
-
+    @OneToMany(mappedBy = "disease")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<Symptom> symptoms = new HashSet<>();
     @ManyToOne
     @JsonIgnoreProperties("diseases")
-    @Field(type = FieldType.Object, ignoreFields = {"diseases"})
     private MedicalDepartment medicalDepartment;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
@@ -82,16 +80,28 @@ public class Disease implements Serializable {
         this.generalName = generalName;
     }
 
-    public String getSymptoms() {
+    public Set<Symptom> getSymptoms() {
         return symptoms;
     }
 
-    public Disease symptoms(String symptoms) {
+    public Disease symptoms(Set<Symptom> symptoms) {
         this.symptoms = symptoms;
         return this;
     }
 
-    public void setSymptoms(String symptoms) {
+    public Disease addSymptoms(Symptom symptom) {
+        this.symptoms.add(symptom);
+        symptom.setDisease(this);
+        return this;
+    }
+
+    public Disease removeSymptoms(Symptom symptom) {
+        this.symptoms.remove(symptom);
+        symptom.setDisease(null);
+        return this;
+    }
+
+    public void setSymptoms(Set<Symptom> symptoms) {
         this.symptoms = symptoms;
     }
 
@@ -135,7 +145,6 @@ public class Disease implements Serializable {
             "id=" + getId() +
             ", medicalName='" + getMedicalName() + "'" +
             ", generalName='" + getGeneralName() + "'" +
-            ", symptoms='" + getSymptoms() + "'" +
             "}";
     }
 }

@@ -2,7 +2,7 @@ package com.dhomoni.search.service.dto;
 
 import java.io.Serializable;
 import java.util.Objects;
-import com.dhomoni.search.domain.enumeration.MedicineType;
+import com.dhomoni.search.domain.enumeration.Formulation;
 import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
@@ -21,9 +21,9 @@ import io.github.jhipster.service.filter.StringFilter;
  */
 public class MedicineCriteria implements Serializable {
     /**
-     * Class for filtering MedicineType
+     * Class for filtering Formulation
      */
-    public static class MedicineTypeFilter extends Filter<MedicineType> {
+    public static class FormulationFilter extends Filter<Formulation> {
     }
 
     private static final long serialVersionUID = 1L;
@@ -38,13 +38,11 @@ public class MedicineCriteria implements Serializable {
 
     private StringFilter chemicalName;
 
-    private MedicineTypeFilter type;
+    private FormulationFilter formulation;
 
     private StringFilter manufacturer;
 
     private DoubleFilter mrp;
-
-    private StringFilter indications;
 
     private StringFilter doseAndAdmin;
 
@@ -53,6 +51,8 @@ public class MedicineCriteria implements Serializable {
     private StringFilter productUrl;
 
     private BooleanFilter active;
+
+    private LongFilter indicationsId;
 
     public LongFilter getId() {
         return id;
@@ -94,12 +94,12 @@ public class MedicineCriteria implements Serializable {
         this.chemicalName = chemicalName;
     }
 
-    public MedicineTypeFilter getType() {
-        return type;
+    public FormulationFilter getFormulation() {
+        return formulation;
     }
 
-    public void setType(MedicineTypeFilter type) {
-        this.type = type;
+    public void setFormulation(FormulationFilter formulation) {
+        this.formulation = formulation;
     }
 
     public StringFilter getManufacturer() {
@@ -116,14 +116,6 @@ public class MedicineCriteria implements Serializable {
 
     public void setMrp(DoubleFilter mrp) {
         this.mrp = mrp;
-    }
-
-    public StringFilter getIndications() {
-        return indications;
-    }
-
-    public void setIndications(StringFilter indications) {
-        this.indications = indications;
     }
 
     public StringFilter getDoseAndAdmin() {
@@ -158,6 +150,14 @@ public class MedicineCriteria implements Serializable {
         this.active = active;
     }
 
+    public LongFilter getIndicationsId() {
+        return indicationsId;
+    }
+
+    public void setIndicationsId(LongFilter indicationsId) {
+        this.indicationsId = indicationsId;
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -174,14 +174,14 @@ public class MedicineCriteria implements Serializable {
             Objects.equals(unitQuantity, that.unitQuantity) &&
             Objects.equals(genericName, that.genericName) &&
             Objects.equals(chemicalName, that.chemicalName) &&
-            Objects.equals(type, that.type) &&
+            Objects.equals(formulation, that.formulation) &&
             Objects.equals(manufacturer, that.manufacturer) &&
             Objects.equals(mrp, that.mrp) &&
-            Objects.equals(indications, that.indications) &&
             Objects.equals(doseAndAdmin, that.doseAndAdmin) &&
             Objects.equals(preparation, that.preparation) &&
             Objects.equals(productUrl, that.productUrl) &&
-            Objects.equals(active, that.active);
+            Objects.equals(active, that.active) &&
+            Objects.equals(indicationsId, that.indicationsId);
     }
 
     @Override
@@ -192,14 +192,14 @@ public class MedicineCriteria implements Serializable {
         unitQuantity,
         genericName,
         chemicalName,
-        type,
+        formulation,
         manufacturer,
         mrp,
-        indications,
         doseAndAdmin,
         preparation,
         productUrl,
-        active
+        active,
+        indicationsId
         );
     }
 
@@ -211,14 +211,14 @@ public class MedicineCriteria implements Serializable {
                 (unitQuantity != null ? "unitQuantity=" + unitQuantity + ", " : "") +
                 (genericName != null ? "genericName=" + genericName + ", " : "") +
                 (chemicalName != null ? "chemicalName=" + chemicalName + ", " : "") +
-                (type != null ? "type=" + type + ", " : "") +
+                (formulation != null ? "formulation=" + formulation + ", " : "") +
                 (manufacturer != null ? "manufacturer=" + manufacturer + ", " : "") +
                 (mrp != null ? "mrp=" + mrp + ", " : "") +
-                (indications != null ? "indications=" + indications + ", " : "") +
                 (doseAndAdmin != null ? "doseAndAdmin=" + doseAndAdmin + ", " : "") +
                 (preparation != null ? "preparation=" + preparation + ", " : "") +
                 (productUrl != null ? "productUrl=" + productUrl + ", " : "") +
                 (active != null ? "active=" + active + ", " : "") +
+                (indicationsId != null ? "indicationsId=" + indicationsId + ", " : "") +
             "}";
     }
 

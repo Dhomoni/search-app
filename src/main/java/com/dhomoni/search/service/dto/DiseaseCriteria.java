@@ -28,9 +28,9 @@ public class DiseaseCriteria implements Serializable {
 
     private StringFilter generalName;
 
-    private StringFilter symptoms;
+    private LongFilter symptomsId;
 
-    private LongFilter deptId;
+    private LongFilter medicalDepartmentId;
 
     public LongFilter getId() {
         return id;
@@ -56,20 +56,20 @@ public class DiseaseCriteria implements Serializable {
         this.generalName = generalName;
     }
 
-    public StringFilter getSymptoms() {
-        return symptoms;
+    public LongFilter getSymptomsId() {
+        return symptomsId;
     }
 
-    public void setSymptoms(StringFilter symptoms) {
-        this.symptoms = symptoms;
+    public void setSymptomsId(LongFilter symptomsId) {
+        this.symptomsId = symptomsId;
     }
 
-    public LongFilter getDeptId() {
-        return deptId;
+    public LongFilter getMedicalDepartmentId() {
+        return medicalDepartmentId;
     }
 
-    public void setDeptId(LongFilter deptId) {
-        this.deptId = deptId;
+    public void setMedicalDepartmentId(LongFilter medicalDepartmentId) {
+        this.medicalDepartmentId = medicalDepartmentId;
     }
 
 
@@ -86,8 +86,8 @@ public class DiseaseCriteria implements Serializable {
             Objects.equals(id, that.id) &&
             Objects.equals(medicalName, that.medicalName) &&
             Objects.equals(generalName, that.generalName) &&
-            Objects.equals(symptoms, that.symptoms) &&
-            Objects.equals(deptId, that.deptId);
+            Objects.equals(symptomsId, that.symptomsId) &&
+            Objects.equals(medicalDepartmentId, that.medicalDepartmentId);
     }
 
     @Override
@@ -96,8 +96,8 @@ public class DiseaseCriteria implements Serializable {
         id,
         medicalName,
         generalName,
-        symptoms,
-        deptId
+        symptomsId,
+        medicalDepartmentId
         );
     }
 
@@ -107,8 +107,8 @@ public class DiseaseCriteria implements Serializable {
                 (id != null ? "id=" + id + ", " : "") +
                 (medicalName != null ? "medicalName=" + medicalName + ", " : "") +
                 (generalName != null ? "generalName=" + generalName + ", " : "") +
-                (symptoms != null ? "symptoms=" + symptoms + ", " : "") +
-                (deptId != null ? "deptId=" + deptId + ", " : "") +
+                (symptomsId != null ? "symptomsId=" + symptomsId + ", " : "") +
+                (medicalDepartmentId != null ? "medicalDepartmentId=" + medicalDepartmentId + ", " : "") +
             "}";
     }
 

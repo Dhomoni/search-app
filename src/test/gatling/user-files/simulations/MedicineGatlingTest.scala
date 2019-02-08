@@ -88,10 +88,9 @@ class MedicineGatlingTest extends Simulation {
                 , "unitQuantity":"SAMPLE_TEXT"
                 , "genericName":"SAMPLE_TEXT"
                 , "chemicalName":"SAMPLE_TEXT"
-                , "type":"TABLET"
+                , "formulation":"TABLET"
                 , "manufacturer":"SAMPLE_TEXT"
                 , "mrp":null
-                , "indications":"SAMPLE_TEXT"
                 , "doseAndAdmin":"SAMPLE_TEXT"
                 , "preparation":"SAMPLE_TEXT"
                 , "productUrl":"SAMPLE_TEXT"

@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory
 import scala.concurrent.duration._
 
 /**
- * Performance test for the Disease entity.
+ * Performance test for the Symptom entity.
  */
-class DiseaseGatlingTest extends Simulation {
+class SymptomGatlingTest extends Simulation {
 
     val context: LoggerContext = LoggerFactory.getILoggerFactory.asInstanceOf[LoggerContext]
     // Log all HTTP requests
@@ -49,7 +49,7 @@ class DiseaseGatlingTest extends Simulation {
         "Authorization" -> "Bearer ${access_token}"
     )
 
-    val scn = scenario("Test the Disease entity")
+    val scn = scenario("Test the Symptom entity")
         .exec(http("First unauthenticated request")
         .get("/api/account")
         .headers(headers_http)
@@ -74,30 +74,29 @@ class DiseaseGatlingTest extends Simulation {
         .check(status.is(200)))
         .pause(10)
         .repeat(2) {
-            exec(http("Get all diseases")
-            .get("/search/api/diseases")
+            exec(http("Get all symptoms")
+            .get("/search/api/symptoms")
             .headers(headers_http_authenticated)
             .check(status.is(200)))
             .pause(10 seconds, 20 seconds)
-            .exec(http("Create new disease")
-            .post("/search/api/diseases")
+            .exec(http("Create new symptom")
+            .post("/search/api/symptoms")
             .headers(headers_http_authenticated)
             .body(StringBody("""{
                 "id":null
-                , "medicalName":"SAMPLE_TEXT"
-                , "generalName":"SAMPLE_TEXT"
+                , "name":"SAMPLE_TEXT"
                 }""")).asJSON
             .check(status.is(201))
-            .check(headerRegex("Location", "(.*)").saveAs("new_disease_url"))).exitHereIfFailed
+            .check(headerRegex("Location", "(.*)").saveAs("new_symptom_url"))).exitHereIfFailed
             .pause(10)
             .repeat(5) {
-                exec(http("Get created disease")
-                .get("/search${new_disease_url}")
+                exec(http("Get created symptom")
+                .get("/search${new_symptom_url}")
                 .headers(headers_http_authenticated))
                 .pause(10)
             }
-            .exec(http("Delete created disease")
-            .delete("/search${new_disease_url}")
+            .exec(http("Delete created symptom")
+            .delete("/search${new_symptom_url}")
             .headers(headers_http_authenticated))
             .pause(10)
         }

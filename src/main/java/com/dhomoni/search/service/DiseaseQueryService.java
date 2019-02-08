@@ -99,11 +99,12 @@ public class DiseaseQueryService extends QueryService<Disease> {
             if (criteria.getGeneralName() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getGeneralName(), Disease_.generalName));
             }
-            if (criteria.getSymptoms() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getSymptoms(), Disease_.symptoms));
+            if (criteria.getSymptomsId() != null) {
+                specification = specification.and(buildSpecification(criteria.getSymptomsId(),
+                    root -> root.join(Disease_.symptoms, JoinType.LEFT).get(Symptom_.id)));
             }
-            if (criteria.getDeptId() != null) {
-                specification = specification.and(buildSpecification(criteria.getDeptId(),
+            if (criteria.getMedicalDepartmentId() != null) {
+                specification = specification.and(buildSpecification(criteria.getMedicalDepartmentId(),
                     root -> root.join(Disease_.medicalDepartment, JoinType.LEFT).get(MedicalDepartment_.id)));
             }
         }

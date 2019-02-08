@@ -14,6 +14,7 @@ public interface DiseaseMapper extends EntityMapper<DiseaseDTO, Disease> {
     @Mapping(source = "medicalDepartment.id", target = "medicalDepartmentId")
     DiseaseDTO toDto(Disease disease);
 
+    @Mapping(target = "symptoms", ignore = true)
     @Mapping(source = "medicalDepartmentId", target = "medicalDepartment")
     Disease toEntity(DiseaseDTO diseaseDTO);
 

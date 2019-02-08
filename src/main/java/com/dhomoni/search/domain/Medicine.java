@@ -1,5 +1,6 @@
 package com.dhomoni.search.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -8,9 +9,11 @@ import javax.validation.constraints.*;
 
 import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
 
-import com.dhomoni.search.domain.enumeration.MedicineType;
+import com.dhomoni.search.domain.enumeration.Formulation;
 
 /**
  * A Medicine.
@@ -44,8 +47,8 @@ public class Medicine implements Serializable {
     private String chemicalName;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "jhi_type")
-    private MedicineType type;
+    @Column(name = "formulation")
+    private Formulation formulation;
 
     @NotNull
     @Column(name = "manufacturer", nullable = false)
@@ -53,9 +56,6 @@ public class Medicine implements Serializable {
 
     @Column(name = "mrp")
     private Double mrp;
-
-    @Column(name = "indications")
-    private String indications;
 
     @Column(name = "dose_and_admin")
     private String doseAndAdmin;
@@ -69,6 +69,9 @@ public class Medicine implements Serializable {
     @Column(name = "active")
     private Boolean active;
 
+    @OneToMany(mappedBy = "medicine")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<Indication> indications = new HashSet<>();
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -130,17 +133,17 @@ public class Medicine implements Serializable {
         this.chemicalName = chemicalName;
     }
 
-    public MedicineType getType() {
-        return type;
+    public Formulation getFormulation() {
+        return formulation;
     }
 
-    public Medicine type(MedicineType type) {
-        this.type = type;
+    public Medicine formulation(Formulation formulation) {
+        this.formulation = formulation;
         return this;
     }
 
-    public void setType(MedicineType type) {
-        this.type = type;
+    public void setFormulation(Formulation formulation) {
+        this.formulation = formulation;
     }
 
     public String getManufacturer() {
@@ -167,19 +170,6 @@ public class Medicine implements Serializable {
 
     public void setMrp(Double mrp) {
         this.mrp = mrp;
-    }
-
-    public String getIndications() {
-        return indications;
-    }
-
-    public Medicine indications(String indications) {
-        this.indications = indications;
-        return this;
-    }
-
-    public void setIndications(String indications) {
-        this.indications = indications;
     }
 
     public String getDoseAndAdmin() {
@@ -233,6 +223,31 @@ public class Medicine implements Serializable {
     public void setActive(Boolean active) {
         this.active = active;
     }
+
+    public Set<Indication> getIndications() {
+        return indications;
+    }
+
+    public Medicine indications(Set<Indication> indications) {
+        this.indications = indications;
+        return this;
+    }
+
+    public Medicine addIndications(Indication indication) {
+        this.indications.add(indication);
+        indication.setMedicine(this);
+        return this;
+    }
+
+    public Medicine removeIndications(Indication indication) {
+        this.indications.remove(indication);
+        indication.setMedicine(null);
+        return this;
+    }
+
+    public void setIndications(Set<Indication> indications) {
+        this.indications = indications;
+    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
@@ -263,10 +278,9 @@ public class Medicine implements Serializable {
             ", unitQuantity='" + getUnitQuantity() + "'" +
             ", genericName='" + getGenericName() + "'" +
             ", chemicalName='" + getChemicalName() + "'" +
-            ", type='" + getType() + "'" +
+            ", formulation='" + getFormulation() + "'" +
             ", manufacturer='" + getManufacturer() + "'" +
             ", mrp=" + getMrp() +
-            ", indications='" + getIndications() + "'" +
             ", doseAndAdmin='" + getDoseAndAdmin() + "'" +
             ", preparation='" + getPreparation() + "'" +
             ", productUrl='" + getProductUrl() + "'" +

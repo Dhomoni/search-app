@@ -3,7 +3,7 @@ package com.dhomoni.search.service.dto;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
-import com.dhomoni.search.domain.enumeration.MedicineType;
+import com.dhomoni.search.domain.enumeration.Formulation;
 
 /**
  * A DTO for the Medicine entity.
@@ -23,14 +23,12 @@ public class MedicineDTO implements Serializable {
     @NotNull
     private String chemicalName;
 
-    private MedicineType type;
+    private Formulation formulation;
 
     @NotNull
     private String manufacturer;
 
     private Double mrp;
-
-    private String indications;
 
     private String doseAndAdmin;
 
@@ -80,12 +78,12 @@ public class MedicineDTO implements Serializable {
         this.chemicalName = chemicalName;
     }
 
-    public MedicineType getType() {
-        return type;
+    public Formulation getFormulation() {
+        return formulation;
     }
 
-    public void setType(MedicineType type) {
-        this.type = type;
+    public void setFormulation(Formulation formulation) {
+        this.formulation = formulation;
     }
 
     public String getManufacturer() {
@@ -102,14 +100,6 @@ public class MedicineDTO implements Serializable {
 
     public void setMrp(Double mrp) {
         this.mrp = mrp;
-    }
-
-    public String getIndications() {
-        return indications;
-    }
-
-    public void setIndications(String indications) {
-        this.indications = indications;
     }
 
     public String getDoseAndAdmin() {
@@ -173,10 +163,9 @@ public class MedicineDTO implements Serializable {
             ", unitQuantity='" + getUnitQuantity() + "'" +
             ", genericName='" + getGenericName() + "'" +
             ", chemicalName='" + getChemicalName() + "'" +
-            ", type='" + getType() + "'" +
+            ", formulation='" + getFormulation() + "'" +
             ", manufacturer='" + getManufacturer() + "'" +
             ", mrp=" + getMrp() +
-            ", indications='" + getIndications() + "'" +
             ", doseAndAdmin='" + getDoseAndAdmin() + "'" +
             ", preparation='" + getPreparation() + "'" +
             ", productUrl='" + getProductUrl() + "'" +

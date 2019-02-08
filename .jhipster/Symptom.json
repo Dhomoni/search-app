@@ -1,0 +1,29 @@
+{
+    "name": "Symptom",
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "String"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipName": "disease",
+            "otherEntityName": "disease",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190208194147",
+    "entityTableName": "symptom",
+    "dto": "mapstruct",
+    "pagination": "infinite-scroll",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": true,
+    "fluentMethods": true,
+    "clientRootFolder": "search",
+    "applications": [
+        "search"
+    ],
+    "microserviceName": "search"
+}

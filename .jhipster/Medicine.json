@@ -27,8 +27,8 @@
             ]
         },
         {
-            "fieldName": "type",
-            "fieldType": "MedicineType",
+            "fieldName": "formulation",
+            "fieldType": "Formulation",
             "fieldValues": "TABLET,CAPSULE,SYRUP,INJECTION,INJECTION_IV,SALINE,ORAL_SALINE"
         },
         {
@@ -41,10 +41,6 @@
         {
             "fieldName": "mrp",
             "fieldType": "Double"
-        },
-        {
-            "fieldName": "indications",
-            "fieldType": "String"
         },
         {
             "fieldName": "doseAndAdmin",
@@ -63,7 +59,14 @@
             "fieldType": "Boolean"
         }
     ],
-    "relationships": [],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "indications",
+            "otherEntityName": "indication",
+            "otherEntityRelationshipName": "medicine"
+        }
+    ],
     "changelogDate": "20181226102651",
     "entityTableName": "medicine",
     "dto": "mapstruct",
@@ -71,9 +74,10 @@
     "service": "serviceClass",
     "jpaMetamodelFiltering": true,
     "fluentMethods": true,
-    "clientRootFolder": "",
+    "clientRootFolder": "search",
     "applications": [
         "search"
     ],
-    "searchEngine": "elasticsearch"
+    "searchEngine": "elasticsearch",
+    "microserviceName": "search"
 }

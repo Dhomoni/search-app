@@ -37,7 +37,7 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="jhi_type" type="varchar(255)">
+            <column name="formulation" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
 
@@ -46,10 +46,6 @@
             </column>
 
             <column name="mrp" type="double">
-                <constraints nullable="true" />
-            </column>
-
-            <column name="indications" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
 

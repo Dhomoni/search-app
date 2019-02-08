@@ -14,13 +14,15 @@
             "fieldValidateRules": [
                 "required"
             ]
-        },
-        {
-            "fieldName": "symptoms",
-            "fieldType": "String"
         }
     ],
     "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "symptoms",
+            "otherEntityName": "symptom",
+            "otherEntityRelationshipName": "disease"
+        },
         {
             "relationshipType": "many-to-one",
             "relationshipName": "medicalDepartment",
@@ -35,9 +37,10 @@
     "service": "serviceClass",
     "jpaMetamodelFiltering": true,
     "fluentMethods": true,
-    "clientRootFolder": "",
+    "clientRootFolder": "search",
     "applications": [
         "search"
     ],
-    "searchEngine": "elasticsearch"
+    "searchEngine": "elasticsearch",
+    "microserviceName": "search"
 }

@@ -105,17 +105,14 @@ public class MedicineQueryService extends QueryService<Medicine> {
             if (criteria.getChemicalName() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getChemicalName(), Medicine_.chemicalName));
             }
-            if (criteria.getType() != null) {
-                specification = specification.and(buildSpecification(criteria.getType(), Medicine_.type));
+            if (criteria.getFormulation() != null) {
+                specification = specification.and(buildSpecification(criteria.getFormulation(), Medicine_.formulation));
             }
             if (criteria.getManufacturer() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getManufacturer(), Medicine_.manufacturer));
             }
             if (criteria.getMrp() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getMrp(), Medicine_.mrp));
-            }
-            if (criteria.getIndications() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getIndications(), Medicine_.indications));
             }
             if (criteria.getDoseAndAdmin() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getDoseAndAdmin(), Medicine_.doseAndAdmin));
@@ -128,6 +125,10 @@ public class MedicineQueryService extends QueryService<Medicine> {
             }
             if (criteria.getActive() != null) {
                 specification = specification.and(buildSpecification(criteria.getActive(), Medicine_.active));
+            }
+            if (criteria.getIndicationsId() != null) {
+                specification = specification.and(buildSpecification(criteria.getIndicationsId(),
+                    root -> root.join(Medicine_.indications, JoinType.LEFT).get(Indication_.id)));
             }
         }
         return specification;

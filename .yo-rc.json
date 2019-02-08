@@ -39,10 +39,12 @@
     "Doctor",
     "MedicalDepartment",
     "Disease",
+    "Symptom",
     "Chamber",
     "WeeklyVisitingHour",
     "ProfessionalDegree",
     "Patient",
-    "Medicine"
+    "Medicine",
+    "Indication"
   ]
 }
