@@ -7,6 +7,8 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -73,6 +75,7 @@ public class Medicine implements Serializable {
     @JoinTable(name = "medicine_indications",
                joinColumns = @JoinColumn(name = "medicines_id", referencedColumnName = "id"),
                inverseJoinColumns = @JoinColumn(name = "indications_id", referencedColumnName = "id"))
+    @Field(type = FieldType.Nested)
     private Set<Indication> indications = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

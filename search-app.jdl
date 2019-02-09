@@ -57,7 +57,6 @@ relationship OneToOne {
 }
 
 entity Disease {
-	id UUID required
 	medicalName String required
 	generalName String required
 }
@@ -153,7 +152,6 @@ enum Sex {
 }
 
 entity Medicine {
-	id UUID required
 	tradeName String required
 	unitQuantity String
 	genericName String required

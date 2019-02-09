@@ -35,7 +35,7 @@
                   file="config/liquibase/weekly_visiting_hours.csv"
                   separator=";"
                   tableName="weekly_visiting_hour"/>
-        <!-- loadData encoding="UTF-8"
+        <loadData encoding="UTF-8"
                   file="config/liquibase/medicines.csv"
                   separator=";"
                   tableName="medicine">
@@ -44,7 +44,28 @@
 		<loadData encoding="UTF-8"
                   file="config/liquibase/indications.csv"
                   separator=";"
-                  tableName="indication" -->
+                  tableName="indication">
+        </loadData>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/medicine_indications.csv"
+                  separator=";"
+                  tableName="medicine_indications">
+		</loadData>
+		        <loadData encoding="UTF-8"
+                  file="config/liquibase/diseases.csv"
+                  separator=";"
+                  tableName="disease">
+			<column name="active" type="boolean"/>
+		</loadData>
+		<loadData encoding="UTF-8"
+                  file="config/liquibase/symptoms.csv"
+                  separator=";"
+                  tableName="symptom">
+        </loadData>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/disease_symptoms.csv"
+                  separator=";"
+                  tableName="disease_symptoms">
 		</loadData>
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->

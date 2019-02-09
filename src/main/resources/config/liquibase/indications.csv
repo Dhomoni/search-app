@@ -1,17 +1,17 @@
-id;name;medicine_id
-1;Fever;1
-2;headache;1
-3;toothache;1
-4;earache;1
-5;bodyache;1
-6;myalgia;1
-7;dysmenorrhoea;1
-8;neuralgia and sprains;1
-9;Colic pain;1
-10;back pain;1
-11;chronic pain of cancer;1
-12;inflammatory pain;1
-13;post-vaccination pain;1
-14;fever of children;1
-15;rheumatism and osteoarthritic pain;1
-16;stiffness of joints in fingers, hips, knees, wrists, elbows, feet, ankles and top & bottom of the spine;1
+id;name
+1;Fever
+2;headache
+3;toothache
+4;earache
+5;bodyache
+6;myalgia
+7;dysmenorrhoea
+8;neuralgia and sprains
+9;Colic pain
+10;back pain
+11;chronic pain of cancer
+12;inflammatory pain
+13;post-vaccination pain
+14;fever of children
+15;rheumatism and osteoarthritic pain
+16;stiffness of joints in fingers, hips, knees, wrists, elbows, feet, ankles and top & bottom of the spine

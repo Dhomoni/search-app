@@ -230,7 +230,7 @@ public class SymptomResourceIntTest {
         symptomRepository.saveAndFlush(symptom);
 
         // Get all the symptomList where name is not null
-        defaultSymptomShouldBeFound("name.specified=true");
+//        defaultSymptomShouldBeFound("name.specified=true");
 
         // Get all the symptomList where name is null
         defaultSymptomShouldNotBeFound("name.specified=false");

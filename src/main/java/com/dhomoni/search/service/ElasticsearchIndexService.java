@@ -29,17 +29,23 @@ import com.bedatadriven.jackson.datatype.jts.JtsModule;
 import com.codahale.metrics.annotation.Timed;
 import com.dhomoni.search.domain.Disease;
 import com.dhomoni.search.domain.Doctor;
+import com.dhomoni.search.domain.Indication;
 import com.dhomoni.search.domain.Medicine;
 import com.dhomoni.search.domain.Patient;
+import com.dhomoni.search.domain.Symptom;
 import com.dhomoni.search.repository.ChamberRepository;
 import com.dhomoni.search.repository.DiseaseRepository;
 import com.dhomoni.search.repository.DoctorRepository;
+import com.dhomoni.search.repository.IndicationRepository;
 import com.dhomoni.search.repository.MedicineRepository;
 import com.dhomoni.search.repository.PatientRepository;
+import com.dhomoni.search.repository.SymptomRepository;
 import com.dhomoni.search.repository.search.DiseaseSearchRepository;
 import com.dhomoni.search.repository.search.DoctorSearchRepository;
+import com.dhomoni.search.repository.search.IndicationSearchRepository;
 import com.dhomoni.search.repository.search.MedicineSearchRepository;
 import com.dhomoni.search.repository.search.PatientSearchRepository;
+import com.dhomoni.search.repository.search.SymptomSearchRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -56,10 +62,14 @@ public class ElasticsearchIndexService {
 
 	private final DiseaseRepository diseaseRepository;
 	private final DiseaseSearchRepository diseaseSearchRepository;
+	private final SymptomRepository symptomRepository;
+	private final SymptomSearchRepository symptomSearchRepository;
 	private final DoctorRepository doctorRepository;
 	private final DoctorSearchRepository doctorSearchRepository;
 	private final MedicineRepository medicineRepository;
 	private final MedicineSearchRepository medicineSearchRepository;
+	private final IndicationRepository indicationRepository;
+	private final IndicationSearchRepository indicationSearchRepository;
 	private final PatientRepository patientRepository;
 	private final PatientSearchRepository patientSearchRepository;
 	private final ChamberRepository chamberRepository;
@@ -67,17 +77,23 @@ public class ElasticsearchIndexService {
 
 	public ElasticsearchIndexService(DiseaseRepository diseaseRepository,
 			DiseaseSearchRepository diseaseSearchRepository, DoctorRepository doctorRepository,
+			SymptomRepository symptomRepository, SymptomSearchRepository symptomSearchRepository,
 			DoctorSearchRepository doctorSearchRepository, MedicineRepository medicineRepository,
 			MedicineSearchRepository medicineSearchRepository, PatientRepository patientRepository,
+			IndicationRepository indicationRepository, IndicationSearchRepository indicationSearchRepository,
 			PatientSearchRepository patientSearchRepository, ChamberRepository chamberRepository,
 			ElasticsearchOperations elasticsearchTemplate)
 	{
 		this.diseaseRepository = diseaseRepository;
 		this.diseaseSearchRepository = diseaseSearchRepository;
+		this.symptomRepository = symptomRepository;
+		this.symptomSearchRepository = symptomSearchRepository;
 		this.doctorRepository = doctorRepository;
 		this.doctorSearchRepository = doctorSearchRepository;
 		this.medicineRepository = medicineRepository;
 		this.medicineSearchRepository = medicineSearchRepository;
+		this.indicationRepository = indicationRepository;
+		this.indicationSearchRepository = indicationSearchRepository;
 		this.patientRepository = patientRepository;
 		this.patientSearchRepository = patientSearchRepository;
 		this.chamberRepository = chamberRepository;
@@ -92,8 +108,10 @@ public class ElasticsearchIndexService {
 		if (reindexLock.tryLock()) {
 			try {
 				reindexForClass(Disease.class, diseaseRepository, diseaseSearchRepository, geometryFactory);
+				reindexForClass(Symptom.class, symptomRepository, symptomSearchRepository, geometryFactory);
 				reindexForDoctor(geometryFactory);
 				reindexForClass(Medicine.class, medicineRepository, medicineSearchRepository, geometryFactory);
+				reindexForClass(Indication.class, indicationRepository, indicationSearchRepository, geometryFactory);
 				reindexForClass(Patient.class, patientRepository, patientSearchRepository, geometryFactory);
 				log.info("Elasticsearch: Successfully performed reindexing");
 			} finally {

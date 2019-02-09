@@ -8,6 +8,8 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -42,6 +44,7 @@ public class Disease implements Serializable {
     @JoinTable(name = "disease_symptoms",
                joinColumns = @JoinColumn(name = "diseases_id", referencedColumnName = "id"),
                inverseJoinColumns = @JoinColumn(name = "symptoms_id", referencedColumnName = "id"))
+    @Field(type = FieldType.Nested)
     private Set<Symptom> symptoms = new HashSet<>();
 
     @ManyToOne
