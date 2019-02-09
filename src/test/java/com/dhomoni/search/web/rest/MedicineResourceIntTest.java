@@ -18,6 +18,7 @@ import com.dhomoni.search.service.MedicineQueryService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -91,8 +93,14 @@ public class MedicineResourceIntTest {
     @Autowired
     private MedicineRepository medicineRepository;
 
+    @Mock
+    private MedicineRepository medicineRepositoryMock;
+
     @Autowired
     private MedicineMapper medicineMapper;
+
+    @Mock
+    private MedicineService medicineServiceMock;
 
     @Autowired
     private MedicineService medicineService;
@@ -321,6 +329,39 @@ public class MedicineResourceIntTest {
             .andExpect(jsonPath("$.[*].active").value(hasItem(DEFAULT_ACTIVE.booleanValue())));
     }
     
+    @SuppressWarnings({"unchecked"})
+    public void getAllMedicinesWithEagerRelationshipsIsEnabled() throws Exception {
+        MedicineResource medicineResource = new MedicineResource(medicineServiceMock, medicineQueryService);
+        when(medicineServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        MockMvc restMedicineMockMvc = MockMvcBuilders.standaloneSetup(medicineResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restMedicineMockMvc.perform(get("/api/medicines?eagerload=true"))
+        .andExpect(status().isOk());
+
+        verify(medicineServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public void getAllMedicinesWithEagerRelationshipsIsNotEnabled() throws Exception {
+        MedicineResource medicineResource = new MedicineResource(medicineServiceMock, medicineQueryService);
+            when(medicineServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+            MockMvc restMedicineMockMvc = MockMvcBuilders.standaloneSetup(medicineResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restMedicineMockMvc.perform(get("/api/medicines?eagerload=true"))
+        .andExpect(status().isOk());
+
+            verify(medicineServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
     @Test
     @Transactional
     public void getMedicine() throws Exception {

@@ -2,6 +2,8 @@ package com.dhomoni.search.service.dto;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -16,6 +18,8 @@ public class DiseaseDTO implements Serializable {
 
     @NotNull
     private String generalName;
+
+    private Set<SymptomDTO> symptoms = new HashSet<>();
 
     private Long medicalDepartmentId;
 
@@ -41,6 +45,14 @@ public class DiseaseDTO implements Serializable {
 
     public void setGeneralName(String generalName) {
         this.generalName = generalName;
+    }
+
+    public Set<SymptomDTO> getSymptoms() {
+        return symptoms;
+    }
+
+    public void setSymptoms(Set<SymptomDTO> symptoms) {
+        this.symptoms = symptoms;
     }
 
     public Long getMedicalDepartmentId() {

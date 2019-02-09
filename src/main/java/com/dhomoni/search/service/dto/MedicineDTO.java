@@ -2,6 +2,8 @@ package com.dhomoni.search.service.dto;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
 import com.dhomoni.search.domain.enumeration.Formulation;
 
@@ -37,6 +39,8 @@ public class MedicineDTO implements Serializable {
     private String productUrl;
 
     private Boolean active;
+
+    private Set<IndicationDTO> indications = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -132,6 +136,14 @@ public class MedicineDTO implements Serializable {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public Set<IndicationDTO> getIndications() {
+        return indications;
+    }
+
+    public void setIndications(Set<IndicationDTO> indications) {
+        this.indications = indications;
     }
 
     @Override

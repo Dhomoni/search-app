@@ -1,6 +1,5 @@
 package com.dhomoni.search.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -69,9 +68,13 @@ public class Medicine implements Serializable {
     @Column(name = "active")
     private Boolean active;
 
-    @OneToMany(mappedBy = "medicine")
+    @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JoinTable(name = "medicine_indications",
+               joinColumns = @JoinColumn(name = "medicines_id", referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "indications_id", referencedColumnName = "id"))
     private Set<Indication> indications = new HashSet<>();
+
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -235,13 +238,11 @@ public class Medicine implements Serializable {
 
     public Medicine addIndications(Indication indication) {
         this.indications.add(indication);
-        indication.setMedicine(this);
         return this;
     }
 
     public Medicine removeIndications(Indication indication) {
         this.indications.remove(indication);
-        indication.setMedicine(null);
         return this;
     }
 

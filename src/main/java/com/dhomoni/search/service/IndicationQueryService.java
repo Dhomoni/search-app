@@ -96,10 +96,6 @@ public class IndicationQueryService extends QueryService<Indication> {
             if (criteria.getName() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getName(), Indication_.name));
             }
-            if (criteria.getMedicineId() != null) {
-                specification = specification.and(buildSpecification(criteria.getMedicineId(),
-                    root -> root.join(Indication_.medicine, JoinType.LEFT).get(Medicine_.id)));
-            }
         }
         return specification;
     }

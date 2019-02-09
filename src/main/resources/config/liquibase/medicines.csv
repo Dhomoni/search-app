@@ -1,4 +1,2 @@
-id;first_name;last_name;email;phone;licence_number;national_id;passport_no;type;designation;address;activated;medical_department_id
-1;Arhan;Sajjad;arhan@gmail.com;8801345678904;1111111111;3333333333;9999999999;PHYSICIAN;Assistant Professor;pahartoli resedential area;true;2
-
-id;trade_name;unit_quantity;generic_name;chemical_name;jhi_type;manufacturer;mrp;indications;dose_and_admin;preparation;product_url;active
+id;trade_name;unit_quantity;generic_name;chemical_name;formulation;manufacturer;mrp;dose_and_admin;preparation;product_url;active
+1;Ace® 500 Tablet;500 mg;Paracetamol BP;chemical name;TABLET;Square Pharmaceuticals Limited;1 taka; Adults 1-2 tablets every 4 to 6 hours up to a maximum of 4g (8 tablets) daily. Children (6-12 years) 1/2 to 1 tablet 3 to 4 times daily.;preparation;https://www.squarepharma.com.bd/product-details.php?pid=147;true

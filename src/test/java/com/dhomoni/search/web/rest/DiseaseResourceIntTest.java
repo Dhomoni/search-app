@@ -19,6 +19,7 @@ import com.dhomoni.search.service.DiseaseQueryService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -64,8 +66,14 @@ public class DiseaseResourceIntTest {
     @Autowired
     private DiseaseRepository diseaseRepository;
 
+    @Mock
+    private DiseaseRepository diseaseRepositoryMock;
+
     @Autowired
     private DiseaseMapper diseaseMapper;
+
+    @Mock
+    private DiseaseService diseaseServiceMock;
 
     @Autowired
     private DiseaseService diseaseService;
@@ -229,6 +237,39 @@ public class DiseaseResourceIntTest {
             .andExpect(jsonPath("$.[*].generalName").value(hasItem(DEFAULT_GENERAL_NAME.toString())));
     }
     
+    @SuppressWarnings({"unchecked"})
+    public void getAllDiseasesWithEagerRelationshipsIsEnabled() throws Exception {
+        DiseaseResource diseaseResource = new DiseaseResource(diseaseServiceMock, diseaseQueryService);
+        when(diseaseServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        MockMvc restDiseaseMockMvc = MockMvcBuilders.standaloneSetup(diseaseResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restDiseaseMockMvc.perform(get("/api/diseases?eagerload=true"))
+        .andExpect(status().isOk());
+
+        verify(diseaseServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public void getAllDiseasesWithEagerRelationshipsIsNotEnabled() throws Exception {
+        DiseaseResource diseaseResource = new DiseaseResource(diseaseServiceMock, diseaseQueryService);
+            when(diseaseServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+            MockMvc restDiseaseMockMvc = MockMvcBuilders.standaloneSetup(diseaseResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restDiseaseMockMvc.perform(get("/api/diseases?eagerload=true"))
+        .andExpect(status().isOk());
+
+            verify(diseaseServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
     @Test
     @Transactional
     public void getDisease() throws Exception {

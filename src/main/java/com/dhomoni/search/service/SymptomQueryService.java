@@ -96,10 +96,6 @@ public class SymptomQueryService extends QueryService<Symptom> {
             if (criteria.getName() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getName(), Symptom_.name));
             }
-            if (criteria.getDiseaseId() != null) {
-                specification = specification.and(buildSpecification(criteria.getDiseaseId(),
-                    root -> root.join(Symptom_.disease, JoinType.LEFT).get(Disease_.id)));
-            }
         }
         return specification;
     }

@@ -8,6 +8,17 @@
     -->
     <changeSet id="20181226102646-2" author="jhipster">
         
+        <addForeignKeyConstraint baseColumnNames="diseases_id"
+                                 baseTableName="disease_symptoms"
+                                 constraintName="fk_disease_symptoms_diseases_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="disease"/>
+        <addForeignKeyConstraint baseColumnNames="symptoms_id"
+                                 baseTableName="disease_symptoms"
+                                 constraintName="fk_disease_symptoms_symptoms_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="symptom"/>
+        
         <addForeignKeyConstraint baseColumnNames="medical_department_id"
                                  baseTableName="disease"
                                  constraintName="fk_disease_medical_department_id"

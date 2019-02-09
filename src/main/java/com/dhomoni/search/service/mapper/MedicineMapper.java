@@ -8,12 +8,10 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity Medicine and its DTO MedicineDTO.
  */
-@Mapper(componentModel = "spring", uses = {})
+@Mapper(componentModel = "spring", uses = {IndicationMapper.class})
 public interface MedicineMapper extends EntityMapper<MedicineDTO, Medicine> {
 
 
-    @Mapping(target = "indications", ignore = true)
-    Medicine toEntity(MedicineDTO medicineDTO);
 
     default Medicine fromId(Long id) {
         if (id == null) {

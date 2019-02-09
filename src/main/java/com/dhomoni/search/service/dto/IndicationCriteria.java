@@ -26,8 +26,6 @@ public class IndicationCriteria implements Serializable {
 
     private StringFilter name;
 
-    private LongFilter medicineId;
-
     public LongFilter getId() {
         return id;
     }
@@ -44,14 +42,6 @@ public class IndicationCriteria implements Serializable {
         this.name = name;
     }
 
-    public LongFilter getMedicineId() {
-        return medicineId;
-    }
-
-    public void setMedicineId(LongFilter medicineId) {
-        this.medicineId = medicineId;
-    }
-
 
     @Override
     public boolean equals(Object o) {
@@ -64,16 +54,14 @@ public class IndicationCriteria implements Serializable {
         final IndicationCriteria that = (IndicationCriteria) o;
         return
             Objects.equals(id, that.id) &&
-            Objects.equals(name, that.name) &&
-            Objects.equals(medicineId, that.medicineId);
+            Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(
         id,
-        name,
-        medicineId
+        name
         );
     }
 
@@ -82,7 +70,6 @@ public class IndicationCriteria implements Serializable {
         return "IndicationCriteria{" +
                 (id != null ? "id=" + id + ", " : "") +
                 (name != null ? "name=" + name + ", " : "") +
-                (medicineId != null ? "medicineId=" + medicineId + ", " : "") +
             "}";
     }
 

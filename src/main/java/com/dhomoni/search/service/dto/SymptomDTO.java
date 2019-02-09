@@ -12,8 +12,6 @@ public class SymptomDTO implements Serializable {
 
     private String name;
 
-    private Long diseaseId;
-
     public Long getId() {
         return id;
     }
@@ -28,14 +26,6 @@ public class SymptomDTO implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Long getDiseaseId() {
-        return diseaseId;
-    }
-
-    public void setDiseaseId(Long diseaseId) {
-        this.diseaseId = diseaseId;
     }
 
     @Override
@@ -64,7 +54,6 @@ public class SymptomDTO implements Serializable {
         return "SymptomDTO{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
-            ", disease=" + getDiseaseId() +
             "}";
     }
 }

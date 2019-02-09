@@ -26,8 +26,6 @@ public class SymptomCriteria implements Serializable {
 
     private StringFilter name;
 
-    private LongFilter diseaseId;
-
     public LongFilter getId() {
         return id;
     }
@@ -44,14 +42,6 @@ public class SymptomCriteria implements Serializable {
         this.name = name;
     }
 
-    public LongFilter getDiseaseId() {
-        return diseaseId;
-    }
-
-    public void setDiseaseId(LongFilter diseaseId) {
-        this.diseaseId = diseaseId;
-    }
-
 
     @Override
     public boolean equals(Object o) {
@@ -64,16 +54,14 @@ public class SymptomCriteria implements Serializable {
         final SymptomCriteria that = (SymptomCriteria) o;
         return
             Objects.equals(id, that.id) &&
-            Objects.equals(name, that.name) &&
-            Objects.equals(diseaseId, that.diseaseId);
+            Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(
         id,
-        name,
-        diseaseId
+        name
         );
     }
 
@@ -82,7 +70,6 @@ public class SymptomCriteria implements Serializable {
         return "SymptomCriteria{" +
                 (id != null ? "id=" + id + ", " : "") +
                 (name != null ? "name=" + name + ", " : "") +
-                (diseaseId != null ? "diseaseId=" + diseaseId + ", " : "") +
             "}";
     }
 

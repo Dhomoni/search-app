@@ -1,6 +1,5 @@
 package com.dhomoni.search.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -29,10 +28,6 @@ public class Indication implements Serializable {
     @Column(name = "name")
     private String name;
 
-    @ManyToOne
-    @JsonIgnoreProperties("indications")
-    private Medicine medicine;
-
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -53,19 +48,6 @@ public class Indication implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Medicine getMedicine() {
-        return medicine;
-    }
-
-    public Indication medicine(Medicine medicine) {
-        this.medicine = medicine;
-        return this;
-    }
-
-    public void setMedicine(Medicine medicine) {
-        this.medicine = medicine;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

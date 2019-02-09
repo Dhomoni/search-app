@@ -61,10 +61,12 @@
     ],
     "relationships": [
         {
-            "relationshipType": "one-to-many",
+            "relationshipType": "many-to-many",
+            "otherEntityRelationshipName": "",
             "relationshipName": "indications",
             "otherEntityName": "indication",
-            "otherEntityRelationshipName": "medicine"
+            "otherEntityField": "id",
+            "ownerSide": true
         }
     ],
     "changelogDate": "20181226102651",

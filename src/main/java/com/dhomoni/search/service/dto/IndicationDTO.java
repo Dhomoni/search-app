@@ -12,8 +12,6 @@ public class IndicationDTO implements Serializable {
 
     private String name;
 
-    private Long medicineId;
-
     public Long getId() {
         return id;
     }
@@ -28,14 +26,6 @@ public class IndicationDTO implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Long getMedicineId() {
-        return medicineId;
-    }
-
-    public void setMedicineId(Long medicineId) {
-        this.medicineId = medicineId;
     }
 
     @Override
@@ -64,7 +54,6 @@ public class IndicationDTO implements Serializable {
         return "IndicationDTO{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
-            ", medicine=" + getMedicineId() +
             "}";
     }
 }

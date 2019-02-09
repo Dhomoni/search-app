@@ -35,6 +35,17 @@
                   file="config/liquibase/weekly_visiting_hours.csv"
                   separator=";"
                   tableName="weekly_visiting_hour"/>
+        <!-- loadData encoding="UTF-8"
+                  file="config/liquibase/medicines.csv"
+                  separator=";"
+                  tableName="medicine">
+			<column name="active" type="boolean"/>
+		</loadData>
+		<loadData encoding="UTF-8"
+                  file="config/liquibase/indications.csv"
+                  separator=";"
+                  tableName="indication" -->
+		</loadData>
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

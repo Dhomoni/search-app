@@ -36,6 +36,17 @@
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
         
+        <createTable tableName="disease_symptoms">
+            <column name="symptoms_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="diseases_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="diseases_id, symptoms_id" tableName="disease_symptoms"/>
+        
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

@@ -5,7 +5,6 @@ import com.dhomoni.search.SearchApp;
 import com.dhomoni.search.config.SecurityBeanOverrideConfiguration;
 
 import com.dhomoni.search.domain.Symptom;
-import com.dhomoni.search.domain.Disease;
 import com.dhomoni.search.repository.SymptomRepository;
 import com.dhomoni.search.repository.search.SymptomSearchRepository;
 import com.dhomoni.search.service.SymptomService;
@@ -236,25 +235,6 @@ public class SymptomResourceIntTest {
         // Get all the symptomList where name is null
         defaultSymptomShouldNotBeFound("name.specified=false");
     }
-
-    @Test
-    @Transactional
-    public void getAllSymptomsByDiseaseIsEqualToSomething() throws Exception {
-        // Initialize the database
-        Disease disease = DiseaseResourceIntTest.createEntity(em);
-        em.persist(disease);
-        em.flush();
-        symptom.setDisease(disease);
-        symptomRepository.saveAndFlush(symptom);
-        Long diseaseId = disease.getId();
-
-        // Get all the symptomList where disease equals to diseaseId
-        defaultSymptomShouldBeFound("diseaseId.equals=" + diseaseId);
-
-        // Get all the symptomList where disease equals to diseaseId + 1
-        defaultSymptomShouldNotBeFound("diseaseId.equals=" + (diseaseId + 1));
-    }
-
     /**
      * Executes the search, and checks that the default entity is returned
      */

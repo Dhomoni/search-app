@@ -67,6 +67,15 @@ public class DiseaseService {
             .map(diseaseMapper::toDto);
     }
 
+    /**
+     * Get all the Disease with eager load of many-to-many relationships.
+     *
+     * @return the list of entities
+     */
+    public Page<DiseaseDTO> findAllWithEagerRelationships(Pageable pageable) {
+        return diseaseRepository.findAllWithEagerRelationships(pageable).map(diseaseMapper::toDto);
+    }
+    
 
     /**
      * Get one disease by id.
@@ -77,7 +86,7 @@ public class DiseaseService {
     @Transactional(readOnly = true)
     public Optional<DiseaseDTO> findOne(Long id) {
         log.debug("Request to get Disease : {}", id);
-        return diseaseRepository.findById(id)
+        return diseaseRepository.findOneWithEagerRelationships(id)
             .map(diseaseMapper::toDto);
     }
 

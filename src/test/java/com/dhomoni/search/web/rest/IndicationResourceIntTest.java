@@ -5,7 +5,6 @@ import com.dhomoni.search.SearchApp;
 import com.dhomoni.search.config.SecurityBeanOverrideConfiguration;
 
 import com.dhomoni.search.domain.Indication;
-import com.dhomoni.search.domain.Medicine;
 import com.dhomoni.search.repository.IndicationRepository;
 import com.dhomoni.search.repository.search.IndicationSearchRepository;
 import com.dhomoni.search.service.IndicationService;
@@ -236,25 +235,6 @@ public class IndicationResourceIntTest {
         // Get all the indicationList where name is null
         defaultIndicationShouldNotBeFound("name.specified=false");
     }
-
-    @Test
-    @Transactional
-    public void getAllIndicationsByMedicineIsEqualToSomething() throws Exception {
-        // Initialize the database
-        Medicine medicine = MedicineResourceIntTest.createEntity(em);
-        em.persist(medicine);
-        em.flush();
-        indication.setMedicine(medicine);
-        indicationRepository.saveAndFlush(indication);
-        Long medicineId = medicine.getId();
-
-        // Get all the indicationList where medicine equals to medicineId
-        defaultIndicationShouldBeFound("medicineId.equals=" + medicineId);
-
-        // Get all the indicationList where medicine equals to medicineId + 1
-        defaultIndicationShouldNotBeFound("medicineId.equals=" + (medicineId + 1));
-    }
-
     /**
      * Executes the search, and checks that the default entity is returned
      */

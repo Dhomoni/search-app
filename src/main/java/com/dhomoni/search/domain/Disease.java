@@ -1,6 +1,5 @@
 package com.dhomoni.search.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -38,9 +37,13 @@ public class Disease implements Serializable {
     @Column(name = "general_name", nullable = false)
     private String generalName;
 
-    @OneToMany(mappedBy = "disease")
+    @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JoinTable(name = "disease_symptoms",
+               joinColumns = @JoinColumn(name = "diseases_id", referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "symptoms_id", referencedColumnName = "id"))
     private Set<Symptom> symptoms = new HashSet<>();
+
     @ManyToOne
     @JsonIgnoreProperties("diseases")
     private MedicalDepartment medicalDepartment;
@@ -91,13 +94,11 @@ public class Disease implements Serializable {
 
     public Disease addSymptoms(Symptom symptom) {
         this.symptoms.add(symptom);
-        symptom.setDisease(this);
         return this;
     }
 
     public Disease removeSymptoms(Symptom symptom) {
         this.symptoms.remove(symptom);
-        symptom.setDisease(null);
         return this;
     }
 

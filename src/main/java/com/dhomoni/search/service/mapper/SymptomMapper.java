@@ -8,14 +8,10 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity Symptom and its DTO SymptomDTO.
  */
-@Mapper(componentModel = "spring", uses = {DiseaseMapper.class})
+@Mapper(componentModel = "spring", uses = {})
 public interface SymptomMapper extends EntityMapper<SymptomDTO, Symptom> {
 
-    @Mapping(source = "disease.id", target = "diseaseId")
-    SymptomDTO toDto(Symptom symptom);
 
-    @Mapping(source = "diseaseId", target = "disease")
-    Symptom toEntity(SymptomDTO symptomDTO);
 
     default Symptom fromId(Long id) {
         if (id == null) {
