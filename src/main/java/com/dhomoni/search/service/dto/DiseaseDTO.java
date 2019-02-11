@@ -1,17 +1,23 @@
 package com.dhomoni.search.service.dto;
 
-import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
+import java.util.Set;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * A DTO for the Disease entity.
  */
 public class DiseaseDTO implements Serializable {
 
-    private Long id;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 9084580373417397559L;
+
+	private Long id;
 
     @NotNull
     private String medicalName;

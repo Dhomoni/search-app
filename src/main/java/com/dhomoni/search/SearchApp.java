@@ -1,10 +1,11 @@
 package com.dhomoni.search;
 
-import com.dhomoni.search.client.OAuth2InterceptedFeignConfiguration;
-import com.dhomoni.search.config.ApplicationProperties;
-import com.dhomoni.search.config.DefaultProfileUtil;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.Collection;
 
-import io.github.jhipster.config.JHipsterConstants;
+import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -18,11 +19,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.core.env.Environment;
 
-import javax.annotation.PostConstruct;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Arrays;
-import java.util.Collection;
+import com.dhomoni.search.client.OAuth2InterceptedFeignConfiguration;
+import com.dhomoni.search.config.ApplicationProperties;
+import com.dhomoni.search.config.DefaultProfileUtil;
+
+import io.github.jhipster.config.JHipsterConstants;
 
 @ComponentScan(
     excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = OAuth2InterceptedFeignConfiguration.class)

@@ -1,8 +1,11 @@
 package com.dhomoni.search.service.dto;
 
-import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 import com.dhomoni.search.domain.enumeration.WeekDay;
 
 /**
@@ -10,7 +13,12 @@ import com.dhomoni.search.domain.enumeration.WeekDay;
  */
 public class WeeklyVisitingHourDTO implements Serializable {
 
-    private Long id;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -2847690859972195297L;
+
+	private Long id;
 
     private WeekDay weekDay;
 

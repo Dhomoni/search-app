@@ -2,12 +2,12 @@ package com.dhomoni.search.service.dto;
 
 import java.io.Serializable;
 import java.util.Objects;
+
 import com.dhomoni.search.domain.enumeration.Formulation;
+
 import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
-import io.github.jhipster.service.filter.FloatFilter;
-import io.github.jhipster.service.filter.IntegerFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
 
@@ -24,6 +24,11 @@ public class MedicineCriteria implements Serializable {
      * Class for filtering Formulation
      */
     public static class FormulationFilter extends Filter<Formulation> {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 6156562705004458913L;
     }
 
     private static final long serialVersionUID = 1L;

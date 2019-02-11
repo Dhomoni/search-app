@@ -8,7 +8,12 @@ import java.util.Objects;
  */
 public class SymptomDTO implements Serializable {
 
-    private Long id;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 8627897210088601921L;
+
+	private Long id;
 
     private String name;
 

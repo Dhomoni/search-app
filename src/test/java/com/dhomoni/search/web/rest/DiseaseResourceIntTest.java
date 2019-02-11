@@ -1,20 +1,24 @@
 package com.dhomoni.search.web.rest;
 
-import com.dhomoni.search.SearchApp;
+import static com.dhomoni.search.web.rest.TestUtil.createFormattingConversionService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.dhomoni.search.config.SecurityBeanOverrideConfiguration;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.dhomoni.search.domain.Disease;
-import com.dhomoni.search.domain.Symptom;
-import com.dhomoni.search.domain.MedicalDepartment;
-import com.dhomoni.search.repository.DiseaseRepository;
-import com.dhomoni.search.repository.search.DiseaseSearchRepository;
-import com.dhomoni.search.service.DiseaseService;
-import com.dhomoni.search.service.dto.DiseaseDTO;
-import com.dhomoni.search.service.mapper.DiseaseMapper;
-import com.dhomoni.search.web.rest.errors.ExceptionTranslator;
-import com.dhomoni.search.service.dto.DiseaseCriteria;
-import com.dhomoni.search.service.DiseaseQueryService;
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +28,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -34,19 +37,18 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Validator;
 
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-
-import static com.dhomoni.search.web.rest.TestUtil.createFormattingConversionService;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import com.dhomoni.search.SearchApp;
+import com.dhomoni.search.config.SecurityBeanOverrideConfiguration;
+import com.dhomoni.search.domain.Disease;
+import com.dhomoni.search.domain.MedicalDepartment;
+import com.dhomoni.search.domain.Symptom;
+import com.dhomoni.search.repository.DiseaseRepository;
+import com.dhomoni.search.repository.search.DiseaseSearchRepository;
+import com.dhomoni.search.service.DiseaseQueryService;
+import com.dhomoni.search.service.DiseaseService;
+import com.dhomoni.search.service.dto.DiseaseDTO;
+import com.dhomoni.search.service.mapper.DiseaseMapper;
+import com.dhomoni.search.web.rest.errors.ExceptionTranslator;
 
 /**
  * Test class for the DiseaseResource REST controller.
@@ -237,10 +239,9 @@ public class DiseaseResourceIntTest {
             .andExpect(jsonPath("$.[*].generalName").value(hasItem(DEFAULT_GENERAL_NAME.toString())));
     }
     
-    @SuppressWarnings({"unchecked"})
     public void getAllDiseasesWithEagerRelationshipsIsEnabled() throws Exception {
         DiseaseResource diseaseResource = new DiseaseResource(diseaseServiceMock, diseaseQueryService);
-        when(diseaseServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+        when(diseaseServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl<>(new ArrayList<>()));
 
         MockMvc restDiseaseMockMvc = MockMvcBuilders.standaloneSetup(diseaseResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
@@ -254,10 +255,9 @@ public class DiseaseResourceIntTest {
         verify(diseaseServiceMock, times(1)).findAllWithEagerRelationships(any());
     }
 
-    @SuppressWarnings({"unchecked"})
     public void getAllDiseasesWithEagerRelationshipsIsNotEnabled() throws Exception {
         DiseaseResource diseaseResource = new DiseaseResource(diseaseServiceMock, diseaseQueryService);
-            when(diseaseServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+            when(diseaseServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl<>(new ArrayList<>()));
             MockMvc restDiseaseMockMvc = MockMvcBuilders.standaloneSetup(diseaseResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

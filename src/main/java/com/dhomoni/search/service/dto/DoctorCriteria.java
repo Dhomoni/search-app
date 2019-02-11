@@ -2,7 +2,9 @@ package com.dhomoni.search.service.dto;
 
 import java.io.Serializable;
 import java.util.Objects;
+
 import com.dhomoni.search.domain.enumeration.DoctorType;
+
 import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.Filter;
 import io.github.jhipster.service.filter.LongFilter;
@@ -21,6 +23,11 @@ public class DoctorCriteria implements Serializable {
      * Class for filtering DoctorType
      */
     public static class DoctorTypeFilter extends Filter<DoctorType> {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -7655407143643289483L;
     }
 
     private static final long serialVersionUID = 1L;

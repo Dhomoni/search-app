@@ -12,7 +12,12 @@ import com.dhomoni.search.domain.enumeration.Formulation;
  */
 public class MedicineDTO implements Serializable {
 
-    private Long id;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -1968541136144603043L;
+
+	private Long id;
 
     @NotNull
     private String tradeName;

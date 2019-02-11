@@ -1,18 +1,23 @@
 package com.dhomoni.search.web.rest;
 
-import com.dhomoni.search.SearchApp;
+import static com.dhomoni.search.web.rest.TestUtil.createFormattingConversionService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.dhomoni.search.config.SecurityBeanOverrideConfiguration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 
-import com.dhomoni.search.domain.Patient;
-import com.dhomoni.search.repository.PatientRepository;
-import com.dhomoni.search.repository.search.PatientSearchRepository;
-import com.dhomoni.search.service.PatientService;
-import com.dhomoni.search.service.dto.PatientDTO;
-import com.dhomoni.search.service.mapper.PatientMapper;
-import com.dhomoni.search.web.rest.errors.ExceptionTranslator;
-import com.dhomoni.search.service.dto.PatientCriteria;
-import com.dhomoni.search.service.PatientQueryService;
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,8 +25,6 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -32,23 +35,18 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Base64Utils;
 import org.springframework.validation.Validator;
 
-import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.List;
-
-
-import static com.dhomoni.search.web.rest.TestUtil.createFormattingConversionService;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import com.dhomoni.search.domain.enumeration.Sex;
+import com.dhomoni.search.SearchApp;
+import com.dhomoni.search.config.SecurityBeanOverrideConfiguration;
+import com.dhomoni.search.domain.Patient;
 import com.dhomoni.search.domain.enumeration.BloodGroup;
+import com.dhomoni.search.domain.enumeration.Sex;
+import com.dhomoni.search.repository.PatientRepository;
+import com.dhomoni.search.repository.search.PatientSearchRepository;
+import com.dhomoni.search.service.PatientQueryService;
+import com.dhomoni.search.service.PatientService;
+import com.dhomoni.search.service.dto.PatientDTO;
+import com.dhomoni.search.service.mapper.PatientMapper;
+import com.dhomoni.search.web.rest.errors.ExceptionTranslator;
 /**
  * Test class for the PatientResource REST controller.
  *

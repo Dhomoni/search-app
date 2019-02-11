@@ -6,9 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 
-@Getter
 @EqualsAndHashCode(callSuper=false)
 public class CustomUser extends User {
 	
@@ -19,5 +17,9 @@ public class CustomUser extends User {
 			Collection<? extends GrantedAuthority> authorities, Long registrationId) {
 		super(username, password, authorities);
 		this.registrationId = registrationId;
+	}
+
+	public Long getRegistrationId() {
+		return registrationId;
 	}
 }

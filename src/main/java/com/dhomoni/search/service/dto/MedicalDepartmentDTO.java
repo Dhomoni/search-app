@@ -9,7 +9,12 @@ import java.util.Objects;
  */
 public class MedicalDepartmentDTO implements Serializable {
 
-    private Long id;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4335317796705779395L;
+
+	private Long id;
 
     @NotNull
     private String name;

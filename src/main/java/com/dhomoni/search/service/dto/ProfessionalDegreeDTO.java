@@ -8,7 +8,12 @@ import java.util.Objects;
  */
 public class ProfessionalDegreeDTO implements Serializable {
 
-    private Long id;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 8273199028754525646L;
+
+	private Long id;
 
     private String name;
 

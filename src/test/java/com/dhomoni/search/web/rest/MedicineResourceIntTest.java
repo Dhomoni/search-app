@@ -1,19 +1,26 @@
 package com.dhomoni.search.web.rest;
 
-import com.dhomoni.search.SearchApp;
+import static com.dhomoni.search.web.rest.TestUtil.createFormattingConversionService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.dhomoni.search.config.SecurityBeanOverrideConfiguration;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import com.dhomoni.search.domain.Medicine;
-import com.dhomoni.search.domain.Indication;
-import com.dhomoni.search.repository.MedicineRepository;
-import com.dhomoni.search.repository.search.MedicineSearchRepository;
-import com.dhomoni.search.service.MedicineService;
-import com.dhomoni.search.service.dto.MedicineDTO;
-import com.dhomoni.search.service.mapper.MedicineMapper;
-import com.dhomoni.search.web.rest.errors.ExceptionTranslator;
-import com.dhomoni.search.service.dto.MedicineCriteria;
-import com.dhomoni.search.service.MedicineQueryService;
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,21 +40,18 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Validator;
 
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-
-import static com.dhomoni.search.web.rest.TestUtil.createFormattingConversionService;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+import com.dhomoni.search.SearchApp;
+import com.dhomoni.search.config.SecurityBeanOverrideConfiguration;
+import com.dhomoni.search.domain.Indication;
+import com.dhomoni.search.domain.Medicine;
 import com.dhomoni.search.domain.enumeration.Formulation;
+import com.dhomoni.search.repository.MedicineRepository;
+import com.dhomoni.search.repository.search.MedicineSearchRepository;
+import com.dhomoni.search.service.MedicineQueryService;
+import com.dhomoni.search.service.MedicineService;
+import com.dhomoni.search.service.dto.MedicineDTO;
+import com.dhomoni.search.service.mapper.MedicineMapper;
+import com.dhomoni.search.web.rest.errors.ExceptionTranslator;
 /**
  * Test class for the MedicineResource REST controller.
  *
@@ -329,10 +333,9 @@ public class MedicineResourceIntTest {
             .andExpect(jsonPath("$.[*].active").value(hasItem(DEFAULT_ACTIVE.booleanValue())));
     }
     
-    @SuppressWarnings({"unchecked"})
     public void getAllMedicinesWithEagerRelationshipsIsEnabled() throws Exception {
         MedicineResource medicineResource = new MedicineResource(medicineServiceMock, medicineQueryService);
-        when(medicineServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+        when(medicineServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl<>(new ArrayList<>()));
 
         MockMvc restMedicineMockMvc = MockMvcBuilders.standaloneSetup(medicineResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
@@ -346,10 +349,9 @@ public class MedicineResourceIntTest {
         verify(medicineServiceMock, times(1)).findAllWithEagerRelationships(any());
     }
 
-    @SuppressWarnings({"unchecked"})
     public void getAllMedicinesWithEagerRelationshipsIsNotEnabled() throws Exception {
         MedicineResource medicineResource = new MedicineResource(medicineServiceMock, medicineQueryService);
-            when(medicineServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+            when(medicineServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl<>(new ArrayList<>()));
             MockMvc restMedicineMockMvc = MockMvcBuilders.standaloneSetup(medicineResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

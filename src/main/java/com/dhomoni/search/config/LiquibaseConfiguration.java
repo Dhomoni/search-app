@@ -23,11 +23,11 @@ public class LiquibaseConfiguration {
 
     private final Environment env;
 
-    private final CacheManager cacheManager;
+//    private final CacheManager cacheManager;
 
     public LiquibaseConfiguration(Environment env, CacheManager cacheManager) {
         this.env = env;
-        this.cacheManager = cacheManager;
+//        this.cacheManager = cacheManager;
     }
 
     @Bean

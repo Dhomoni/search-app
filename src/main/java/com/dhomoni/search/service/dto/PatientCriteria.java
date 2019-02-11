@@ -2,16 +2,16 @@ package com.dhomoni.search.service.dto;
 
 import java.io.Serializable;
 import java.util.Objects;
-import com.dhomoni.search.domain.enumeration.Sex;
+
 import com.dhomoni.search.domain.enumeration.BloodGroup;
+import com.dhomoni.search.domain.enumeration.Sex;
+
 import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
-import io.github.jhipster.service.filter.FloatFilter;
-import io.github.jhipster.service.filter.IntegerFilter;
+import io.github.jhipster.service.filter.InstantFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
-import io.github.jhipster.service.filter.InstantFilter;
 
 /**
  * Criteria class for the Patient entity. This class is used in PatientResource to
@@ -26,11 +26,21 @@ public class PatientCriteria implements Serializable {
      * Class for filtering Sex
      */
     public static class SexFilter extends Filter<Sex> {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -3015470989811779917L;
     }
     /**
      * Class for filtering BloodGroup
      */
     public static class BloodGroupFilter extends Filter<BloodGroup> {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 4261295961624603969L;
     }
 
     private static final long serialVersionUID = 1L;

@@ -15,7 +15,13 @@ import com.vividsolutions.jts.geom.Point;
  */
 public class DoctorDTO implements Serializable {
 
-    private Long id;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 5603357999707920906L;
+
+
+	private Long id;
 
     
     private Long registrationId;

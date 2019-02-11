@@ -1,18 +1,24 @@
 package com.dhomoni.search.web.rest;
 
-import com.dhomoni.search.SearchApp;
+import static com.dhomoni.search.web.rest.TestUtil.createFormattingConversionService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.dhomoni.search.config.SecurityBeanOverrideConfiguration;
+import java.util.Collections;
+import java.util.List;
 
-import com.dhomoni.search.domain.Indication;
-import com.dhomoni.search.repository.IndicationRepository;
-import com.dhomoni.search.repository.search.IndicationSearchRepository;
-import com.dhomoni.search.service.IndicationService;
-import com.dhomoni.search.service.dto.IndicationDTO;
-import com.dhomoni.search.service.mapper.IndicationMapper;
-import com.dhomoni.search.web.rest.errors.ExceptionTranslator;
-import com.dhomoni.search.service.dto.IndicationCriteria;
-import com.dhomoni.search.service.IndicationQueryService;
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,18 +37,16 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Validator;
 
-import javax.persistence.EntityManager;
-import java.util.Collections;
-import java.util.List;
-
-
-import static com.dhomoni.search.web.rest.TestUtil.createFormattingConversionService;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import com.dhomoni.search.SearchApp;
+import com.dhomoni.search.config.SecurityBeanOverrideConfiguration;
+import com.dhomoni.search.domain.Indication;
+import com.dhomoni.search.repository.IndicationRepository;
+import com.dhomoni.search.repository.search.IndicationSearchRepository;
+import com.dhomoni.search.service.IndicationQueryService;
+import com.dhomoni.search.service.IndicationService;
+import com.dhomoni.search.service.dto.IndicationDTO;
+import com.dhomoni.search.service.mapper.IndicationMapper;
+import com.dhomoni.search.web.rest.errors.ExceptionTranslator;
 
 /**
  * Test class for the IndicationResource REST controller.

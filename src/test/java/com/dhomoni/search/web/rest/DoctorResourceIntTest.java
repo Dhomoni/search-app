@@ -1,21 +1,21 @@
 package com.dhomoni.search.web.rest;
 
-import com.dhomoni.search.SearchApp;
+import static com.dhomoni.search.web.rest.TestUtil.createFormattingConversionService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.dhomoni.search.config.SecurityBeanOverrideConfiguration;
+import java.util.List;
 
-import com.dhomoni.search.domain.Doctor;
-import com.dhomoni.search.domain.MedicalDepartment;
-import com.dhomoni.search.domain.Chamber;
-import com.dhomoni.search.domain.ProfessionalDegree;
-import com.dhomoni.search.repository.DoctorRepository;
-import com.dhomoni.search.repository.search.DoctorSearchRepository;
-import com.dhomoni.search.service.DoctorService;
-import com.dhomoni.search.service.dto.DoctorDTO;
-import com.dhomoni.search.service.mapper.DoctorMapper;
-import com.dhomoni.search.web.rest.errors.ExceptionTranslator;
-import com.dhomoni.search.service.dto.DoctorCriteria;
-import com.dhomoni.search.service.DoctorQueryService;
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,8 +23,6 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -35,20 +33,20 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Base64Utils;
 import org.springframework.validation.Validator;
 
-import javax.persistence.EntityManager;
-import java.util.Collections;
-import java.util.List;
-
-
-import static com.dhomoni.search.web.rest.TestUtil.createFormattingConversionService;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+import com.dhomoni.search.SearchApp;
+import com.dhomoni.search.config.SecurityBeanOverrideConfiguration;
+import com.dhomoni.search.domain.Chamber;
+import com.dhomoni.search.domain.Doctor;
+import com.dhomoni.search.domain.MedicalDepartment;
+import com.dhomoni.search.domain.ProfessionalDegree;
 import com.dhomoni.search.domain.enumeration.DoctorType;
+import com.dhomoni.search.repository.DoctorRepository;
+import com.dhomoni.search.repository.search.DoctorSearchRepository;
+import com.dhomoni.search.service.DoctorQueryService;
+import com.dhomoni.search.service.DoctorService;
+import com.dhomoni.search.service.dto.DoctorDTO;
+import com.dhomoni.search.service.mapper.DoctorMapper;
+import com.dhomoni.search.web.rest.errors.ExceptionTranslator;
 /**
  * Test class for the DoctorResource REST controller.
  *

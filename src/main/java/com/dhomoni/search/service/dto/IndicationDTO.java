@@ -8,7 +8,12 @@ import java.util.Objects;
  */
 public class IndicationDTO implements Serializable {
 
-    private Long id;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8824275396178669374L;
+
+	private Long id;
 
     private String name;
 

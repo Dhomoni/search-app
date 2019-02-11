@@ -1,19 +1,26 @@
 package com.dhomoni.search.service.dto;
 
-import java.time.Instant;
-import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Objects;
+
 import javax.persistence.Lob;
-import com.dhomoni.search.domain.enumeration.Sex;
+
 import com.dhomoni.search.domain.enumeration.BloodGroup;
+import com.dhomoni.search.domain.enumeration.Sex;
 
 /**
  * A DTO for the Patient entity.
  */
 public class PatientDTO implements Serializable {
 
-    private Long id;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8938996626792769046L;
+
+
+	private Long id;
 
     
     private Long registrationId;
