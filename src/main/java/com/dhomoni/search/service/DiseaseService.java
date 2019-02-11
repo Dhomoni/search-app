@@ -1,21 +1,28 @@
 package com.dhomoni.search.service;
 
+import static org.elasticsearch.index.query.QueryBuilders.*;
+
+import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.dhomoni.search.domain.Disease;
 import com.dhomoni.search.repository.DiseaseRepository;
 import com.dhomoni.search.repository.search.DiseaseSearchRepository;
 import com.dhomoni.search.service.dto.DiseaseDTO;
+import com.dhomoni.search.service.dto.SearchDTO;
 import com.dhomoni.search.service.mapper.DiseaseMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Splitter;
 
 /**
  * Service Implementation for managing Disease.
@@ -109,9 +116,19 @@ public class DiseaseService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<DiseaseDTO> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of Diseases for query {}", query);
-        return diseaseSearchRepository.search(queryStringQuery(query), pageable)
+    public Page<DiseaseDTO> search(SearchDTO searchDTO, Pageable pageable) {
+        log.debug("Request to search for a page of Diseases for query {}", searchDTO.getQuery());        
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+        BoolQueryBuilder boolQuery = boolQuery().should(simpleQueryStringQuery(searchDTO.getQuery()));
+		Iterable<String> tokens = Splitter.on(CharMatcher.anyOf(", ")).omitEmptyStrings().split(searchDTO.getQuery());
+		for (String token : tokens) {
+			if (StringUtils.isNumeric(token)) {
+				boolQuery.should(constantScoreQuery(termQuery("id", token).boost(-1f)));
+			}
+		}
+		SearchQuery searchQuery = queryBuilder.withQuery(boolQuery)
+				.withPageable(pageable).withMinScore(0.00001f).build();
+        return diseaseSearchRepository.search(searchQuery)
             .map(diseaseMapper::toDto);
     }
 }

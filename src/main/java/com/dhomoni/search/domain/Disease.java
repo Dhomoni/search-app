@@ -44,7 +44,7 @@ public class Disease implements Serializable {
     @JoinTable(name = "disease_symptoms",
                joinColumns = @JoinColumn(name = "diseases_id", referencedColumnName = "id"),
                inverseJoinColumns = @JoinColumn(name = "symptoms_id", referencedColumnName = "id"))
-    @Field(type = FieldType.Nested)
+    @Field(type = FieldType.Nested, index = false)
     private Set<Symptom> symptoms = new HashSet<>();
 
     @ManyToOne

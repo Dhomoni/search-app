@@ -1,14 +1,14 @@
 package com.dhomoni.search.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import com.dhomoni.search.service.DiseaseService;
-import com.dhomoni.search.web.rest.errors.BadRequestAlertException;
-import com.dhomoni.search.web.rest.util.HeaderUtil;
-import com.dhomoni.search.web.rest.util.PaginationUtil;
-import com.dhomoni.search.service.dto.DiseaseDTO;
-import com.dhomoni.search.service.dto.DiseaseCriteria;
-import com.dhomoni.search.service.DiseaseQueryService;
-import io.github.jhipster.web.util.ResponseUtil;
+import static org.elasticsearch.index.query.QueryBuilders.*;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -18,15 +18,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
+import com.codahale.metrics.annotation.Timed;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import io.github.jhipster.web.util.ResponseUtil;
+import com.dhomoni.search.service.DiseaseQueryService;
+import com.dhomoni.search.service.DiseaseService;
+import com.dhomoni.search.service.dto.DiseaseCriteria;
+import com.dhomoni.search.service.dto.DiseaseDTO;
+import com.dhomoni.search.service.dto.SearchDTO;
+import com.dhomoni.search.web.rest.errors.BadRequestAlertException;
+import com.dhomoni.search.web.rest.util.HeaderUtil;
+import com.dhomoni.search.web.rest.util.PaginationUtil;
 
 /**
  * REST controller for managing Disease.
@@ -105,6 +107,23 @@ public class DiseaseResource {
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/diseases");
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
+    
+    /**
+     * SEARCH  /_search/diseases?query=:query : search for the disease corresponding
+     * to the query.
+     *
+     * @param query the query of the disease search
+     * @param pageable the pagination information
+     * @return the result of the search
+     */
+    @PostMapping("/_search/diseases")
+    @Timed
+    public ResponseEntity<List<DiseaseDTO>> searchDiseases(@Valid @RequestBody SearchDTO searchDTO, Pageable pageable) {
+        log.debug("REST request to search for a page of Diseases for searchDTO {}", searchDTO);
+        Page<DiseaseDTO> page = diseaseService.search(searchDTO, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(searchDTO.getQuery(), page, "/api/_search/diseases");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
 
     /**
     * GET  /diseases/count : count all the diseases.
@@ -146,22 +165,4 @@ public class DiseaseResource {
         diseaseService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-
-    /**
-     * SEARCH  /_search/diseases?query=:query : search for the disease corresponding
-     * to the query.
-     *
-     * @param query the query of the disease search
-     * @param pageable the pagination information
-     * @return the result of the search
-     */
-    @GetMapping("/_search/diseases")
-    @Timed
-    public ResponseEntity<List<DiseaseDTO>> searchDiseases(@RequestParam String query, Pageable pageable) {
-        log.debug("REST request to search for a page of Diseases for query {}", query);
-        Page<DiseaseDTO> page = diseaseService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/diseases");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
 }
