@@ -1,6 +1,10 @@
 package com.dhomoni.search.service;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
+import static org.elasticsearch.index.query.QueryBuilders.constantScoreQuery;
+import static org.elasticsearch.index.query.QueryBuilders.idsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.simpleQueryStringQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 import java.util.Optional;
 
@@ -10,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
@@ -131,4 +136,23 @@ public class DiseaseService {
         return diseaseSearchRepository.search(searchQuery)
             .map(diseaseMapper::toDto);
     }
+    
+	/**
+	 * Search for the doctor corresponding to the id.
+	 *
+	 * @param query    the query of the search
+	 * @param pageable the pagination information
+	 * @return the list of entities
+	 */
+	@Transactional(readOnly = true)
+	public Optional<DiseaseDTO> search(long id) {
+		log.debug("Request to search for a doctor for query {}", id);
+		NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+		String[] excludeFields = { "registrationId" };
+		SearchQuery searchQuery = queryBuilder.withQuery(idsQuery().addIds(Long.toString(id)))
+				.withSourceFilter(new FetchSourceFilterBuilder().withExcludes(excludeFields).build())
+				.build();
+		Page<Disease> diseases = diseaseSearchRepository.search(searchQuery);
+		return diseases.map(diseaseMapper::toDto).stream().findFirst();
+	}
 }

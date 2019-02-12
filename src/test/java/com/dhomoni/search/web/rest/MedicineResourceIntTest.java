@@ -2,7 +2,6 @@ package com.dhomoni.search.web.rest;
 
 import static com.dhomoni.search.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -17,7 +16,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -30,7 +28,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -982,30 +979,30 @@ public class MedicineResourceIntTest {
         verify(mockMedicineSearchRepository, times(1)).deleteById(medicine.getId());
     }
 
-    @Test
-    @Transactional
-    public void searchMedicine() throws Exception {
-        // Initialize the database
-        medicineRepository.saveAndFlush(medicine);
-        when(mockMedicineSearchRepository.search(queryStringQuery("id:" + medicine.getId()), PageRequest.of(0, 20)))
-            .thenReturn(new PageImpl<>(Collections.singletonList(medicine), PageRequest.of(0, 1), 1));
-        // Search the medicine
-        restMedicineMockMvc.perform(get("/api/_search/medicines?query=id:" + medicine.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(medicine.getId().intValue())))
-            .andExpect(jsonPath("$.[*].tradeName").value(hasItem(DEFAULT_TRADE_NAME)))
-            .andExpect(jsonPath("$.[*].unitQuantity").value(hasItem(DEFAULT_UNIT_QUANTITY)))
-            .andExpect(jsonPath("$.[*].genericName").value(hasItem(DEFAULT_GENERIC_NAME)))
-            .andExpect(jsonPath("$.[*].chemicalName").value(hasItem(DEFAULT_CHEMICAL_NAME)))
-            .andExpect(jsonPath("$.[*].formulation").value(hasItem(DEFAULT_FORMULATION.toString())))
-            .andExpect(jsonPath("$.[*].manufacturer").value(hasItem(DEFAULT_MANUFACTURER)))
-            .andExpect(jsonPath("$.[*].mrp").value(hasItem(DEFAULT_MRP.doubleValue())))
-            .andExpect(jsonPath("$.[*].doseAndAdmin").value(hasItem(DEFAULT_DOSE_AND_ADMIN)))
-            .andExpect(jsonPath("$.[*].preparation").value(hasItem(DEFAULT_PREPARATION)))
-            .andExpect(jsonPath("$.[*].productUrl").value(hasItem(DEFAULT_PRODUCT_URL)))
-            .andExpect(jsonPath("$.[*].active").value(hasItem(DEFAULT_ACTIVE.booleanValue())));
-    }
+//    @Test
+//    @Transactional
+//    public void searchMedicine() throws Exception {
+//        // Initialize the database
+//        medicineRepository.saveAndFlush(medicine);
+//        when(mockMedicineSearchRepository.search(queryStringQuery("id:" + medicine.getId()), PageRequest.of(0, 20)))
+//            .thenReturn(new PageImpl<>(Collections.singletonList(medicine), PageRequest.of(0, 1), 1));
+//        // Search the medicine
+//        restMedicineMockMvc.perform(get("/api/_search/medicines?query=id:" + medicine.getId()))
+//            .andExpect(status().isOk())
+//            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+//            .andExpect(jsonPath("$.[*].id").value(hasItem(medicine.getId().intValue())))
+//            .andExpect(jsonPath("$.[*].tradeName").value(hasItem(DEFAULT_TRADE_NAME)))
+//            .andExpect(jsonPath("$.[*].unitQuantity").value(hasItem(DEFAULT_UNIT_QUANTITY)))
+//            .andExpect(jsonPath("$.[*].genericName").value(hasItem(DEFAULT_GENERIC_NAME)))
+//            .andExpect(jsonPath("$.[*].chemicalName").value(hasItem(DEFAULT_CHEMICAL_NAME)))
+//            .andExpect(jsonPath("$.[*].formulation").value(hasItem(DEFAULT_FORMULATION.toString())))
+//            .andExpect(jsonPath("$.[*].manufacturer").value(hasItem(DEFAULT_MANUFACTURER)))
+//            .andExpect(jsonPath("$.[*].mrp").value(hasItem(DEFAULT_MRP.doubleValue())))
+//            .andExpect(jsonPath("$.[*].doseAndAdmin").value(hasItem(DEFAULT_DOSE_AND_ADMIN)))
+//            .andExpect(jsonPath("$.[*].preparation").value(hasItem(DEFAULT_PREPARATION)))
+//            .andExpect(jsonPath("$.[*].productUrl").value(hasItem(DEFAULT_PRODUCT_URL)))
+//            .andExpect(jsonPath("$.[*].active").value(hasItem(DEFAULT_ACTIVE.booleanValue())));
+//    }
 
     @Test
     @Transactional

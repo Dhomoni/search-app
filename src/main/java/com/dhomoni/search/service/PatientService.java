@@ -144,7 +144,7 @@ public class PatientService {
 		String[] excludeFields = { "registrationId" };
 		SearchQuery searchQuery = queryBuilder.withQuery(idsQuery().addIds(Long.toString(id)))
 				.withSourceFilter(new FetchSourceFilterBuilder().withExcludes(excludeFields).build())
-				.withMinScore(0.00001f).build();
+				.build();
 		Page<Patient> patients = patientSearchRepository.search(searchQuery);
 		return patients.map(patientMapper::toDto).stream().findFirst();
 	}

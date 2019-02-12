@@ -7,9 +7,12 @@ import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
+import lombok.ToString;
+
 /**
  * A DTO for the Disease entity.
  */
+@ToString
 public class DiseaseDTO implements Serializable {
 
     /**
@@ -27,7 +30,9 @@ public class DiseaseDTO implements Serializable {
 
     private Set<SymptomDTO> symptoms = new HashSet<>();
 
-    private Long medicalDepartmentId;
+//    private Long medicalDepartmentId;
+    
+    private MedicalDepartmentDTO medicalDepartment;
 
     public Long getId() {
         return id;
@@ -61,14 +66,6 @@ public class DiseaseDTO implements Serializable {
         this.symptoms = symptoms;
     }
 
-    public Long getMedicalDepartmentId() {
-        return medicalDepartmentId;
-    }
-
-    public void setMedicalDepartmentId(Long medicalDepartmentId) {
-        this.medicalDepartmentId = medicalDepartmentId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -90,13 +87,11 @@ public class DiseaseDTO implements Serializable {
         return Objects.hashCode(getId());
     }
 
-    @Override
-    public String toString() {
-        return "DiseaseDTO{" +
-            "id=" + getId() +
-            ", medicalName='" + getMedicalName() + "'" +
-            ", generalName='" + getGeneralName() + "'" +
-            ", medicalDepartment=" + getMedicalDepartmentId() +
-            "}";
-    }
+	public MedicalDepartmentDTO getMedicalDepartment() {
+		return medicalDepartment;
+	}
+
+	public void setMedicalDepartment(MedicalDepartmentDTO medicalDepartment) {
+		this.medicalDepartment = medicalDepartment;
+	}
 }

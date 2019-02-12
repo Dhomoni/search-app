@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
@@ -29,6 +28,7 @@ import com.dhomoni.search.service.MedicineQueryService;
 import com.dhomoni.search.service.MedicineService;
 import com.dhomoni.search.service.dto.MedicineCriteria;
 import com.dhomoni.search.service.dto.MedicineDTO;
+import com.dhomoni.search.service.dto.SearchDTO;
 import com.dhomoni.search.web.rest.errors.BadRequestAlertException;
 import com.dhomoni.search.web.rest.util.HeaderUtil;
 import com.dhomoni.search.web.rest.util.PaginationUtil;
@@ -112,6 +112,39 @@ public class MedicineResource {
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/medicines");
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
+    
+    /**
+     * SEARCH  /_search/medicines?query=:query : search for the medicine corresponding
+     * to the query.
+     *
+     * @param query the query of the medicine search
+     * @param pageable the pagination information
+     * @return the result of the search
+     */
+    @PostMapping("/_search/medicines")
+    @Timed
+    public ResponseEntity<List<MedicineDTO>> searchMedicines(@Valid @RequestBody SearchDTO searchDTO, Pageable pageable) {
+        log.debug("REST request to search for a page of Medicines for searchDTO {}", searchDTO);
+        Page<MedicineDTO> page = medicineService.search(searchDTO, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(searchDTO.getQuery(), page, "/api/_search/medicines");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+    
+    /**
+     * SEARCH  /_search/patient?id=:doctorId : search for the doctor corresponding
+     * to the id.
+     *
+     * @param query the query of the doctor search
+     * @param pageable the pagination information
+     * @return the result of the search
+     */
+    @GetMapping("/_search/medicines/{id}")
+    @Timed
+    public ResponseEntity<Optional<MedicineDTO>> searchMedicine(@PathVariable Long id) {
+        log.debug("REST request to search for a doctor for query {}", id);
+        Optional<MedicineDTO> medicineDTO = medicineService.search(id);
+        return new ResponseEntity<>(medicineDTO, HttpStatus.OK);
+    }
 
     /**
     * GET  /medicines/count : count all the medicines.
@@ -153,22 +186,4 @@ public class MedicineResource {
         medicineService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-
-    /**
-     * SEARCH  /_search/medicines?query=:query : search for the medicine corresponding
-     * to the query.
-     *
-     * @param query the query of the medicine search
-     * @param pageable the pagination information
-     * @return the result of the search
-     */
-    @GetMapping("/_search/medicines")
-    @Timed
-    public ResponseEntity<List<MedicineDTO>> searchMedicines(@RequestParam String query, Pageable pageable) {
-        log.debug("REST request to search for a page of Medicines for query {}", query);
-        Page<MedicineDTO> page = medicineService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/medicines");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
 }

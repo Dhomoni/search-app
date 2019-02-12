@@ -202,7 +202,7 @@ public class DoctorService {
 		String[] excludeFields = { "registrationId", "licenceNumber", "nationalId", "passportNo" };
 		SearchQuery searchQuery = queryBuilder.withQuery(idsQuery().addIds(Long.toString(id)))
 				.withSourceFilter(new FetchSourceFilterBuilder().withExcludes(excludeFields).build())
-				.withMinScore(0.00001f).build();
+				.build();
 		Page<Doctor> doctors = doctorSearchRepository.search(searchQuery);
 		return doctors.map(doctorMapper::toDto).stream().findFirst();
 	}

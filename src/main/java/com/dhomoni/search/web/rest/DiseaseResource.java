@@ -129,6 +129,22 @@ public class DiseaseResource {
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(searchDTO.getQuery(), page, "/api/_search/diseases");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
+    
+    /**
+     * SEARCH  /_search/patient?id=:doctorId : search for the doctor corresponding
+     * to the id.
+     *
+     * @param query the query of the doctor search
+     * @param pageable the pagination information
+     * @return the result of the search
+     */
+    @GetMapping("/_search/diseases/{id}")
+    @Timed
+    public ResponseEntity<Optional<DiseaseDTO>> searchDisease(@PathVariable Long id) {
+        log.debug("REST request to search for a doctor for query {}", id);
+        Optional<DiseaseDTO> diseaseDTO = diseaseService.search(id);
+        return new ResponseEntity<>(diseaseDTO, HttpStatus.OK);
+    }
 
     /**
     * GET  /diseases/count : count all the diseases.
