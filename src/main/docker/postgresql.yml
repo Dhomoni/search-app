@@ -1,7 +1,7 @@
 version: '2'
 services:
     search-postgresql:
-        image: postgresql-postgis:10.6
+        image: postgresql-postgis:10.7
         environment:
             - POSTGRES_USER=search
             - POSTGRES_PASSWORD=
