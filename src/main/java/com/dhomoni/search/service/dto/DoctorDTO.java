@@ -44,6 +44,10 @@ public class DoctorDTO implements Serializable {
     private DoctorType type;
 
     private String designation;
+    
+    private String institute;
+
+    private String speciality;
 
     @Lob
     private String description;
@@ -153,6 +157,22 @@ public class DoctorDTO implements Serializable {
 
     public void setDesignation(String designation) {
         this.designation = designation;
+    }
+    
+    public String getInstitute() {
+        return institute;
+    }
+
+    public void setInstitute(String institute) {
+        this.institute = institute;
+    }
+
+    public String getSpeciality() {
+        return speciality;
+    }
+
+    public void setSpeciality(String speciality) {
+        this.speciality = speciality;
     }
 
     public String getDescription() {
@@ -270,6 +290,8 @@ public class DoctorDTO implements Serializable {
             ", passportNo='" + getPassportNo() + "'" +
             ", type='" + getType() + "'" +
             ", designation='" + getDesignation() + "'" +
+            ", institute='" + getInstitute() + "'" +
+            ", speciality='" + getSpeciality() + "'" +
             ", description='" + getDescription() + "'" +
             ", address='" + getAddress() + "'" +
             ", image='" + getImage() + "'" +

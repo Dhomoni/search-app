@@ -12,10 +12,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -112,8 +111,14 @@ public class Doctor implements Serializable {
     @Field(type = FieldType.Boolean, index = false)
     private Boolean activated;
 
-    @OneToOne    
-    @JoinColumn(unique = true)
+    @Column(name = "institute")
+    private String institute;
+
+    @Column(name = "speciality")
+    private String speciality;
+
+    @ManyToOne
+    @JsonIgnoreProperties("doctor")
     @Field(type = FieldType.Object)
     private MedicalDepartment medicalDepartment;
 
@@ -297,6 +302,11 @@ public class Doctor implements Serializable {
 	public Point getLocation() {
 		return location;
 	}
+	
+	public Doctor location(Point location) {
+        this.location = location;
+        return this;
+    }
 
 	public void setLocation(Point location) {
 		this.location = location;
@@ -403,6 +413,33 @@ public class Doctor implements Serializable {
     public void setProfessionalDegrees(Set<ProfessionalDegree> professionalDegrees) {
         this.professionalDegrees = professionalDegrees;
     }
+    
+    public String getInstitute() {
+        return institute;
+    }
+
+    public Doctor institute(String institute) {
+        this.institute = institute;
+        return this;
+    }
+
+    public void setInstitute(String institute) {
+        this.institute = institute;
+    }
+
+    public String getSpeciality() {
+        return speciality;
+    }
+
+    public Doctor speciality(String speciality) {
+        this.speciality = speciality;
+        return this;
+    }
+
+    public void setSpeciality(String speciality) {
+        this.speciality = speciality;
+    }
+    
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
@@ -439,6 +476,8 @@ public class Doctor implements Serializable {
             ", passportNo='" + getPassportNo() + "'" +
             ", type='" + getType() + "'" +
             ", designation='" + getDesignation() + "'" +
+            ", institute='" + getInstitute() + "'" +
+            ", speciality='" + getSpeciality() + "'" +
             ", description='" + getDescription() + "'" +
             ", address='" + getAddress() + "'" +
             ", image='" + getImage() + "'" +

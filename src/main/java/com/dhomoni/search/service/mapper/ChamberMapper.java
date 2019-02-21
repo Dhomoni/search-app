@@ -10,7 +10,7 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity Chamber and its DTO ChamberDTO.
  */
-@Mapper(componentModel = "spring", uses = {DoctorMapper.class})
+@Mapper(componentModel = "spring", uses = {DoctorMapper.class, WeeklyVisitingHourMapper.class})
 public interface ChamberMapper extends EntityMapper<ChamberDTO, Chamber> {
 
     @Mapping(source = "doctor.id", target = "doctorId")

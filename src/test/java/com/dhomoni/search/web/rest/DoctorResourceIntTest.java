@@ -2,9 +2,11 @@ package com.dhomoni.search.web.rest;
 
 import static com.dhomoni.search.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -13,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -23,6 +26,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -86,6 +91,12 @@ public class DoctorResourceIntTest {
     private static final String DEFAULT_DESIGNATION = "AAAAAAAAAA";
     private static final String UPDATED_DESIGNATION = "BBBBBBBBBB";
 
+    private static final String DEFAULT_INSTITUTE = "AAAAAAAAAA";
+    private static final String UPDATED_INSTITUTE = "BBBBBBBBBB";
+
+    private static final String DEFAULT_SPECIALITY = "AAAAAAAAAA";
+    private static final String UPDATED_SPECIALITY = "BBBBBBBBBB";
+
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
@@ -97,8 +108,8 @@ public class DoctorResourceIntTest {
     private static final String DEFAULT_IMAGE_CONTENT_TYPE = "image/jpg";
     private static final String UPDATED_IMAGE_CONTENT_TYPE = "image/png";
 
-    private static final Boolean DEFAULT_ACTIVATED = true;
-    private static final Boolean UPDATED_ACTIVATED = false;
+    private static final Boolean DEFAULT_ACTIVATED = false;
+    private static final Boolean UPDATED_ACTIVATED = true;
 
     @Autowired
     private DoctorRepository doctorRepository;
@@ -169,6 +180,8 @@ public class DoctorResourceIntTest {
             .passportNo(DEFAULT_PASSPORT_NO)
             .type(DEFAULT_TYPE)
             .designation(DEFAULT_DESIGNATION)
+            .institute(DEFAULT_INSTITUTE)
+            .speciality(DEFAULT_SPECIALITY)
             .description(DEFAULT_DESCRIPTION)
             .address(DEFAULT_ADDRESS)
             .image(DEFAULT_IMAGE)
@@ -208,6 +221,8 @@ public class DoctorResourceIntTest {
         assertThat(testDoctor.getPassportNo()).isEqualTo(DEFAULT_PASSPORT_NO);
         assertThat(testDoctor.getType()).isEqualTo(DEFAULT_TYPE);
         assertThat(testDoctor.getDesignation()).isEqualTo(DEFAULT_DESIGNATION);
+        assertThat(testDoctor.getInstitute()).isEqualTo(DEFAULT_INSTITUTE);
+        assertThat(testDoctor.getSpeciality()).isEqualTo(DEFAULT_SPECIALITY);
         assertThat(testDoctor.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(testDoctor.getAddress()).isEqualTo(DEFAULT_ADDRESS);
         assertThat(testDoctor.getImage()).isEqualTo(DEFAULT_IMAGE);
@@ -281,6 +296,8 @@ public class DoctorResourceIntTest {
             .andExpect(jsonPath("$.[*].passportNo").value(hasItem(DEFAULT_PASSPORT_NO.toString())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
             .andExpect(jsonPath("$.[*].designation").value(hasItem(DEFAULT_DESIGNATION.toString())))
+            .andExpect(jsonPath("$.[*].institute").value(hasItem(DEFAULT_INSTITUTE.toString())))
+            .andExpect(jsonPath("$.[*].speciality").value(hasItem(DEFAULT_SPECIALITY.toString())))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
             .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS.toString())))
             .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
@@ -309,6 +326,8 @@ public class DoctorResourceIntTest {
             .andExpect(jsonPath("$.passportNo").value(DEFAULT_PASSPORT_NO.toString()))
             .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()))
             .andExpect(jsonPath("$.designation").value(DEFAULT_DESIGNATION.toString()))
+            .andExpect(jsonPath("$.institute").value(DEFAULT_INSTITUTE.toString()))
+            .andExpect(jsonPath("$.speciality").value(DEFAULT_SPECIALITY.toString()))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
             .andExpect(jsonPath("$.address").value(DEFAULT_ADDRESS.toString()))
             .andExpect(jsonPath("$.imageContentType").value(DEFAULT_IMAGE_CONTENT_TYPE))
@@ -352,7 +371,7 @@ public class DoctorResourceIntTest {
         defaultDoctorShouldBeFound("registrationId.specified=true");
 
         // Get all the doctorList where registrationId is null
-//        defaultDoctorShouldNotBeFound("registrationId.specified=false"); // For prepopulated data this test can not be done
+        defaultDoctorShouldNotBeFound("registrationId.specified=false");
     }
 
     @Test
@@ -735,6 +754,84 @@ public class DoctorResourceIntTest {
 
     @Test
     @Transactional
+    public void getAllDoctorsByInstituteIsEqualToSomething() throws Exception {
+        // Initialize the database
+        doctorRepository.saveAndFlush(doctor);
+
+        // Get all the doctorList where institute equals to DEFAULT_INSTITUTE
+        defaultDoctorShouldBeFound("institute.equals=" + DEFAULT_INSTITUTE);
+
+        // Get all the doctorList where institute equals to UPDATED_INSTITUTE
+        defaultDoctorShouldNotBeFound("institute.equals=" + UPDATED_INSTITUTE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllDoctorsByInstituteIsInShouldWork() throws Exception {
+        // Initialize the database
+        doctorRepository.saveAndFlush(doctor);
+
+        // Get all the doctorList where institute in DEFAULT_INSTITUTE or UPDATED_INSTITUTE
+        defaultDoctorShouldBeFound("institute.in=" + DEFAULT_INSTITUTE + "," + UPDATED_INSTITUTE);
+
+        // Get all the doctorList where institute equals to UPDATED_INSTITUTE
+        defaultDoctorShouldNotBeFound("institute.in=" + UPDATED_INSTITUTE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllDoctorsByInstituteIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        doctorRepository.saveAndFlush(doctor);
+
+        // Get all the doctorList where institute is not null
+        defaultDoctorShouldBeFound("institute.specified=true");
+
+        // Get all the doctorList where institute is null
+        defaultDoctorShouldNotBeFound("institute.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllDoctorsBySpecialityIsEqualToSomething() throws Exception {
+        // Initialize the database
+        doctorRepository.saveAndFlush(doctor);
+
+        // Get all the doctorList where speciality equals to DEFAULT_SPECIALITY
+        defaultDoctorShouldBeFound("speciality.equals=" + DEFAULT_SPECIALITY);
+
+        // Get all the doctorList where speciality equals to UPDATED_SPECIALITY
+        defaultDoctorShouldNotBeFound("speciality.equals=" + UPDATED_SPECIALITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllDoctorsBySpecialityIsInShouldWork() throws Exception {
+        // Initialize the database
+        doctorRepository.saveAndFlush(doctor);
+
+        // Get all the doctorList where speciality in DEFAULT_SPECIALITY or UPDATED_SPECIALITY
+        defaultDoctorShouldBeFound("speciality.in=" + DEFAULT_SPECIALITY + "," + UPDATED_SPECIALITY);
+
+        // Get all the doctorList where speciality equals to UPDATED_SPECIALITY
+        defaultDoctorShouldNotBeFound("speciality.in=" + UPDATED_SPECIALITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllDoctorsBySpecialityIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        doctorRepository.saveAndFlush(doctor);
+
+        // Get all the doctorList where speciality is not null
+        defaultDoctorShouldBeFound("speciality.specified=true");
+
+        // Get all the doctorList where speciality is null
+        defaultDoctorShouldNotBeFound("speciality.specified=false");
+    }
+
+    @Test
+    @Transactional
     public void getAllDoctorsByAddressIsEqualToSomething() throws Exception {
         // Initialize the database
         doctorRepository.saveAndFlush(doctor);
@@ -813,25 +910,6 @@ public class DoctorResourceIntTest {
 
     @Test
     @Transactional
-    public void getAllDoctorsByMedicalDepartmentIsEqualToSomething() throws Exception {
-        // Initialize the database
-        MedicalDepartment medicalDepartment = MedicalDepartmentResourceIntTest.createEntity(em);
-        em.persist(medicalDepartment);
-        em.flush();
-        doctor.setMedicalDepartment(medicalDepartment);
-        doctorRepository.saveAndFlush(doctor);
-        Long medicalDepartmentId = medicalDepartment.getId();
-
-        // Get all the doctorList where medicalDepartment equals to medicalDepartmentId
-        defaultDoctorShouldBeFound("medicalDepartmentId.equals=" + medicalDepartmentId);
-
-        // Get all the doctorList where medicalDepartment equals to medicalDepartmentId + 1
-        defaultDoctorShouldNotBeFound("medicalDepartmentId.equals=" + (medicalDepartmentId + 1));
-    }
-
-
-    @Test
-    @Transactional
     public void getAllDoctorsByChambersIsEqualToSomething() throws Exception {
         // Initialize the database
         Chamber chambers = ChamberResourceIntTest.createEntity(em);
@@ -867,6 +945,25 @@ public class DoctorResourceIntTest {
         defaultDoctorShouldNotBeFound("professionalDegreesId.equals=" + (professionalDegreesId + 1));
     }
 
+
+    @Test
+    @Transactional
+    public void getAllDoctorsByMedicalDepartmentIsEqualToSomething() throws Exception {
+        // Initialize the database
+        MedicalDepartment medicalDepartment = MedicalDepartmentResourceIntTest.createEntity(em);
+        em.persist(medicalDepartment);
+        em.flush();
+        doctor.setMedicalDepartment(medicalDepartment);
+        doctorRepository.saveAndFlush(doctor);
+        Long medicalDepartmentId = medicalDepartment.getId();
+
+        // Get all the doctorList where medicalDepartment equals to medicalDepartmentId
+        defaultDoctorShouldBeFound("medicalDepartmentId.equals=" + medicalDepartmentId);
+
+        // Get all the doctorList where medicalDepartment equals to medicalDepartmentId + 1
+        defaultDoctorShouldNotBeFound("medicalDepartmentId.equals=" + (medicalDepartmentId + 1));
+    }
+
     /**
      * Executes the search, and checks that the default entity is returned
      */
@@ -885,6 +982,8 @@ public class DoctorResourceIntTest {
             .andExpect(jsonPath("$.[*].passportNo").value(hasItem(DEFAULT_PASSPORT_NO.toString())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
             .andExpect(jsonPath("$.[*].designation").value(hasItem(DEFAULT_DESIGNATION.toString())))
+            .andExpect(jsonPath("$.[*].institute").value(hasItem(DEFAULT_INSTITUTE.toString())))
+            .andExpect(jsonPath("$.[*].speciality").value(hasItem(DEFAULT_SPECIALITY.toString())))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
             .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS.toString())))
             .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
@@ -895,7 +994,7 @@ public class DoctorResourceIntTest {
         restDoctorMockMvc.perform(get("/api/doctors/count?sort=id,desc&" + filter))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
-//            .andExpect(content().string("1")); // For prepopulated data this test can not be done
+//            .andExpect(content().string("1"));
     }
 
     /**
@@ -905,14 +1004,14 @@ public class DoctorResourceIntTest {
         restDoctorMockMvc.perform(get("/api/doctors?sort=id,desc&" + filter))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$").isArray())
-            .andExpect(jsonPath("$").isEmpty());
+            .andExpect(jsonPath("$").isArray());
+//            .andExpect(jsonPath("$").isEmpty());
 
         // Check, that the count call also returns 0
         restDoctorMockMvc.perform(get("/api/doctors/count?sort=id,desc&" + filter))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(content().string("0"));
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
+//            .andExpect(content().string("0"));
     }
 
 
@@ -947,6 +1046,8 @@ public class DoctorResourceIntTest {
             .passportNo(UPDATED_PASSPORT_NO)
             .type(UPDATED_TYPE)
             .designation(UPDATED_DESIGNATION)
+            .institute(UPDATED_INSTITUTE)
+            .speciality(UPDATED_SPECIALITY)
             .description(UPDATED_DESCRIPTION)
             .address(UPDATED_ADDRESS)
             .image(UPDATED_IMAGE)
@@ -973,6 +1074,8 @@ public class DoctorResourceIntTest {
         assertThat(testDoctor.getPassportNo()).isEqualTo(UPDATED_PASSPORT_NO);
         assertThat(testDoctor.getType()).isEqualTo(UPDATED_TYPE);
         assertThat(testDoctor.getDesignation()).isEqualTo(UPDATED_DESIGNATION);
+        assertThat(testDoctor.getInstitute()).isEqualTo(UPDATED_INSTITUTE);
+        assertThat(testDoctor.getSpeciality()).isEqualTo(UPDATED_SPECIALITY);
         assertThat(testDoctor.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testDoctor.getAddress()).isEqualTo(UPDATED_ADDRESS);
         assertThat(testDoctor.getImage()).isEqualTo(UPDATED_IMAGE);
@@ -1048,6 +1151,8 @@ public class DoctorResourceIntTest {
 //            .andExpect(jsonPath("$.[*].passportNo").value(hasItem(DEFAULT_PASSPORT_NO)))
 //            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
 //            .andExpect(jsonPath("$.[*].designation").value(hasItem(DEFAULT_DESIGNATION)))
+//            .andExpect(jsonPath("$.[*].institute").value(hasItem(DEFAULT_INSTITUTE)))
+//            .andExpect(jsonPath("$.[*].speciality").value(hasItem(DEFAULT_SPECIALITY)))
 //            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
 //            .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)))
 //            .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))

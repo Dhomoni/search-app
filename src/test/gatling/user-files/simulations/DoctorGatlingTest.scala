@@ -94,6 +94,8 @@ class DoctorGatlingTest extends Simulation {
                 , "passportNo":"SAMPLE_TEXT"
                 , "type":"PHYSICIAN"
                 , "designation":"SAMPLE_TEXT"
+                , "institute":"SAMPLE_TEXT"
+                , "speciality":"SAMPLE_TEXT"
                 , "description":null
                 , "address":"SAMPLE_TEXT"
                 , "image":null

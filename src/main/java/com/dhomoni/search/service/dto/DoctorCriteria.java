@@ -2,11 +2,12 @@ package com.dhomoni.search.service.dto;
 
 import java.io.Serializable;
 import java.util.Objects;
-
 import com.dhomoni.search.domain.enumeration.DoctorType;
-
 import io.github.jhipster.service.filter.BooleanFilter;
+import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
+import io.github.jhipster.service.filter.FloatFilter;
+import io.github.jhipster.service.filter.IntegerFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
 
@@ -23,11 +24,6 @@ public class DoctorCriteria implements Serializable {
      * Class for filtering DoctorType
      */
     public static class DoctorTypeFilter extends Filter<DoctorType> {
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -7655407143643289483L;
     }
 
     private static final long serialVersionUID = 1L;
@@ -54,15 +50,19 @@ public class DoctorCriteria implements Serializable {
 
     private StringFilter designation;
 
+    private StringFilter institute;
+
+    private StringFilter speciality;
+
     private StringFilter address;
 
     private BooleanFilter activated;
 
-    private LongFilter medicalDepartmentId;
-
     private LongFilter chambersId;
 
     private LongFilter professionalDegreesId;
+
+    private LongFilter medicalDepartmentId;
 
     public LongFilter getId() {
         return id;
@@ -152,6 +152,22 @@ public class DoctorCriteria implements Serializable {
         this.designation = designation;
     }
 
+    public StringFilter getInstitute() {
+        return institute;
+    }
+
+    public void setInstitute(StringFilter institute) {
+        this.institute = institute;
+    }
+
+    public StringFilter getSpeciality() {
+        return speciality;
+    }
+
+    public void setSpeciality(StringFilter speciality) {
+        this.speciality = speciality;
+    }
+
     public StringFilter getAddress() {
         return address;
     }
@@ -168,14 +184,6 @@ public class DoctorCriteria implements Serializable {
         this.activated = activated;
     }
 
-    public LongFilter getMedicalDepartmentId() {
-        return medicalDepartmentId;
-    }
-
-    public void setMedicalDepartmentId(LongFilter medicalDepartmentId) {
-        this.medicalDepartmentId = medicalDepartmentId;
-    }
-
     public LongFilter getChambersId() {
         return chambersId;
     }
@@ -190,6 +198,14 @@ public class DoctorCriteria implements Serializable {
 
     public void setProfessionalDegreesId(LongFilter professionalDegreesId) {
         this.professionalDegreesId = professionalDegreesId;
+    }
+
+    public LongFilter getMedicalDepartmentId() {
+        return medicalDepartmentId;
+    }
+
+    public void setMedicalDepartmentId(LongFilter medicalDepartmentId) {
+        this.medicalDepartmentId = medicalDepartmentId;
     }
 
 
@@ -214,11 +230,13 @@ public class DoctorCriteria implements Serializable {
             Objects.equals(passportNo, that.passportNo) &&
             Objects.equals(type, that.type) &&
             Objects.equals(designation, that.designation) &&
+            Objects.equals(institute, that.institute) &&
+            Objects.equals(speciality, that.speciality) &&
             Objects.equals(address, that.address) &&
             Objects.equals(activated, that.activated) &&
-            Objects.equals(medicalDepartmentId, that.medicalDepartmentId) &&
             Objects.equals(chambersId, that.chambersId) &&
-            Objects.equals(professionalDegreesId, that.professionalDegreesId);
+            Objects.equals(professionalDegreesId, that.professionalDegreesId) &&
+            Objects.equals(medicalDepartmentId, that.medicalDepartmentId);
     }
 
     @Override
@@ -235,11 +253,13 @@ public class DoctorCriteria implements Serializable {
         passportNo,
         type,
         designation,
+        institute,
+        speciality,
         address,
         activated,
-        medicalDepartmentId,
         chambersId,
-        professionalDegreesId
+        professionalDegreesId,
+        medicalDepartmentId
         );
     }
 
@@ -257,11 +277,13 @@ public class DoctorCriteria implements Serializable {
                 (passportNo != null ? "passportNo=" + passportNo + ", " : "") +
                 (type != null ? "type=" + type + ", " : "") +
                 (designation != null ? "designation=" + designation + ", " : "") +
+                (institute != null ? "institute=" + institute + ", " : "") +
+                (speciality != null ? "speciality=" + speciality + ", " : "") +
                 (address != null ? "address=" + address + ", " : "") +
                 (activated != null ? "activated=" + activated + ", " : "") +
-                (medicalDepartmentId != null ? "medicalDepartmentId=" + medicalDepartmentId + ", " : "") +
                 (chambersId != null ? "chambersId=" + chambersId + ", " : "") +
                 (professionalDegreesId != null ? "professionalDegreesId=" + professionalDegreesId + ", " : "") +
+                (medicalDepartmentId != null ? "medicalDepartmentId=" + medicalDepartmentId + ", " : "") +
             "}";
     }
 

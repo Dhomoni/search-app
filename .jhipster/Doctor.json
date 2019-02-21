@@ -49,6 +49,14 @@
             "fieldType": "String"
         },
         {
+            "fieldName": "institute",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "speciality",
+            "fieldType": "String"
+        },
+        {
             "fieldName": "description",
             "fieldType": "byte[]",
             "fieldTypeBlobContent": "text"
@@ -69,14 +77,6 @@
     ],
     "relationships": [
         {
-            "relationshipType": "one-to-one",
-            "relationshipName": "medicalDepartment",
-            "otherEntityName": "medicalDepartment",
-            "otherEntityField": "id",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "doctor"
-        },
-        {
             "relationshipType": "one-to-many",
             "relationshipName": "chambers",
             "otherEntityName": "chamber",
@@ -87,6 +87,12 @@
             "relationshipName": "professionalDegrees",
             "otherEntityName": "professionalDegree",
             "otherEntityRelationshipName": "doctor"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "medicalDepartment",
+            "otherEntityName": "medicalDepartment",
+            "otherEntityField": "id"
         }
     ],
     "changelogDate": "20181227124017",

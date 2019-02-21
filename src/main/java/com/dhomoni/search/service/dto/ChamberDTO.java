@@ -2,6 +2,7 @@ package com.dhomoni.search.service.dto;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Set;
 
 import com.vividsolutions.jts.geom.Point;
 
@@ -27,6 +28,8 @@ public class ChamberDTO implements Serializable {
     
     private Double distanceInKM;
 
+    private Set<WeeklyVisitingHourDTO> weeklyVisitingHours;
+    
     private Long doctorId;
 
     public Long getId() {
@@ -115,5 +118,13 @@ public class ChamberDTO implements Serializable {
 
 	public void setDistanceInKM(Double distanceInKM) {
 		this.distanceInKM = distanceInKM;
+	}
+
+	public Set<WeeklyVisitingHourDTO> getWeeklyVisitingHours() {
+		return weeklyVisitingHours;
+	}
+
+	public void setWeeklyVisitingHours(Set<WeeklyVisitingHourDTO> weeklyVisitingHours) {
+		this.weeklyVisitingHours = weeklyVisitingHours;
 	}
 }
