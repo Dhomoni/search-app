@@ -1,3 +1,6 @@
 id;address;phone;fee;doctor_id
 1;Dhanmondi Lake Road;8001666777888;500.0;1
 2;Mohammadpur Police Station;8001666666666;500.0;1
+3;Dhanmondi Lake Road;8001666777888;500.0;2
+4;Mohammadpur Police Station;8001666666666;500.0;3
+5;Banani;8001666666666;500.0;3
