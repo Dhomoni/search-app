@@ -123,15 +123,17 @@ public class DoctorQueryService extends QueryService<Doctor> {
             if (criteria.getDesignation() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getDesignation(), Doctor_.designation));
             }
+            if (criteria.getInstitute() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getInstitute(), Doctor_.institute));
+            }
+            if (criteria.getSpeciality() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getSpeciality(), Doctor_.speciality));
+            }
             if (criteria.getAddress() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getAddress(), Doctor_.address));
             }
             if (criteria.getActivated() != null) {
                 specification = specification.and(buildSpecification(criteria.getActivated(), Doctor_.activated));
-            }
-            if (criteria.getMedicalDepartmentId() != null) {
-                specification = specification.and(buildSpecification(criteria.getMedicalDepartmentId(),
-                    root -> root.join(Doctor_.medicalDepartment, JoinType.LEFT).get(MedicalDepartment_.id)));
             }
             if (criteria.getChambersId() != null) {
                 specification = specification.and(buildSpecification(criteria.getChambersId(),
@@ -140,6 +142,10 @@ public class DoctorQueryService extends QueryService<Doctor> {
             if (criteria.getProfessionalDegreesId() != null) {
                 specification = specification.and(buildSpecification(criteria.getProfessionalDegreesId(),
                     root -> root.join(Doctor_.professionalDegrees, JoinType.LEFT).get(ProfessionalDegree_.id)));
+            }
+            if (criteria.getMedicalDepartmentId() != null) {
+                specification = specification.and(buildSpecification(criteria.getMedicalDepartmentId(),
+                    root -> root.join(Doctor_.medicalDepartment, JoinType.LEFT).get(MedicalDepartment_.id)));
             }
         }
         return specification;

@@ -36,6 +36,8 @@ entity Doctor {
   	passportNo String
 	type DoctorType
 	designation String
+	institute String
+	speciality String
 	description TextBlob
 	address String
 //	location Point
@@ -52,7 +54,7 @@ entity MedicalDepartment {
 	name String required
 }
 
-relationship OneToOne {
+relationship ManyToOne {
 	Doctor{medicalDepartment} to MedicalDepartment
 }
 
