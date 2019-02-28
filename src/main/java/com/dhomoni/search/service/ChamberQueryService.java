@@ -17,6 +17,7 @@ import io.github.jhipster.service.QueryService;
 import com.dhomoni.search.domain.Chamber;
 import com.dhomoni.search.domain.*; // for static metamodels
 import com.dhomoni.search.repository.ChamberRepository;
+import com.dhomoni.search.repository.search.ChamberSearchRepository;
 import com.dhomoni.search.service.dto.ChamberCriteria;
 import com.dhomoni.search.service.dto.ChamberDTO;
 import com.dhomoni.search.service.mapper.ChamberMapper;
@@ -37,9 +38,12 @@ public class ChamberQueryService extends QueryService<Chamber> {
 
     private final ChamberMapper chamberMapper;
 
-    public ChamberQueryService(ChamberRepository chamberRepository, ChamberMapper chamberMapper) {
+    private final ChamberSearchRepository chamberSearchRepository;
+
+    public ChamberQueryService(ChamberRepository chamberRepository, ChamberMapper chamberMapper, ChamberSearchRepository chamberSearchRepository) {
         this.chamberRepository = chamberRepository;
         this.chamberMapper = chamberMapper;
+        this.chamberSearchRepository = chamberSearchRepository;
     }
 
     /**
@@ -97,6 +101,18 @@ public class ChamberQueryService extends QueryService<Chamber> {
             }
             if (criteria.getFee() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getFee(), Chamber_.fee));
+            }
+            if (criteria.getIsSuspended() != null) {
+                specification = specification.and(buildSpecification(criteria.getIsSuspended(), Chamber_.isSuspended));
+            }
+            if (criteria.getNotice() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getNotice(), Chamber_.notice));
+            }
+            if (criteria.getAppointmentLimit() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getAppointmentLimit(), Chamber_.appointmentLimit));
+            }
+            if (criteria.getAdviceDurationInMinute() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getAdviceDurationInMinute(), Chamber_.adviceDurationInMinute));
             }
             if (criteria.getDoctorId() != null) {
                 specification = specification.and(buildSpecification(criteria.getDoctorId(),

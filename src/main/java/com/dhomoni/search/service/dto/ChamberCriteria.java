@@ -2,9 +2,11 @@ package com.dhomoni.search.service.dto;
 
 import java.io.Serializable;
 import java.util.Objects;
-
+import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
+import io.github.jhipster.service.filter.FloatFilter;
+import io.github.jhipster.service.filter.IntegerFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
 
@@ -27,6 +29,14 @@ public class ChamberCriteria implements Serializable {
     private StringFilter phone;
 
     private DoubleFilter fee;
+
+    private BooleanFilter isSuspended;
+
+    private StringFilter notice;
+
+    private IntegerFilter appointmentLimit;
+
+    private IntegerFilter adviceDurationInMinute;
 
     private LongFilter doctorId;
 
@@ -64,6 +74,38 @@ public class ChamberCriteria implements Serializable {
         this.fee = fee;
     }
 
+    public BooleanFilter getIsSuspended() {
+        return isSuspended;
+    }
+
+    public void setIsSuspended(BooleanFilter isSuspended) {
+        this.isSuspended = isSuspended;
+    }
+
+    public StringFilter getNotice() {
+        return notice;
+    }
+
+    public void setNotice(StringFilter notice) {
+        this.notice = notice;
+    }
+
+    public IntegerFilter getAppointmentLimit() {
+        return appointmentLimit;
+    }
+
+    public void setAppointmentLimit(IntegerFilter appointmentLimit) {
+        this.appointmentLimit = appointmentLimit;
+    }
+
+    public IntegerFilter getAdviceDurationInMinute() {
+        return adviceDurationInMinute;
+    }
+
+    public void setAdviceDurationInMinute(IntegerFilter adviceDurationInMinute) {
+        this.adviceDurationInMinute = adviceDurationInMinute;
+    }
+
     public LongFilter getDoctorId() {
         return doctorId;
     }
@@ -95,6 +137,10 @@ public class ChamberCriteria implements Serializable {
             Objects.equals(address, that.address) &&
             Objects.equals(phone, that.phone) &&
             Objects.equals(fee, that.fee) &&
+            Objects.equals(isSuspended, that.isSuspended) &&
+            Objects.equals(notice, that.notice) &&
+            Objects.equals(appointmentLimit, that.appointmentLimit) &&
+            Objects.equals(adviceDurationInMinute, that.adviceDurationInMinute) &&
             Objects.equals(doctorId, that.doctorId) &&
             Objects.equals(weeklyVisitingHoursId, that.weeklyVisitingHoursId);
     }
@@ -106,6 +152,10 @@ public class ChamberCriteria implements Serializable {
         address,
         phone,
         fee,
+        isSuspended,
+        notice,
+        appointmentLimit,
+        adviceDurationInMinute,
         doctorId,
         weeklyVisitingHoursId
         );
@@ -118,6 +168,10 @@ public class ChamberCriteria implements Serializable {
                 (address != null ? "address=" + address + ", " : "") +
                 (phone != null ? "phone=" + phone + ", " : "") +
                 (fee != null ? "fee=" + fee + ", " : "") +
+                (isSuspended != null ? "isSuspended=" + isSuspended + ", " : "") +
+                (notice != null ? "notice=" + notice + ", " : "") +
+                (appointmentLimit != null ? "appointmentLimit=" + appointmentLimit + ", " : "") +
+                (adviceDurationInMinute != null ? "adviceDurationInMinute=" + adviceDurationInMinute + ", " : "") +
                 (doctorId != null ? "doctorId=" + doctorId + ", " : "") +
                 (weeklyVisitingHoursId != null ? "weeklyVisitingHoursId=" + weeklyVisitingHoursId + ", " : "") +
             "}";

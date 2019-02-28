@@ -87,6 +87,10 @@ class ChamberGatlingTest extends Simulation {
                 , "address":"SAMPLE_TEXT"
                 , "phone":"SAMPLE_TEXT"
                 , "fee":null
+                , "isSuspended":null
+                , "notice":"SAMPLE_TEXT"
+                , "appointmentLimit":"0"
+                , "adviceDurationInMinute":"0"
                 }""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_chamber_url"))).exitHereIfFailed

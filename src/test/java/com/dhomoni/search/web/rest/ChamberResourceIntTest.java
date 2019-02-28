@@ -1,19 +1,20 @@
 package com.dhomoni.search.web.rest;
 
-import static com.dhomoni.search.web.rest.TestUtil.createFormattingConversionService;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.dhomoni.search.SearchApp;
 
-import java.util.List;
+import com.dhomoni.search.config.SecurityBeanOverrideConfiguration;
 
-import javax.persistence.EntityManager;
+import com.dhomoni.search.domain.Chamber;
+import com.dhomoni.search.domain.Doctor;
+import com.dhomoni.search.domain.WeeklyVisitingHour;
+import com.dhomoni.search.repository.ChamberRepository;
+import com.dhomoni.search.repository.search.ChamberSearchRepository;
+import com.dhomoni.search.service.ChamberService;
+import com.dhomoni.search.service.dto.ChamberDTO;
+import com.dhomoni.search.service.mapper.ChamberMapper;
+import com.dhomoni.search.web.rest.errors.ExceptionTranslator;
+import com.dhomoni.search.service.dto.ChamberCriteria;
+import com.dhomoni.search.service.ChamberQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +22,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -30,17 +33,18 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Validator;
 
-import com.dhomoni.search.SearchApp;
-import com.dhomoni.search.config.SecurityBeanOverrideConfiguration;
-import com.dhomoni.search.domain.Chamber;
-import com.dhomoni.search.domain.Doctor;
-import com.dhomoni.search.domain.WeeklyVisitingHour;
-import com.dhomoni.search.repository.ChamberRepository;
-import com.dhomoni.search.service.ChamberQueryService;
-import com.dhomoni.search.service.ChamberService;
-import com.dhomoni.search.service.dto.ChamberDTO;
-import com.dhomoni.search.service.mapper.ChamberMapper;
-import com.dhomoni.search.web.rest.errors.ExceptionTranslator;
+import javax.persistence.EntityManager;
+import java.util.Collections;
+import java.util.List;
+
+
+import static com.dhomoni.search.web.rest.TestUtil.createFormattingConversionService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Test class for the ChamberResource REST controller.
@@ -57,8 +61,20 @@ public class ChamberResourceIntTest {
     private static final String DEFAULT_PHONE = "AAAAAAAAAA";
     private static final String UPDATED_PHONE = "BBBBBBBBBB";
 
-    private static final Double DEFAULT_FEE = 10000D;
-    private static final Double UPDATED_FEE = 20000D;
+    private static final Double DEFAULT_FEE = 1D;
+    private static final Double UPDATED_FEE = 2D;
+
+    private static final Boolean DEFAULT_IS_SUSPENDED = false;
+    private static final Boolean UPDATED_IS_SUSPENDED = true;
+
+    private static final String DEFAULT_NOTICE = "AAAAAAAAAA";
+    private static final String UPDATED_NOTICE = "BBBBBBBBBB";
+
+    private static final Integer DEFAULT_APPOINTMENT_LIMIT = 1;
+    private static final Integer UPDATED_APPOINTMENT_LIMIT = 2;
+
+    private static final Integer DEFAULT_ADVICE_DURATION_IN_MINUTE = 1;
+    private static final Integer UPDATED_ADVICE_DURATION_IN_MINUTE = 2;
 
     @Autowired
     private ChamberRepository chamberRepository;
@@ -74,6 +90,8 @@ public class ChamberResourceIntTest {
      *
      * @see com.dhomoni.search.repository.search.ChamberSearchRepositoryMockConfiguration
      */
+    @Autowired
+    private ChamberSearchRepository mockChamberSearchRepository;
 
     @Autowired
     private ChamberQueryService chamberQueryService;
@@ -119,7 +137,11 @@ public class ChamberResourceIntTest {
         Chamber chamber = new Chamber()
             .address(DEFAULT_ADDRESS)
             .phone(DEFAULT_PHONE)
-            .fee(DEFAULT_FEE);
+            .fee(DEFAULT_FEE)
+            .isSuspended(DEFAULT_IS_SUSPENDED)
+            .notice(DEFAULT_NOTICE)
+            .appointmentLimit(DEFAULT_APPOINTMENT_LIMIT)
+            .adviceDurationInMinute(DEFAULT_ADVICE_DURATION_IN_MINUTE);
         return chamber;
     }
 
@@ -147,6 +169,13 @@ public class ChamberResourceIntTest {
         assertThat(testChamber.getAddress()).isEqualTo(DEFAULT_ADDRESS);
         assertThat(testChamber.getPhone()).isEqualTo(DEFAULT_PHONE);
         assertThat(testChamber.getFee()).isEqualTo(DEFAULT_FEE);
+        assertThat(testChamber.isIsSuspended()).isEqualTo(DEFAULT_IS_SUSPENDED);
+        assertThat(testChamber.getNotice()).isEqualTo(DEFAULT_NOTICE);
+        assertThat(testChamber.getAppointmentLimit()).isEqualTo(DEFAULT_APPOINTMENT_LIMIT);
+        assertThat(testChamber.getAdviceDurationInMinute()).isEqualTo(DEFAULT_ADVICE_DURATION_IN_MINUTE);
+
+        // Validate the Chamber in Elasticsearch
+        verify(mockChamberSearchRepository, times(1)).save(testChamber);
     }
 
     @Test
@@ -167,6 +196,9 @@ public class ChamberResourceIntTest {
         // Validate the Chamber in the database
         List<Chamber> chamberList = chamberRepository.findAll();
         assertThat(chamberList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the Chamber in Elasticsearch
+        verify(mockChamberSearchRepository, times(0)).save(chamber);
     }
 
     @Test
@@ -182,7 +214,11 @@ public class ChamberResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(chamber.getId().intValue())))
             .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS.toString())))
             .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE.toString())))
-            .andExpect(jsonPath("$.[*].fee").value(hasItem(DEFAULT_FEE.doubleValue())));
+            .andExpect(jsonPath("$.[*].fee").value(hasItem(DEFAULT_FEE.doubleValue())))
+            .andExpect(jsonPath("$.[*].isSuspended").value(hasItem(DEFAULT_IS_SUSPENDED.booleanValue())))
+            .andExpect(jsonPath("$.[*].notice").value(hasItem(DEFAULT_NOTICE.toString())))
+            .andExpect(jsonPath("$.[*].appointmentLimit").value(hasItem(DEFAULT_APPOINTMENT_LIMIT)))
+            .andExpect(jsonPath("$.[*].adviceDurationInMinute").value(hasItem(DEFAULT_ADVICE_DURATION_IN_MINUTE)));
     }
     
     @Test
@@ -198,7 +234,11 @@ public class ChamberResourceIntTest {
             .andExpect(jsonPath("$.id").value(chamber.getId().intValue()))
             .andExpect(jsonPath("$.address").value(DEFAULT_ADDRESS.toString()))
             .andExpect(jsonPath("$.phone").value(DEFAULT_PHONE.toString()))
-            .andExpect(jsonPath("$.fee").value(DEFAULT_FEE.doubleValue()));
+            .andExpect(jsonPath("$.fee").value(DEFAULT_FEE.doubleValue()))
+            .andExpect(jsonPath("$.isSuspended").value(DEFAULT_IS_SUSPENDED.booleanValue()))
+            .andExpect(jsonPath("$.notice").value(DEFAULT_NOTICE.toString()))
+            .andExpect(jsonPath("$.appointmentLimit").value(DEFAULT_APPOINTMENT_LIMIT))
+            .andExpect(jsonPath("$.adviceDurationInMinute").value(DEFAULT_ADVICE_DURATION_IN_MINUTE));
     }
 
     @Test
@@ -320,6 +360,216 @@ public class ChamberResourceIntTest {
 
     @Test
     @Transactional
+    public void getAllChambersByIsSuspendedIsEqualToSomething() throws Exception {
+        // Initialize the database
+        chamberRepository.saveAndFlush(chamber);
+
+        // Get all the chamberList where isSuspended equals to DEFAULT_IS_SUSPENDED
+        defaultChamberShouldBeFound("isSuspended.equals=" + DEFAULT_IS_SUSPENDED);
+
+        // Get all the chamberList where isSuspended equals to UPDATED_IS_SUSPENDED
+        defaultChamberShouldNotBeFound("isSuspended.equals=" + UPDATED_IS_SUSPENDED);
+    }
+
+    @Test
+    @Transactional
+    public void getAllChambersByIsSuspendedIsInShouldWork() throws Exception {
+        // Initialize the database
+        chamberRepository.saveAndFlush(chamber);
+
+        // Get all the chamberList where isSuspended in DEFAULT_IS_SUSPENDED or UPDATED_IS_SUSPENDED
+        defaultChamberShouldBeFound("isSuspended.in=" + DEFAULT_IS_SUSPENDED + "," + UPDATED_IS_SUSPENDED);
+
+        // Get all the chamberList where isSuspended equals to UPDATED_IS_SUSPENDED
+        defaultChamberShouldNotBeFound("isSuspended.in=" + UPDATED_IS_SUSPENDED);
+    }
+
+    @Test
+    @Transactional
+    public void getAllChambersByIsSuspendedIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        chamberRepository.saveAndFlush(chamber);
+
+        // Get all the chamberList where isSuspended is not null
+        defaultChamberShouldBeFound("isSuspended.specified=true");
+
+        // Get all the chamberList where isSuspended is null
+        defaultChamberShouldNotBeFound("isSuspended.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllChambersByNoticeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        chamberRepository.saveAndFlush(chamber);
+
+        // Get all the chamberList where notice equals to DEFAULT_NOTICE
+        defaultChamberShouldBeFound("notice.equals=" + DEFAULT_NOTICE);
+
+        // Get all the chamberList where notice equals to UPDATED_NOTICE
+        defaultChamberShouldNotBeFound("notice.equals=" + UPDATED_NOTICE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllChambersByNoticeIsInShouldWork() throws Exception {
+        // Initialize the database
+        chamberRepository.saveAndFlush(chamber);
+
+        // Get all the chamberList where notice in DEFAULT_NOTICE or UPDATED_NOTICE
+        defaultChamberShouldBeFound("notice.in=" + DEFAULT_NOTICE + "," + UPDATED_NOTICE);
+
+        // Get all the chamberList where notice equals to UPDATED_NOTICE
+        defaultChamberShouldNotBeFound("notice.in=" + UPDATED_NOTICE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllChambersByNoticeIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        chamberRepository.saveAndFlush(chamber);
+
+        // Get all the chamberList where notice is not null
+        defaultChamberShouldBeFound("notice.specified=true");
+
+        // Get all the chamberList where notice is null
+        defaultChamberShouldNotBeFound("notice.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllChambersByAppointmentLimitIsEqualToSomething() throws Exception {
+        // Initialize the database
+        chamberRepository.saveAndFlush(chamber);
+
+        // Get all the chamberList where appointmentLimit equals to DEFAULT_APPOINTMENT_LIMIT
+        defaultChamberShouldBeFound("appointmentLimit.equals=" + DEFAULT_APPOINTMENT_LIMIT);
+
+        // Get all the chamberList where appointmentLimit equals to UPDATED_APPOINTMENT_LIMIT
+        defaultChamberShouldNotBeFound("appointmentLimit.equals=" + UPDATED_APPOINTMENT_LIMIT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllChambersByAppointmentLimitIsInShouldWork() throws Exception {
+        // Initialize the database
+        chamberRepository.saveAndFlush(chamber);
+
+        // Get all the chamberList where appointmentLimit in DEFAULT_APPOINTMENT_LIMIT or UPDATED_APPOINTMENT_LIMIT
+        defaultChamberShouldBeFound("appointmentLimit.in=" + DEFAULT_APPOINTMENT_LIMIT + "," + UPDATED_APPOINTMENT_LIMIT);
+
+        // Get all the chamberList where appointmentLimit equals to UPDATED_APPOINTMENT_LIMIT
+        defaultChamberShouldNotBeFound("appointmentLimit.in=" + UPDATED_APPOINTMENT_LIMIT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllChambersByAppointmentLimitIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        chamberRepository.saveAndFlush(chamber);
+
+        // Get all the chamberList where appointmentLimit is not null
+        defaultChamberShouldBeFound("appointmentLimit.specified=true");
+
+        // Get all the chamberList where appointmentLimit is null
+        defaultChamberShouldNotBeFound("appointmentLimit.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllChambersByAppointmentLimitIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        chamberRepository.saveAndFlush(chamber);
+
+        // Get all the chamberList where appointmentLimit greater than or equals to DEFAULT_APPOINTMENT_LIMIT
+        defaultChamberShouldBeFound("appointmentLimit.greaterOrEqualThan=" + DEFAULT_APPOINTMENT_LIMIT);
+
+        // Get all the chamberList where appointmentLimit greater than or equals to UPDATED_APPOINTMENT_LIMIT
+        defaultChamberShouldNotBeFound("appointmentLimit.greaterOrEqualThan=" + UPDATED_APPOINTMENT_LIMIT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllChambersByAppointmentLimitIsLessThanSomething() throws Exception {
+        // Initialize the database
+        chamberRepository.saveAndFlush(chamber);
+
+        // Get all the chamberList where appointmentLimit less than or equals to DEFAULT_APPOINTMENT_LIMIT
+        defaultChamberShouldNotBeFound("appointmentLimit.lessThan=" + DEFAULT_APPOINTMENT_LIMIT);
+
+        // Get all the chamberList where appointmentLimit less than or equals to UPDATED_APPOINTMENT_LIMIT
+        defaultChamberShouldBeFound("appointmentLimit.lessThan=" + UPDATED_APPOINTMENT_LIMIT);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllChambersByAdviceDurationInMinuteIsEqualToSomething() throws Exception {
+        // Initialize the database
+        chamberRepository.saveAndFlush(chamber);
+
+        // Get all the chamberList where adviceDurationInMinute equals to DEFAULT_ADVICE_DURATION_IN_MINUTE
+        defaultChamberShouldBeFound("adviceDurationInMinute.equals=" + DEFAULT_ADVICE_DURATION_IN_MINUTE);
+
+        // Get all the chamberList where adviceDurationInMinute equals to UPDATED_ADVICE_DURATION_IN_MINUTE
+        defaultChamberShouldNotBeFound("adviceDurationInMinute.equals=" + UPDATED_ADVICE_DURATION_IN_MINUTE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllChambersByAdviceDurationInMinuteIsInShouldWork() throws Exception {
+        // Initialize the database
+        chamberRepository.saveAndFlush(chamber);
+
+        // Get all the chamberList where adviceDurationInMinute in DEFAULT_ADVICE_DURATION_IN_MINUTE or UPDATED_ADVICE_DURATION_IN_MINUTE
+        defaultChamberShouldBeFound("adviceDurationInMinute.in=" + DEFAULT_ADVICE_DURATION_IN_MINUTE + "," + UPDATED_ADVICE_DURATION_IN_MINUTE);
+
+        // Get all the chamberList where adviceDurationInMinute equals to UPDATED_ADVICE_DURATION_IN_MINUTE
+        defaultChamberShouldNotBeFound("adviceDurationInMinute.in=" + UPDATED_ADVICE_DURATION_IN_MINUTE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllChambersByAdviceDurationInMinuteIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        chamberRepository.saveAndFlush(chamber);
+
+        // Get all the chamberList where adviceDurationInMinute is not null
+        defaultChamberShouldBeFound("adviceDurationInMinute.specified=true");
+
+        // Get all the chamberList where adviceDurationInMinute is null
+        defaultChamberShouldNotBeFound("adviceDurationInMinute.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllChambersByAdviceDurationInMinuteIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        chamberRepository.saveAndFlush(chamber);
+
+        // Get all the chamberList where adviceDurationInMinute greater than or equals to DEFAULT_ADVICE_DURATION_IN_MINUTE
+        defaultChamberShouldBeFound("adviceDurationInMinute.greaterOrEqualThan=" + DEFAULT_ADVICE_DURATION_IN_MINUTE);
+
+        // Get all the chamberList where adviceDurationInMinute greater than or equals to UPDATED_ADVICE_DURATION_IN_MINUTE
+        defaultChamberShouldNotBeFound("adviceDurationInMinute.greaterOrEqualThan=" + UPDATED_ADVICE_DURATION_IN_MINUTE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllChambersByAdviceDurationInMinuteIsLessThanSomething() throws Exception {
+        // Initialize the database
+        chamberRepository.saveAndFlush(chamber);
+
+        // Get all the chamberList where adviceDurationInMinute less than or equals to DEFAULT_ADVICE_DURATION_IN_MINUTE
+        defaultChamberShouldNotBeFound("adviceDurationInMinute.lessThan=" + DEFAULT_ADVICE_DURATION_IN_MINUTE);
+
+        // Get all the chamberList where adviceDurationInMinute less than or equals to UPDATED_ADVICE_DURATION_IN_MINUTE
+        defaultChamberShouldBeFound("adviceDurationInMinute.lessThan=" + UPDATED_ADVICE_DURATION_IN_MINUTE);
+    }
+
+
+    @Test
+    @Transactional
     public void getAllChambersByDoctorIsEqualToSomething() throws Exception {
         // Initialize the database
         Doctor doctor = DoctorResourceIntTest.createEntity(em);
@@ -365,13 +615,17 @@ public class ChamberResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(chamber.getId().intValue())))
             .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS.toString())))
             .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE.toString())))
-            .andExpect(jsonPath("$.[*].fee").value(hasItem(DEFAULT_FEE.doubleValue())));
+            .andExpect(jsonPath("$.[*].fee").value(hasItem(DEFAULT_FEE.doubleValue())))
+            .andExpect(jsonPath("$.[*].isSuspended").value(hasItem(DEFAULT_IS_SUSPENDED.booleanValue())))
+            .andExpect(jsonPath("$.[*].notice").value(hasItem(DEFAULT_NOTICE.toString())))
+            .andExpect(jsonPath("$.[*].appointmentLimit").value(hasItem(DEFAULT_APPOINTMENT_LIMIT)))
+            .andExpect(jsonPath("$.[*].adviceDurationInMinute").value(hasItem(DEFAULT_ADVICE_DURATION_IN_MINUTE)));
 
         // Check, that the count call also returns 1
         restChamberMockMvc.perform(get("/api/chambers/count?sort=id,desc&" + filter))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
-//            .andExpect(content().string("1")); // For prepopulated data this test can not be done
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
     }
 
     /**
@@ -415,7 +669,11 @@ public class ChamberResourceIntTest {
         updatedChamber
             .address(UPDATED_ADDRESS)
             .phone(UPDATED_PHONE)
-            .fee(UPDATED_FEE);
+            .fee(UPDATED_FEE)
+            .isSuspended(UPDATED_IS_SUSPENDED)
+            .notice(UPDATED_NOTICE)
+            .appointmentLimit(UPDATED_APPOINTMENT_LIMIT)
+            .adviceDurationInMinute(UPDATED_ADVICE_DURATION_IN_MINUTE);
         ChamberDTO chamberDTO = chamberMapper.toDto(updatedChamber);
 
         restChamberMockMvc.perform(put("/api/chambers")
@@ -430,6 +688,13 @@ public class ChamberResourceIntTest {
         assertThat(testChamber.getAddress()).isEqualTo(UPDATED_ADDRESS);
         assertThat(testChamber.getPhone()).isEqualTo(UPDATED_PHONE);
         assertThat(testChamber.getFee()).isEqualTo(UPDATED_FEE);
+        assertThat(testChamber.isIsSuspended()).isEqualTo(UPDATED_IS_SUSPENDED);
+        assertThat(testChamber.getNotice()).isEqualTo(UPDATED_NOTICE);
+        assertThat(testChamber.getAppointmentLimit()).isEqualTo(UPDATED_APPOINTMENT_LIMIT);
+        assertThat(testChamber.getAdviceDurationInMinute()).isEqualTo(UPDATED_ADVICE_DURATION_IN_MINUTE);
+
+        // Validate the Chamber in Elasticsearch
+        verify(mockChamberSearchRepository, times(1)).save(testChamber);
     }
 
     @Test
@@ -449,6 +714,9 @@ public class ChamberResourceIntTest {
         // Validate the Chamber in the database
         List<Chamber> chamberList = chamberRepository.findAll();
         assertThat(chamberList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the Chamber in Elasticsearch
+        verify(mockChamberSearchRepository, times(0)).save(chamber);
     }
 
     @Test
@@ -467,6 +735,30 @@ public class ChamberResourceIntTest {
         // Validate the database is empty
         List<Chamber> chamberList = chamberRepository.findAll();
         assertThat(chamberList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the Chamber in Elasticsearch
+        verify(mockChamberSearchRepository, times(1)).deleteById(chamber.getId());
+    }
+
+    @Test
+    @Transactional
+    public void searchChamber() throws Exception {
+        // Initialize the database
+        chamberRepository.saveAndFlush(chamber);
+        when(mockChamberSearchRepository.search(queryStringQuery("id:" + chamber.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(chamber), PageRequest.of(0, 1), 1));
+        // Search the chamber
+        restChamberMockMvc.perform(get("/api/_search/chambers?query=id:" + chamber.getId()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(chamber.getId().intValue())))
+            .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)))
+            .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE)))
+            .andExpect(jsonPath("$.[*].fee").value(hasItem(DEFAULT_FEE.doubleValue())))
+            .andExpect(jsonPath("$.[*].isSuspended").value(hasItem(DEFAULT_IS_SUSPENDED.booleanValue())))
+            .andExpect(jsonPath("$.[*].notice").value(hasItem(DEFAULT_NOTICE)))
+            .andExpect(jsonPath("$.[*].appointmentLimit").value(hasItem(DEFAULT_APPOINTMENT_LIMIT)))
+            .andExpect(jsonPath("$.[*].adviceDurationInMinute").value(hasItem(DEFAULT_ADVICE_DURATION_IN_MINUTE)));
     }
 
     @Test

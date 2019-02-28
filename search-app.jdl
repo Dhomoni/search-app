@@ -79,6 +79,10 @@ entity Chamber {
 	address String
 	phone String
 	fee Double
+	isSuspended Boolean
+	notice String
+	appointmentLimit Integer
+	adviceDurationInMinute Integer
 //	location Point
 }
 
@@ -95,13 +99,13 @@ entity WeeklyVisitingHour {
 }
 
 enum WeekDay {
-    SUN, 
-    MON, 
-    TUES, 
-    WED, 
-    THURS, 
-    FRI, 
-    SAT
+	SUNDAY, 
+	MONDAY, 
+	TUESDAY, 
+	WEDNESDAY, 
+	THURSDAY, 
+	FRIDAY, 
+	SATURDAY
 }
 
 relationship OneToMany {

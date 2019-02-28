@@ -12,6 +12,22 @@
         {
             "fieldName": "fee",
             "fieldType": "Double"
+        },
+        {
+            "fieldName": "isSuspended",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "notice",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "appointmentLimit",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "adviceDurationInMinute",
+            "fieldType": "Integer"
         }
     ],
     "relationships": [

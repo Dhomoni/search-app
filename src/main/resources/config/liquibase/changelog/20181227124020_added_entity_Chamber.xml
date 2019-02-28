@@ -17,7 +17,7 @@
         Added the entity Chamber.
     -->
     <changeSet id="20181227124020-1" author="jhipster">
-        <createTable tableName="CHAMBER">
+        <createTable tableName="chamber">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -30,6 +30,22 @@
             </column>
 
             <column name="fee" type="double">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="is_suspended" type="boolean">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="notice" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="appointment_limit" type="integer">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="advice_duration_in_minute" type="integer">
                 <constraints nullable="true" />
             </column>
 
