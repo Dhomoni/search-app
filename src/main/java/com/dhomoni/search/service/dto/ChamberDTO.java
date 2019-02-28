@@ -30,6 +30,14 @@ public class ChamberDTO implements Serializable {
 
     private Set<WeeklyVisitingHourDTO> weeklyVisitingHours;
     
+    private Boolean isSuspended;
+
+    private String notice;
+
+    private Integer appointmentLimit;
+
+    private Integer adviceDurationInMinute;
+    
     private Long doctorId;
 
     public Long getId() {
@@ -71,6 +79,54 @@ public class ChamberDTO implements Serializable {
     public void setFee(Double fee) {
         this.fee = fee;
     }
+    
+	public Double getDistanceInKM() {
+		return distanceInKM;
+	}
+
+	public void setDistanceInKM(Double distanceInKM) {
+		this.distanceInKM = distanceInKM;
+	}
+
+	public Set<WeeklyVisitingHourDTO> getWeeklyVisitingHours() {
+		return weeklyVisitingHours;
+	}
+
+	public void setWeeklyVisitingHours(Set<WeeklyVisitingHourDTO> weeklyVisitingHours) {
+		this.weeklyVisitingHours = weeklyVisitingHours;
+	}
+    
+    public Boolean isIsSuspended() {
+        return isSuspended;
+    }
+
+    public void setIsSuspended(Boolean isSuspended) {
+        this.isSuspended = isSuspended;
+    }
+
+    public String getNotice() {
+        return notice;
+    }
+
+    public void setNotice(String notice) {
+        this.notice = notice;
+    }
+
+    public Integer getAppointmentLimit() {
+        return appointmentLimit;
+    }
+
+    public void setAppointmentLimit(Integer appointmentLimit) {
+        this.appointmentLimit = appointmentLimit;
+    }
+
+    public Integer getAdviceDurationInMinute() {
+        return adviceDurationInMinute;
+    }
+
+    public void setAdviceDurationInMinute(Integer adviceDurationInMinute) {
+        this.adviceDurationInMinute = adviceDurationInMinute;
+    }
 
     public Long getDoctorId() {
         return doctorId;
@@ -79,7 +135,7 @@ public class ChamberDTO implements Serializable {
     public void setDoctorId(Long doctorId) {
         this.doctorId = doctorId;
     }
-
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -108,23 +164,11 @@ public class ChamberDTO implements Serializable {
             ", address='" + getAddress() + "'" +
             ", phone='" + getPhone() + "'" +
             ", fee=" + getFee() +
+            ", isSuspended='" + isIsSuspended() + "'" +
+            ", notice='" + getNotice() + "'" +
+            ", appointmentLimit=" + getAppointmentLimit() +
+            ", adviceDurationInMinute=" + getAdviceDurationInMinute() +
             ", doctor=" + getDoctorId() +
             "}";
     }
-
-	public Double getDistanceInKM() {
-		return distanceInKM;
-	}
-
-	public void setDistanceInKM(Double distanceInKM) {
-		this.distanceInKM = distanceInKM;
-	}
-
-	public Set<WeeklyVisitingHourDTO> getWeeklyVisitingHours() {
-		return weeklyVisitingHours;
-	}
-
-	public void setWeeklyVisitingHours(Set<WeeklyVisitingHourDTO> weeklyVisitingHours) {
-		this.weeklyVisitingHours = weeklyVisitingHours;
-	}
 }

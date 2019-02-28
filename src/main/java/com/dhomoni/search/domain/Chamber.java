@@ -57,10 +57,22 @@ public class Chamber implements Serializable {
     @Column(name = "fee")
     private Double fee;
 
-    @ManyToOne
-    @JsonIgnoreProperties({"chambers"})
-    private Doctor doctor;
+    @Column(name = "is_suspended")
+    private Boolean isSuspended;
 
+    @Column(name = "notice")
+    private String notice;
+
+    @Column(name = "appointment_limit")
+    private Integer appointmentLimit;
+
+    @Column(name = "advice_duration_in_minute")
+    private Integer adviceDurationInMinute;
+
+    @ManyToOne
+    @JsonIgnoreProperties("chambers")
+    private Doctor doctor;
+    
     @OneToMany(mappedBy = "chamber")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnoreProperties("chamber")
@@ -130,6 +142,58 @@ public class Chamber implements Serializable {
     public void setFee(Double fee) {
         this.fee = fee;
     }
+    
+    public Boolean isIsSuspended() {
+        return isSuspended;
+    }
+
+    public Chamber isSuspended(Boolean isSuspended) {
+        this.isSuspended = isSuspended;
+        return this;
+    }
+
+    public void setIsSuspended(Boolean isSuspended) {
+        this.isSuspended = isSuspended;
+    }
+
+    public String getNotice() {
+        return notice;
+    }
+
+    public Chamber notice(String notice) {
+        this.notice = notice;
+        return this;
+    }
+
+    public void setNotice(String notice) {
+        this.notice = notice;
+    }
+
+    public Integer getAppointmentLimit() {
+        return appointmentLimit;
+    }
+
+    public Chamber appointmentLimit(Integer appointmentLimit) {
+        this.appointmentLimit = appointmentLimit;
+        return this;
+    }
+
+    public void setAppointmentLimit(Integer appointmentLimit) {
+        this.appointmentLimit = appointmentLimit;
+    }
+
+    public Integer getAdviceDurationInMinute() {
+        return adviceDurationInMinute;
+    }
+
+    public Chamber adviceDurationInMinute(Integer adviceDurationInMinute) {
+        this.adviceDurationInMinute = adviceDurationInMinute;
+        return this;
+    }
+
+    public void setAdviceDurationInMinute(Integer adviceDurationInMinute) {
+        this.adviceDurationInMinute = adviceDurationInMinute;
+    }
 
     public Doctor getDoctor() {
         return doctor;
@@ -197,6 +261,10 @@ public class Chamber implements Serializable {
             ", address='" + getAddress() + "'" +
             ", phone='" + getPhone() + "'" +
             ", fee=" + getFee() +
+            ", isSuspended='" + isIsSuspended() + "'" +
+            ", notice='" + getNotice() + "'" +
+            ", appointmentLimit=" + getAppointmentLimit() +
+            ", adviceDurationInMinute=" + getAdviceDurationInMinute() +
             "}";
     }
 }
