@@ -18,6 +18,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
@@ -35,6 +36,7 @@ import com.dhomoni.search.service.mapper.DoctorMapper;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.vividsolutions.jts.geom.Point;
+import com.dhomoni.search.service.channel.ConsumerChannel;
 
 /**
  * Service Implementation for managing Doctor.
@@ -73,6 +75,13 @@ public class DoctorService {
 		doctorSearchRepository.save(doctor);
 		return result;
 	}
+	
+    @StreamListener(ConsumerChannel.CHANNEL)
+    public void save(Doctor doctor) {
+        log.info("Received message: {}.", doctor);
+		doctor = doctorRepository.save(doctor);
+		doctorSearchRepository.save(doctor);
+    }
 
 	/**
 	 * Get all the doctors.
